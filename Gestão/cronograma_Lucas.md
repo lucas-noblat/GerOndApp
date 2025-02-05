@@ -55,6 +55,7 @@
 - Executar o que foi aprendido através da programação em Python. 🔨
 - Implementar funções para gerar sinais senoidais, triangulares, quadrados e ruído branco. ✔️  
 - Desenvolver funcionalidades para operações matemáticas entre sinais. ✔️
+- Criar a função que calcula o espectro baseada na utilizada pelo LIOc. 🔨
 
 ### 2.2. Desenvolvimento das Funcionalidades de Visualização - (Prazo estipulado para conclusão: 2ª semana)
 
