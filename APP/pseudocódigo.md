@@ -1,14 +1,15 @@
-PSEUDOCÓGIDO = GER_OND_APP waveGN
+PSEUDOCÓGIDO = GER_OND_APP 
 
 
 FUNÇÕES A SEREM UTILIZADAS
 
 FUNÇÃO gerar_sinal(tipo_sinal, amplitude, frequencia, duracao, offset):
+
     DEFINIR taxa_amostragem como valor adequado (por exemplo, 1000 Hz)
     CRIAR vetor_tempo de 0 até duracao com intervalos de 1/taxa_amostragem
     
-    SE tipo_sinal for 'a'	SENOIDAL
-:       SOLICITAR "Escreva a fase:" e LER fase
+    SE tipo_sinal for 'a'	SENOIDAL:
+    SOLICITAR "Escreva a fase:" e LER fase
         sinal = amplitude * seno(2 * π * frequencia * vetor_tempo + fase) + offset
     SENÃO SE tipo_sinal for 'b': QUADRADO
         SOLICITAR "Escreva a fase:" e LER fase
@@ -29,6 +30,7 @@ FUNÇÃO gerar_sinal(tipo_sinal, amplitude, frequencia, duracao, offset):
 
 /* 
 FUNÇÃO carregar_sinal(caminho_arquivo):
+
     TENTAR:
         ABRIR arquivo no caminho_arquivo
         LER dados do arquivo
@@ -43,6 +45,7 @@ FUNÇÃO carregar_sinal(caminho_arquivo):
 */
 
 FUNÇÃO aplicar_operacoes_matematicas(series_ativas, operacoes):
+
     // series_ativas: Lista de séries temporais ativas
     // operacoes: Lista de operações matemáticas (+, -, *, /)
     
@@ -67,6 +70,7 @@ FUNÇÃO aplicar_operacoes_matematicas(series_ativas, operacoes):
 
 
 FUNÇÃO plotar_sinal_no_tempo(vetor_tempo, sinal):
+
     CRIAR nova figura
     PLOTAR vetor_tempo no eixo x e sinal no eixo y
     CONFIGURAR título do gráfico como "Sinal no Domínio do Tempo"
@@ -77,6 +81,7 @@ FUNÇÃO plotar_sinal_no_tempo(vetor_tempo, sinal):
 
 
 FUNÇÃO plotar_espectro_de_frequencia(frequencias, amplitudes):
+
     CRIAR nova figura
     PLOTAR frequencias no eixo x e amplitudes no eixo y
     CONFIGURAR título do gráfico como "Espectro de Frequência"
@@ -88,6 +93,7 @@ FUNÇÃO plotar_espectro_de_frequencia(frequencias, amplitudes):
 
 
 FUNÇÃO aplicar_fft(sinal):
+
     N = comprimento do sinal
     fft_resultado = FFT(sinal)
     frequencias = calcular_frequencias_correspondentes(N)
@@ -104,6 +110,7 @@ INICIAR Programa de Análise de Sinais
 EXIBIR "Bem-vindo ao Analisador de Sinais"
 
 REPETIR até que o usuário decida sair:
+
     EXIBIR "Menu Principal:"
     EXIBIR "1. Gerar novo sinal"
     // EXIBIR "2. Carregar sinal existente"
