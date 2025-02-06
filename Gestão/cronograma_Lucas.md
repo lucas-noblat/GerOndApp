@@ -34,6 +34,8 @@
 
 **Atividades**:
 - Estudar conceitos de processamento de sinais com formatos específicos de onda, operações entre diferentes sinais, transformação de sinais. ✔️
+- Aprofundar conhecimentos sobre análise espectral 🔨
+- Estudar a fundo conceitos avançados de processamento estatístico de sinais. ❓
   
 ### 1.3. Pseudocódigo e Planejamento da Lógica - (Prazo estipulado para conclusão: 1ª semana)
 
