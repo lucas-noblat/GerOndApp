@@ -2,6 +2,11 @@
   ✔️ ->  Concluído ou em fase de conclusão
 </p>
 
+<!-- COMENTÁRIO -->
+<!-- COMENTÁRIO -->
+<!-- COMENTÁRIO -->
+<!-- COMENTÁRIO -->
+
 <p>
   🔨 ->  Em desenvolvimento
 </p>
@@ -35,7 +40,7 @@
 **Atividades**:
 - Estudar conceitos de processamento de sinais com formatos específicos de onda, operações entre diferentes sinais, transformação de sinais. ✔️
 - Aprofundar conhecimentos sobre análise espectral 🔨
-- Estudar a fundo conceitos avançados de processamento estatístico de sinais. ❓
+- Estudar a fundo conceitos avançados de processamento estatístico de sinais digitais. ❓
   
 ### 1.3. Pseudocódigo e Planejamento da Lógica - (Prazo estipulado para conclusão: 1ª semana)
 
