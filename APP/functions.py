@@ -18,6 +18,36 @@ def plotar(sinal, periodo, nome):
     plt.ylabel('Amplitude')
     plt.grid()
     plt.show()
+
+
+# FUNÇÃO PARA PLOTAR COM ORIGEM CENTRALIZADA
+
+# FUNÇÃO PARA PLOTAR 1 SÉRIE EM GRÁFICO
+
+def plotar_origem_centralizada(sinal, periodo, nome):
+
+    # Criar e configurar gráfico
+    plt.figure(figsize = (10,3))
+    plt.plot(periodo,sinal)
+    plt.title(nome)
+    plt.xlabel('Tempo(s)')
+    plt.ylabel('Amplitude')
+    
+    # Centralizar o zero no meio do gráfico
+    plt.axhline(0, color='black', linewidth=0.5, linestyle='--')  # Linha horizontal no y=0
+    plt.axvline(0, color='black', linewidth=0.5, linestyle='--')  # Linha vertical no x=0
+
+    # Ajustar os limites dos eixos para centralizar o zero
+    max_x = max(abs(x))  # Valor máximo absoluto de x
+    max_y = max(abs(y))  # Valor máximo absoluto de y
+    plt.xlim(-max_x, max_x)  # Limites simétricos no eixo x
+    plt.ylim(-max_y, max_y)  # Limites simétricos no eixo y
+
+
+    plt.grid()
+    plt.show()
+    
+    
     
 
 # FUNÇÃO PARA PLOTAR N SÉRIES COM SUAS RESPECTIVAS LEGENDAS EM UM SÓ GRÁFICO
