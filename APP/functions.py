@@ -86,15 +86,15 @@ def plotar_2x2(sinal1, sinal2, sinal3, sinal4, t, labels=None):
 ''' FUNÇÕES PARA CRIAR OS SINAIS '''
 
 # ONDA SENOIDAL
-def onda_senoidal(amplitude, frequencia, t, fase):
+def sinal_senoidal(amplitude, frequencia, t, fase):
     return amplitude * np.sin(2*np.pi*frequencia*t + fase)
 
 # ONDA TRIANGULAR
-def onda_triangular(amplitude, frequencia, t, simetria):
+def sinal_triangular(amplitude, frequencia, t, simetria):
     return amplitude * scp.signal.sawtooth (2*np.pi*frequencia*t, simetria)
 
 # ONDA QUADRADA
-def onda_quadrada(amplitude, frequencia, t, duty):
+def sinal_quadrada(amplitude, frequencia, t, duty):
     return amplitude * scp.signal.square(2*np.pi*frequencia*t, duty = duty)
 
 # RUÍDO BRANCO
