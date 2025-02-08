@@ -43,7 +43,6 @@ def plotar_origem_centralizada(sinal, periodo, nome):
     plt.xlim(-max_x, max_x)  # Limites simétricos no eixo x
     plt.ylim(-max_y, max_y)  # Limites simétricos no eixo y
 
-
     plt.grid()
     plt.show()
     
