@@ -1,5 +1,5 @@
 # GerOndApp
-O GerOndApp é um projeto inovador dedicado à geração, manipulação e visualização de diversos tipos de sinais, como senoidais, triangulares, quadrados e ruído branco. Desenvolvido em Python e utilizando bibliotecas científicas renomadas, o GerOndApp oferece uma aplicação web interativa, disponível no site do LIOc, tornando-se uma ferramenta essencial para estudantes, pesquisadores e profissionais nas áreas de engenharia elétrica e processamento de sinais.
+O GerOndApp é um projeto dedicado à geração, manipulação e visualização de diversos tipos de sinais, como senoidais, triangulares, quadrados e ruído branco. Desenvolvido em Python e utilizando bibliotecas científicas renomadas, o GerOndApp oferece uma aplicação web interativa, disponível no site do LIOc, tornando-se uma ferramenta essencial para estudantes, pesquisadores e profissionais nas áreas de engenharia elétrica e processamento de sinais.
 
 ## *Principais Funcionalidades:*
 
