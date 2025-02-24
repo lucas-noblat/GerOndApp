@@ -9,4 +9,5 @@ O GerOndApp é um projeto dedicado à geração, manipulação e visualização 
 
 3. Transformações de Sinais: Inclui funcionalidades para aplicar transformações nos sinais, como adição de ruído branco ou aplicação de filtros passa-baixa, ampliando as possibilidades de análise e estudo dos sinais.
 
-4. ~Exportação de Dados: Possibilita a exportação dos sinais gerados em formatos de arquivo padrão, como CSV ou WAV, facilitando o compartilhamento e a utilização dos dados em outras plataformas ou análises subsequentes.~
+4. Exportação/importação de Dados: Possibilita a exportação/importação dos sinais gerados em formatos de arquivo padrão, como CSV , facilitando o compartilhamento e a utilização dos dados em outras plataformas ou análises subsequentes.
+
