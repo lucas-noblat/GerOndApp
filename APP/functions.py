@@ -3,6 +3,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+
 import scipy as scp
 from ipywidgets import widgets, interact
 from bokeh.plotting import figure, show
@@ -23,13 +24,41 @@ taxaAmostragem = 1000 #Hz/s
 
 # FUNÇÃO PARA PLOTAR 1 SÉRIE EM GRÁFICO
 
-def plotar(sinal, periodo, nome):
-    plt.figure(figsize = (10,3))
-    plt.plot(periodo,sinal)
+def plotar(vetor_tempo, sinal, nome, largura=1280, altura=720, legenda=None, salvar_como=None):
+    """
+    Plota um sinal no domínio do tempo.
+
+    Parâmetros:
+    vetor_tempo: Vetor de tempo correspondente ao sinal.
+    sinal: Sinal a ser plotado.
+    nome: Título do gráfico.
+    largura: Largura da figura em pixels (padrão: 1280).
+    altura: Altura da figura em pixels (padrão: 720).
+    legenda: Legenda do gráfico (opcional).
+    salvar_como: Nome do arquivo para salvar o gráfico (opcional).
+    """
+    # Calcula o tamanho da figura em polegadas
+    dpi = 100  # DPI padrão do Matplotlib
+    largura_grafico = largura / dpi
+    altura_grafico = altura / dpi
+
+    # Configura a figura
+    plt.figure(figsize=(largura_grafico, altura_grafico))
+    plt.plot(vetor_tempo, sinal, label=legenda)
     plt.title(nome)
-    plt.xlabel('Tempo(s)')
+    plt.xlabel('Tempo (s)')
     plt.ylabel('Amplitude')
-    plt.grid()
+    plt.grid(True)
+
+    # Adiciona a legenda, se fornecida
+    if legenda is not None:
+        plt.legend()
+
+    # Salva a figura, se solicitado
+    if salvar_como:
+        plt.savefig(salvar_como, dpi=dpi)
+
+    # Exibe o gráfico
     plt.show()
 
 
@@ -37,10 +66,15 @@ def plotar(sinal, periodo, nome):
 
 # FUNÇÃO PARA PLOTAR 1 SÉRIE EM GRÁFICO
 
-def plotar_origem_centralizada(sinal, periodo, nome):
+def plotar_origem_centralizada(sinal, periodo, nome, largura=1280, altura = 720):
 
+    # Define altura e largura do gráfico gerado
+
+    largura_grafico = largura/100
+    altura_grafico = altura/100
+    
     # Criar e configurar gráfico
-    plt.figure(figsize = (10,3))
+    plt.figure(figsize = (largura_grafico,altura_grafico))
     plt.plot(periodo,sinal)
     plt.title(nome)
     plt.xlabel('Tempo(s)')
@@ -51,8 +85,8 @@ def plotar_origem_centralizada(sinal, periodo, nome):
     plt.axvline(0, color='black', linewidth=0.5, linestyle='--')  # Linha vertical no x=0
 
     # Ajustar os limites dos eixos para centralizar o zero
-    max_x = max(abs(x))  # Valor máximo absoluto de x
-    max_y = max(abs(y))  # Valor máximo absoluto de y
+    max_x = max(abs(periodo))  # Valor máximo absoluto de x
+    max_y = max(abs(sinal))  # Valor máximo absoluto de y
     plt.xlim(-max_x, max_x)  # Limites simétricos no eixo x
     plt.ylim(-max_y, max_y)  # Limites simétricos no eixo y
 
@@ -129,18 +163,39 @@ def plotar_2x2(sinal1, sinal2, sinal3, sinal4, t, labels=None):
 
 ''' FUNÇÕES PARA CRIAR OS SINAIS '''
 
-# ONDA SENOIDAL
-def sinal_senoidal(amplitude, frequencia, taxa_amostragem = 1, duracao = 1, fase = 0, offset = 0):
-    
-    # Definindo o intervalo de amostragem
-    intervalo_amostragem = 1/taxa_amostragem
+import numpy as np
 
-    # Definindo o vetor tempo para ser utilizada
-    vetor_tempo = np.arrange(0, duracao, intervalo_amostragem)
+# Onda Senoidal
+
+def sinal_senoidal(amplitude, frequencia, taxa_amostragem=100, duracao=1, fase=0, offset=0):
+    """
+    Gera um sinal senoidal.
+
+    Parâmetros:
+    amplitude: Amplitude do sinal.
+    frequencia: Frequência do sinal em Hz.
+    taxa_amostragem: Taxa de amostragem em amostras por segundo (default é 1).
+    duracao: Duração do sinal em segundos (default é 1).
+    fase: Fase inicial do sinal em radianos (default é 0).
+    offset: Deslocamento vertical do sinal (default é 0).
+
+    Retorna:
+    vetor_tempo: Vetor de tempo correspondente ao sinal.
+    s: Sinal senoidal gerado.
+    """
+    if taxa_amostragem <= 0:
+        raise ValueError("A taxa de amostragem deve ser maior que zero.")
+    if duracao <= 0:
+        raise ValueError("A duração deve ser maior que zero.")
+
+    # Definindo o vetor tempo
+    vetor_tempo = np.linspace(0, duracao, int(taxa_amostragem * duracao), endpoint=False)
+
+    # Sinal gerado
+    s = amplitude * np.sin(2 * np.pi * frequencia * vetor_tempo + fase) + offset
 
     # Retornando
-    return (amplitude * np.sin(2*np.pi*frequencia*vetor_tempo + fase) + offset)
-
+    return vetor_tempo, s
 
 # ONDA TRIANGULAR
 def sinal_triangular(amplitude, frequencia, taxa_amostragem = 1, duracao = 1, fase = 0, offset = 0, duty=0):
@@ -178,7 +233,7 @@ def gerar_sinal(tipo_sinal, amplitude, frequencia, duracao, offset):
     # Calcula o número de pontos
     num_pontos = int(duracao * taxaAmostragem)
 
-    vetor_tempo = np.linspace(0, duracao, num_pontos, endpoint = false) #Vetor para criar as séries
+    vetor_tempo = np.linspace(0, duracao, num_pontos, endpoint = False) #Vetor para criar as séries
     sinal_criado = None
 
     #SENOIDAL
@@ -188,7 +243,7 @@ def gerar_sinal(tipo_sinal, amplitude, frequencia, duracao, offset):
     elif tipo_sinal == 'b':
         fase = float(input('Digite a fase da onda'))
         duty = float(input('Digite o duty cycle'))
-        sinal_criado = amplitude * scp.signal.square(2*np.pi*frequencia*t, duty = duty)
+        sinal_criado = amplitude * scp.signal.square(2*np.pi*frequencia*vetor_tempo, duty = duty)
     else:
         print('Sinal inválido')
     return sinal_criado
