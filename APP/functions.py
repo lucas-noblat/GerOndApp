@@ -7,19 +7,14 @@ import matplotlib.pyplot as plt
 import scipy as scp
 from ipywidgets import widgets, interact
 from bokeh.plotting import figure, show
-
-# Constantes utilizadas
-
-largura_grafico = 400
-altura_grafico = 400
-
+from scipy.signal import square
 
 # DEFINIÇÃO DA TAXA DE AMOSTRAGEM QUE SERÁ UTILIZADA EM NOSSO SISTEMA
 taxaAmostragem = 1000 #Hz/s
 
 '''FUNÇÕES DE VISUALIZAÇÃO (PLOTAGEM) '''
 
-'''- Matplotlib'''
+'''- Matplotlib(Apenas para criação de notebooks)'''
 
 
 # FUNÇÃO PARA PLOTAR 1 SÉRIE EM GRÁFICO
@@ -62,108 +57,10 @@ def plotar(vetor_tempo, sinal, nome, largura=1280, altura=720, legenda=None, sal
     plt.show()
 
 
-# FUNÇÃO PARA PLOTAR COM ORIGEM CENTRALIZADA
-
-# FUNÇÃO PARA PLOTAR 1 SÉRIE EM GRÁFICO
-
-def plotar_origem_centralizada(sinal, periodo, nome, largura=1280, altura = 720):
-
-    # Define altura e largura do gráfico gerado
-
-    largura_grafico = largura/100
-    altura_grafico = altura/100
-    
-    # Criar e configurar gráfico
-    plt.figure(figsize = (largura_grafico,altura_grafico))
-    plt.plot(periodo,sinal)
-    plt.title(nome)
-    plt.xlabel('Tempo(s)')
-    plt.ylabel('Amplitude')
-    
-    # Centralizar o zero no meio do gráfico
-    plt.axhline(0, color='black', linewidth=0.5, linestyle='--')  # Linha horizontal no y=0
-    plt.axvline(0, color='black', linewidth=0.5, linestyle='--')  # Linha vertical no x=0
-
-    # Ajustar os limites dos eixos para centralizar o zero
-    max_x = max(abs(periodo))  # Valor máximo absoluto de x
-    max_y = max(abs(sinal))  # Valor máximo absoluto de y
-    plt.xlim(-max_x, max_x)  # Limites simétricos no eixo x
-    plt.ylim(-max_y, max_y)  # Limites simétricos no eixo y
-
-    plt.grid()
-    plt.show()
-    
-    
-    
-
-# FUNÇÃO PARA PLOTAR N SÉRIES COM SUAS RESPECTIVAS LEGENDAS EM UM SÓ GRÁFICO
-
-def plotar_sinais(vetorTempo, titulo, *sinais, labels=None):
-
-    plt.figure(figsize=(10,5))
-
-    #Cria legendas aleatórias caso nenhuma for informada
-    if labels is None:
-        labels = [f"Sinal {i+1}" for i in range(len(sinais))] 
-
-    #Plota cada sinal com sua respectiva legenda
-    for i, sinal in enumerate(sinais):
-        plt.plot(vetorTempo, sinal, label = labels[i])
-
-    #Configura restante das infos
-    plt.legend()
-    plt.xlabel("Tempo (s)")
-    plt.ylabel("Amplitude")
-    plt.title(titulo)
-    plt.grid()
-    plt.show()
-
-
-#FUNÇÃO PARA PLOTAR SÉRIES EM SEUS GRÁFICOS DE UMA SÓ VEZ
-def subplotar(sinal, t, nome, qtd_sinais, posicao):
-    plt.figure(figsize = (10,5))
-    plt.subplot (qtd_sinais, 1, posicao)
-    plt.plot(t, sinal, label = nome)
-    plt.title(nome)
-    plt.grid()
-
-# FUNÇÃO PARA PLOTAR EM UMA GRID 2x2
-def plotar_2x2(sinal1, sinal2, sinal3, sinal4, t, labels=None):
-    # Cria legendas caso nenhuma for informada
-    if labels is None:
-        labels = [f"Sinal {i+1}" for i in range(4)]  # Corrigido para 4 sinais
-
-    # Criar os subplots (2 linhas, 2 colunas)
-    fig, axs = plt.subplots(2, 2, figsize=(10, 6))
-
-    # Adicionar os sinais aos subplots
-    axs[0, 0].plot(t, sinal1, label=labels[0], color = 'blue')
-    axs[0, 0].set_title(labels[0])
-
-    axs[0, 1].plot(t, sinal2, label=labels[1], color = 'yellow')
-    axs[0, 1].set_title(labels[1])
-    
-    axs[1, 0].plot(t, sinal3, label=labels[2], color = 'green')
-    axs[1, 0].set_title(labels[2])
-
-    axs[1, 1].plot(t, sinal4, label=labels[3], color = 'red')
-    axs[1, 1].set_title(labels[3])
-
-    # Melhorar a apresentação dos gráficos
-    for ax in axs.flat:
-        ax.set_xlabel("Tempo (s)")
-        ax.set_ylabel("Amplitude")
-        ax.grid(True)
-
-    plt.tight_layout()
-    plt.show()
-
 '''Bokeh'''
 
 
 ''' FUNÇÕES PARA CRIAR OS SINAIS '''
-
-import numpy as np
 
 # Onda Senoidal
 
@@ -197,33 +94,103 @@ def sinal_senoidal(amplitude, frequencia, taxa_amostragem=100, duracao=1, fase=0
     # Retornando
     return vetor_tempo, s
 
+
 # ONDA TRIANGULAR
-def sinal_triangular(amplitude, frequencia, taxa_amostragem = 1, duracao = 1, fase = 0, offset = 0, duty=0):
+def sinal_triangular(amplitude, frequencia, taxa_amostragem = 1000, duracao = 1, fase = 0, offset = 0, duty=0):
     
-    # Definindo o delta_t
-    intervalo_amostragem = 1/taxa_amostragem
+    """
+    Gera um sinal triangular.
+
+    Parâmetros:
+    amplitude: Amplitude do sinal.
+    frequencia: Frequência do sinal em Hz.
+    taxa_amostragem: Taxa de amostragem em amostras por segundo (default é 1).
+    duracao: Duração do sinal em segundos (default é 1).
+    fase: Fase inicial do sinal em radianos (default é 0).
+    offset: Deslocamento vertical do sinal (default é 0).
+
+    Retorna:
+    vetor_tempo: Vetor de tempo correspondente ao sinal.
+    triangular
+    : Sinal triangular gerado.
+    """
+
 
     # Gerando o vetor tempo para ser o eixo x
 
-    t = np.arrange(0, duracao, intervalo_amostragem)
+    vetor_tempo = np.linspace(0, duracao, int(duracao*taxa_amostragem))
+    triangular = (amplitude * scp.signal.sawtooth (2*np.pi*frequencia*vetor_tempo + fase, duty) + offset)
+
+    return vetor_tempo, triangular
 
 
-    return (amplitude * scp.signal.sawtooth (2*np.pi*frequencia*t, duty) + offset)
+# ONDA QUADRADA 
+def sinal_quadrado(amplitude, frequencia, taxa_amostragem=1000, duracao=1, fase=0, offset=0, duty=0.5):
+    """
+    Gera um sinal quadrado usando a função square do scipy.signal.
 
-# ONDA QUADRADA
-def sinal_quadrada(amplitude, frequencia, t, duty):
-    return amplitude * scp.signal.square(2*np.pi*frequencia*t, duty = duty)
+    Parâmetros:
+    amplitude: Amplitude do sinal.
+    frequencia: Frequência do sinal em Hz.
+    taxa_amostragem: Taxa de amostragem em amostras por segundo (default é 1000).
+    duracao: Duração do sinal em segundos (default é 1).
+    fase: Fase inicial do sinal em radianos (default é 0).
+    offset: Deslocamento vertical do sinal (default é 0).
+    duty: Ciclo de trabalho do sinal quadrado (default é 0.5, ou 50%).
+
+    Retorna:
+    vetor_tempo: Vetor de tempo correspondente ao sinal.
+    sinal_quadrado: Sinal quadrado gerado.
+    """
+    # Verifica se os parâmetros são válidos
+    if taxa_amostragem <= 0:
+        raise ValueError("A taxa de amostragem deve ser maior que zero.")
+    if duracao <= 0:
+        raise ValueError("A duração deve ser maior que zero.")
+    if duty <= 0 or duty >= 1:
+        raise ValueError("O ciclo de trabalho (duty) deve estar entre 0 e 1.")
+
+    # Define o vetor de tempo
+    vetor_tempo = np.linspace(0, duracao, int(taxa_amostragem * duracao), endpoint=False)
+
+    # Gera o sinal quadrado usando scipy.signal.square
+    sinal_quadrado = amplitude * square(2 * np.pi * frequencia * vetor_tempo + fase, duty=duty) + offset
+
+    return vetor_tempo, sinal_quadrado
+
 
 # RUÍDO BRANCO
-def ruido_branco(amplitude, duracao, taxa_amostragem = 1000):
+def ruido_branco(amplitude, num_componentes, duracao=1, offset=0, freq_inicial=0, freq_final=0,):
+    """
+    Gera um ruído branco com os parâmetros especificados.
 
-    #Número de amostras
-    num_amostras = int(duracao * taxa_amostragem)
+    Parâmetros:
+    amplitude: Amplitude do ruído (unidade especificada pelo usuário).
+    freq_inicial: Frequência inicial (Hz).
+    freq_final: Frequência final (Hz).
+    num_componentes: Número de componentes (amostras) no ruído.
+    duracao: Duração do ruído em segundos.
+    offset: Deslocamento vertical do ruído (mesma unidade da amplitude).
 
-    #Criando o ruído
-    ruido_branco = np.random.normal(0, amplitude, num_amostras)
+    Retorna:
+    vetor_tempo: Vetor de tempo correspondente ao ruído.
+    ruido: Sinal de ruído branco gerado.
+    """
+    # Verifica se os parâmetros são válidos
+    if freq_inicial < 0 or freq_final < 0:
+        raise ValueError("As frequências devem ser maiores ou iguais a zero.")
+    if num_componentes <= 0:
+        raise ValueError("O número de componentes deve ser maior que zero.")
+    if duracao <= 0:
+        raise ValueError("A duração deve ser maior que zero.")
 
-    return ruido_branco
+    # Gera o vetor de tempo
+    vetor_tempo = np.linspace(0, duracao, num_componentes, endpoint=False)
+
+    # Gera o ruído branco
+    ruido = amplitude * np.random.normal(0, 1, num_componentes) + offset
+
+    return vetor_tempo, ruido
 
 
 #FUNÇÃO PARA GERAR SINAIS
