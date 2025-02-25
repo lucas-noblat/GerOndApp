@@ -1,12 +1,25 @@
+# Bibliotecas utilizadas
+
+
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy as scp
 from ipywidgets import widgets, interact
+from bokeh import figure, show
+
+# Constantes utilizadas
+
+largura_grafico = 400
+altura_grafico = 400
+
 
 # DEFINIÇÃO DA TAXA DE AMOSTRAGEM QUE SERÁ UTILIZADA EM NOSSO SISTEMA
 taxaAmostragem = 1000 #Hz/s
 
 '''FUNÇÕES DE VISUALIZAÇÃO (PLOTAGEM) '''
+
+'''- Matplotlib'''
+
 
 # FUNÇÃO PARA PLOTAR 1 SÉRIE EM GRÁFICO
 
@@ -111,16 +124,36 @@ def plotar_2x2(sinal1, sinal2, sinal3, sinal4, t, labels=None):
     plt.tight_layout()
     plt.show()
 
+'''Bokeh'''
+
 
 ''' FUNÇÕES PARA CRIAR OS SINAIS '''
 
 # ONDA SENOIDAL
-def sinal_senoidal(amplitude, frequencia, t, fase):
-    return amplitude * np.sin(2*np.pi*frequencia*t + fase)
+def sinal_senoidal(amplitude, frequencia, taxa_amostragem = 1, duracao = 1, fase = 0, offset = 0):
+    
+    # Definindo o intervalo de amostragem
+    intervalo_amostragem = 1/taxa_amostragem
+
+    # Definindo o vetor tempo para ser utilizada
+    vetor_tempo = np.arrange(0, duracao, intervalo_amostragem)
+
+    # Retornando
+    return (amplitude * np.sin(2*np.pi*frequencia*vetor_tempo + fase) + offset)
+
 
 # ONDA TRIANGULAR
-def sinal_triangular(amplitude, frequencia, t, simetria):
-    return amplitude * scp.signal.sawtooth (2*np.pi*frequencia*t, simetria)
+def sinal_triangular(amplitude, frequencia, taxa_amostragem = 1, duracao = 1, fase = 0, offset = 0, duty=0):
+    
+    # Definindo o delta_t
+    intervalo_amostragem = 1/taxa_amostragem
+
+    # Gerando o vetor tempo para ser o eixo x
+
+    t = np.arrange(0, duracao, intervalo_amostragem)
+
+
+    return (amplitude * scp.signal.sawtooth (2*np.pi*frequencia*t, duty) + offset)
 
 # ONDA QUADRADA
 def sinal_quadrada(amplitude, frequencia, t, duty):
@@ -160,17 +193,6 @@ def gerar_sinal(tipo_sinal, amplitude, frequencia, duracao, offset):
         print('Sinal inválido')
     return sinal_criado
 
-# Função para capturar entradas do usuário usando ipywidgets
-def interface_gerar_sinal():
-    tipo_sinal = widgets.Dropdown(options=['a', 'b'], description='Tipo de sinal:')
-    amplitude = widgets.FloatText(value=1.0, description='Amplitude:')
-    frequencia = widgets.FloatText(value=5.0, description='Frequência (Hz):')
-    duracao = widgets.FloatText(value=2.0, description='Duração (s):')
-    offset = widgets.FloatText(value=0.5, description='Offset:')
-    taxaAmostragem = widgets.FloatText(value=1000.0, description='Taxa de amostragem (Hz):')
-    fase = widgets.FloatText(value=0.0, description='Fase (rad):')
-    duty = widgets.FloatText(value=0.5, description='Duty cycle:')
-
 
 ''' FUNÇÃO PARA APLICAR AS OPERAÇÕES ENTRE AS SÉRIES ATIVAS '''
 
@@ -206,24 +228,3 @@ def aplicar_operacoes(series_ativas, operacoes):
             print(f'Operação "{operacao}" inválida.  Use apenas "+", "-", "*" ou "/".')
             return None
     return serie_resultante
-        
-
-
-
-
-'''
-def aplicar_operacoes(series_ativas, operacoes):
-    # Verifica se existem pelo menos duas séries ativas
-    if len(series_ativas) < 2:
-        print('Pelo menos duas séries precisam estar ativas para efetuar as operações')
-        return None
-    serie_resultante = series_ativas[0]
-    
-    # Verifica se o número de operações é compatível com o número de séries
-    if len(operacoes) != len(series_ativas) - 1:
-        print('O número de operações deve ser exatamente um a menos que o número de séries ativas.')
-        return None
-        
-    for i, operacao in enumerate(operacoes):
-       
-'''
