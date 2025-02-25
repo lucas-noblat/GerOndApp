@@ -6,8 +6,17 @@ import matplotlib.pyplot as plt
 
 import scipy as scp
 from ipywidgets import widgets, interact
-from bokeh.plotting import figure, show
 from scipy.signal import square
+
+
+# Bokeh
+
+from bokeh.plotting import figure, show # Para criar a figure e mostra-la
+from bokeh.io import output_notebook  # Para exibir no Jupyter Notebook
+from bokeh.models import ColumnDataSource # Para atualizar em tempo real
+from bokeh.palettes import Category10  # Paleta de cores para os sinais
+import warnings
+
 
 # DEFINIÇÃO DA TAXA DE AMOSTRAGEM QUE SERÁ UTILIZADA EM NOSSO SISTEMA
 taxaAmostragem = 1000 #Hz/s
@@ -57,14 +66,90 @@ def plotar(vetor_tempo, sinal, nome, largura=1280, altura=720, legenda=None, sal
     plt.show()
 
 
-'''Bokeh'''
+'''BOKEH'''
+
+from bokeh.plotting import figure, show
+from bokeh.io import output_notebook  # Para exibir no Jupyter Notebook
+from bokeh.models import ColumnDataSource
+from bokeh.palettes import Category10  # Paleta de cores para os sinais
+import warnings
 
 
-''' FUNÇÕES PARA CRIAR OS SINAIS '''
+def plotar_sinais_bokeh(vetor_x, lista_vetores_y, titulo="Sinais", x_label="Tempo (s)", y_label="Amplitude", largura=1280, altura=400, is_spectrum=False):
+    """
+    Plota até 6 sinais em um único gráfico usando a biblioteca Bokeh.
+
+    Parâmetros:
+    vetor_x: Vetor de valores para o eixo x (tempo ou frequência).
+    lista_vetores_y: Lista de vetores de valores para o eixo y (amplitude ou magnitude).
+    titulo: Título do gráfico.
+    x_label: Rótulo do eixo x.
+    y_label: Rótulo do eixo y.
+    largura: Largura do gráfico em pixels (padrão: 1280).
+    altura: Altura do gráfico em pixels (padrão: 400).
+    is_spectrum: Se True, ajusta os limites do eixo x usando o Teorema de Nyquist.
+    """
+    # Configura o ambiente do Bokeh (opcional, apenas para Jupyter Notebook)
+    output_notebook()
+
+    # Verifica se há mais de 6 sinais
+    if len(lista_vetores_y) > 6:
+        warnings.warn("A função suporta no máximo 6 sinais. Apenas os primeiros 6 serão plotados.")
+        lista_vetores_y = lista_vetores_y[:6]  # Limita a lista aos primeiros 6 sinais
+
+    # Calcula os limites dos eixos x e y com base nos dados
+    x_min = min(vetor_x)  # Valor mínimo do eixo x
+    x_max = max(vetor_x)  # Valor máximo do eixo x
+
+    # Encontra os valores mínimo e máximo de todos os sinais no eixo y
+    y_min = min([min(y) for y in lista_vetores_y])  # Valor mínimo do eixo y
+    y_max = max([max(y) for y in lista_vetores_y])  # Valor máximo do eixo y
+
+    # Adiciona uma margem de 10% aos limites para melhor visualização
+    margem_x = (x_max - x_min) * 0.1
+    margem_y = (y_max - y_min) * 0.1
+
+    x_min_ajustado = x_min - margem_x
+    x_max_ajustado = x_max + margem_x
+    y_min_ajustado = y_min - margem_y
+    y_max_ajustado = y_max + margem_y
+
+
+    # Cria a figura do Bokeh com os limites ajustados
+    p = figure(
+        title=titulo,
+        x_axis_label=x_label,
+        y_axis_label=y_label,
+        width=largura,
+        height=altura,
+        tools="pan,box_zoom,wheel_zoom,reset,save",
+        x_range=(x_min_ajustado, x_max_ajustado),  # Limites ajustados do eixo x
+        y_range=(y_min_ajustado, y_max_ajustado)   # Limites ajustados do eixo y
+    )
+
+    # Paleta de cores para os sinais (6 cores)
+    cores = Category10[6]
+
+    # Plota cada sinal
+    for i, vetor_y in enumerate(lista_vetores_y):
+        # Cria um ColumnDataSource para armazenar os dados
+        fonte = ColumnDataSource(data={'x': vetor_x, 'y': vetor_y})
+
+        # Adiciona a linha ao gráfico com uma cor da paleta
+        p.line('x', 'y', source=fonte, line_width=2, line_color=cores[i], legend=f"Sinal {i+1}")
+
+    # Configura a legenda
+    p.legend.location = "top_left"
+    p.legend.click_policy = "hide"  # Permite ocultar as linhas ao clicar na legenda
+
+    # Exibe o gráfico
+    show(p)
+
+''' FUNÇÕES MATEMÁTICAS PARA CRIAR OS SINAIS '''
 
 # Onda Senoidal
 
-def sinal_senoidal(amplitude, frequencia, taxa_amostragem=100, duracao=1, fase=0, offset=0):
+def sinal_senoidal(amplitude, frequencia, taxa_amostragem=1000, duracao=1, fase=0, offset=0):
     """
     Gera um sinal senoidal.
 
@@ -191,6 +276,44 @@ def ruido_branco(amplitude, num_componentes, duracao=1, offset=0, freq_inicial=0
     ruido = amplitude * np.random.normal(0, 1, num_componentes) + offset
 
     return vetor_tempo, ruido
+
+
+# TRANSFORMADA DE FOURIER
+
+def transformada_fourier(vetor_tempo, sinal, retornar_magnitude=True):
+    """
+    Transforma um sinal do domínio do tempo para o domínio da frequência.
+
+    Parâmetros:
+    vetor_tempo: Vetor de tempo correspondente ao sinal.
+    sinal: Sinal no domínio do tempo.
+    retornar_magnitude: Se True, retorna a magnitude. Se False, retorna os valores complexos.
+
+    Retorna:
+    freqs: Vetor de frequências correspondente à Transformada de Fourier (apenas positivas).
+    fft_resultado: Magnitude ou valores complexos da Transformada de Fourier.
+    """
+    num_amostras = len(sinal)
+    delta_t = vetor_tempo[1] - vetor_tempo[0]
+    fft_sinal = np.fft.fft(sinal)
+    freqs = np.fft.fftfreq(num_amostras, d=delta_t)
+    mascara = freqs >= 0
+    freqs_positivas = freqs[mascara]
+    fft_sinal_positivo = fft_sinal[mascara]
+
+    if retornar_magnitude:
+        return freqs_positivas, np.abs(fft_sinal_positivo)
+    else:
+        return freqs_positivas, fft_sinal_positivo
+    
+    '''
+    Pegamos apenas os valores positivos de frequência pois os negativos são apenas um artefato que surge devido a natureza complexa da 
+    transformada. No mundo real não faz sentido falar sobre uma onda que possui frequência negativa.
+
+    Porém, o uso da função abs() discarta a informação da fase do sinal, por isso se o usuário desejar saber sobre a fase
+    do sinal, deverá desativar o parâmetro 'retornar_magnitude' 
+    '''
+
 
 
 #FUNÇÃO PARA GERAR SINAIS
