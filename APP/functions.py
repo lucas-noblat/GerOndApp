@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy as scp
 from ipywidgets import widgets, interact
-from bokeh import figure, show
+from bokeh.plotting import figure, show
 
 # Constantes utilizadas
 
