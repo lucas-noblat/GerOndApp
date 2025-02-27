@@ -1,9 +1,6 @@
 # Bibliotecas utilizadas
-
-
 import numpy as np
 import matplotlib.pyplot as plt
-
 import scipy as scp
 from ipywidgets import widgets, interact
 from scipy.signal import square
