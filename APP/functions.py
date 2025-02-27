@@ -284,10 +284,20 @@ def transformada_fourier(vetor_tempo, sinal, retornar_magnitude=True):
     freqs: Vetor de frequências correspondente à Transformada de Fourier (apenas positivas).
     fft_resultado: Magnitude ou valores complexos da Transformada de Fourier.
     """
+    
+    # Descobrindo a quantidade de amostras do sinal
     num_amostras = len(sinal)
+
+    # Descobrindo o intervalo de amostragem para ser utilizado
     delta_t = vetor_tempo[1] - vetor_tempo[0]
+
+    # Aplicando a transformada de fourier no sinal de entrada
     fft_sinal = np.fft.fft(sinal)
+
+    # Definindo o vetor de frequências
     freqs = np.fft.fftfreq(num_amostras, d=delta_t)
+
+    # Utilizando uma mascara para filtrar os valores positivos da frequência (pois os negativos não importam para nós)
     mascara = freqs >= 0
     freqs_positivas = freqs[mascara]
     fft_sinal_positivo = fft_sinal[mascara]
