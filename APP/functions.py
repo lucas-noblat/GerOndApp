@@ -66,7 +66,7 @@ def plotar(vetor_tempo, sinal, nome, largura=1280, altura=720, legenda=None, sal
 '''BOKEH'''
 
 
-def plotar_sinais_bokeh(vetor_x, lista_vetores_y, titulo="Sinais", x_label="Tempo (s)", y_label="Amplitude", largura=1280, altura=400, is_spectrum=False):
+def plotar_sinais_bokeh(vetor_x, lista_vetores_y, titulo="Sinais", x_label="Tempo (s)", y_label="Amplitude", largura=1280, altura=400, is_spectrum=False, alpha = 1):
     """
     Plota até 6 sinais em um único gráfico usando a biblioteca Bokeh.
 
@@ -79,6 +79,7 @@ def plotar_sinais_bokeh(vetor_x, lista_vetores_y, titulo="Sinais", x_label="Temp
     largura: Largura do gráfico em pixels (padrão: 1280).
     altura: Altura do gráfico em pixels (padrão: 400).
     is_spectrum: Se True, ajusta os limites do eixo x usando o Teorema de Nyquist.
+    alpha: Visibilidade das linhas, 0 para invisível, 1 para totalmente visível.
     """
     # Configura o ambiente do Bokeh (opcional, apenas para Jupyter Notebook)
     output_notebook()
@@ -127,7 +128,7 @@ def plotar_sinais_bokeh(vetor_x, lista_vetores_y, titulo="Sinais", x_label="Temp
         fonte = ColumnDataSource(data={'x': vetor_x, 'y': vetor_y})
 
         # Adiciona a linha ao gráfico com uma cor da paleta
-        p.line('x', 'y', source=fonte, line_width=2, line_color=cores[i], legend_label=f"Sinal {i+1}")
+        p.line('x', 'y', source=fonte, line_width=2, line_color=cores[i], legend_label=f"Sinal {i+1}", line_alpha = alpha)
 
     # Configura a legenda
     p.legend.location = "top_left"
