@@ -20,7 +20,7 @@
 </p>
 
 >
-# Cronograma de Estudos e Desenvolvimento - GerOndApp (1/12 semanas)
+# Cronograma de Estudos e Desenvolvimento - GerOndApp (5/12 semanas)
 
 ## 1. Desenvolvimento dos Documentos Básicos
 
