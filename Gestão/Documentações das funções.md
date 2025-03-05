@@ -1,4 +1,4 @@
-# Documentação das Funções GerOndApp
+# Documentação das Funções Backend - GerOndApp
 
 O **GerOndApp** é uma aplicação para geração, visualização e manipulação de sinais no domínio do tempo e da frequência. Abaixo está a documentação de cada função disponível no código.
 
