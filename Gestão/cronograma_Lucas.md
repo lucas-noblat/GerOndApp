@@ -31,7 +31,7 @@
 **Atividades**:
 - [X] Identificar os requisitos funcionais e não funcionais.✔️
 - [X] Documentar os requisitos ✔️
-- [ ] Validar os requisitos ❓
+- [X] Validar os requisitos ✔️
 
 ### 1.2. Estudo da teoria e conceitos matemáticos envolvidos - (Prazo estipulado para conclusão: 1ª semana)
 
@@ -40,14 +40,14 @@
 **Atividades**:
 - [X] Estudar conceitos de processamento de sinais com formatos específicos de onda, operações entre diferentes sinais, transformação de sinais. ✔️
 - [ ] Aprofundar conhecimentos sobre análise espectral 🔨
-- [ ] Estudar a fundo conceitos avançados de processamento estatístico de sinais digitais. ❓
+- [ ] Estudar a fundo conceitos avançados de processamento estatístico de sinais digitais. 🔨
   
 ### 1.3. Pseudocódigo e Planejamento da Lógica - (Prazo estipulado para conclusão: 1ª semana)
 
 **Objetivo**: Desenvolver uma visão clara da estrutura e fluxo do programa.
 
 **Atividades**:
-- [ ] Escrever pseudocódigos para as principais funções e módulos. 🔨 
+- [ ] Escrever pseudocódigos para as principais funções e módulos. ✔️ 
 - [ ] Definir o fluxo de funcionamento da aplicação. 🔨
 
 
@@ -62,7 +62,7 @@
 - [ ] Executar o que foi aprendido através da programação em Python. 🔨
 - [X] Implementar funções para gerar sinais senoidais, triangulares, quadrados e ruído branco. ✔️  
 - [X] Desenvolver funcionalidades para operações matemáticas entre sinais. ✔️
-- [ ] Criar a função que calcula o espectro baseada na utilizada pelo LIOc. 🔨
+- [ ] Criar a função que calcula o espectro baseada na utilizada pelo LIOc. ❌ (MUDANÇAS FUTURAS)
 
 ### 2.2. Desenvolvimento das Funcionalidades de Visualização - (Prazo estipulado para conclusão: 2ª semana)
 
@@ -88,7 +88,7 @@
 **Objetivo**: Desenvolver a interface web da aplicação utilizando o Django.
 
 **Atividades**:
-- [ ] Configurar o ambiente Django e criar os modelos necessários. ❓
+- [ ] Configurar o ambiente Django e criar os modelos necessários. 🔨
 - [ ] Desenvolver views e templates para interagir com as funcionalidades de geração e visualização de sinais. ❓
 
 ## 4. Desenvolvimento das Primeiras Versões do Sistema
