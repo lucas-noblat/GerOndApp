@@ -66,7 +66,7 @@ def plotar(vetor_tempo, sinal, nome, largura=1280, altura=720, legenda=None, sal
 '''BOKEH'''
 
 
-def plotar_sinais_bokeh(vetor_x, lista_vetores_y, titulo="Sinais", x_label="Tempo (s)", y_label="Amplitude", largura=1280, altura=400, is_spectrum=False, alpha = 1):
+def plotar_sinais_bokeh(vetor_x, lista_vetores_y, titulo="Sinais", x_label="Tempo (s)", y_label="Amplitude", largura=1280, altura=400, is_spectrum=False, alpha = 1, cor_grafico = "white"):
     """
     Plota até 6 sinais em um único gráfico usando a biblioteca Bokeh.
 
@@ -130,6 +130,10 @@ def plotar_sinais_bokeh(vetor_x, lista_vetores_y, titulo="Sinais", x_label="Temp
         # Adiciona a linha ao gráfico com uma cor da paleta
         p.line('x', 'y', source=fonte, line_width=2, line_color=cores[i], legend_label=f"Sinal {i+1}", line_alpha = alpha)
 
+    # Colorindo o fundo do gráfico
+
+    p.back_fill_color = cor_grafico
+    
     # Configura a legenda
     p.legend.location = "top_left"
     p.legend.click_policy = "hide"  # Permite ocultar as linhas ao clicar na legenda
