@@ -132,7 +132,7 @@ def plotar_sinais_bokeh(vetor_x, lista_vetores_y, titulo="Sinais", x_label="Temp
 
     # Colorindo o fundo do gráfico
 
-    p.back_fill_color = cor_grafico
+    p.background_fill_color = cor_grafico
     
     # Configura a legenda
     p.legend.location = "top_left"
