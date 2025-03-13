@@ -2,7 +2,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy as scp
-from ipywidgets import widgets, interact
 from scipy.signal import square
 
 
@@ -66,7 +65,17 @@ def plotar(vetor_tempo, sinal, nome, largura=1280, altura=720, legenda=None, sal
 '''BOKEH'''
 
 
-def plotar_sinais_bokeh(vetor_x, lista_vetores_y, titulo="Sinais", x_label="Tempo (s)", y_label="Amplitude", largura=1280, altura=400, is_spectrum=False, alpha = 1, cor_grafico = "white"):
+def plotar_sinais_bokeh(vetor_x, 
+                        lista_vetores_y, 
+                        titulo="Sinais", 
+                        x_label="Tempo (s)", 
+                        y_label="Amplitude", 
+                        largura=1280, 
+                        altura=400, 
+                        is_spectrum=False, 
+                        alpha = 1, 
+                        cor_grafico = "white",
+                        tamanho_fonte = 16):
     """
     Plota até 6 sinais em um único gráfico usando a biblioteca Bokeh.
 
@@ -80,6 +89,10 @@ def plotar_sinais_bokeh(vetor_x, lista_vetores_y, titulo="Sinais", x_label="Temp
     altura: Altura do gráfico em pixels (padrão: 400).
     is_spectrum: Se True, ajusta os limites do eixo x usando o Teorema de Nyquist.
     alpha: Visibilidade das linhas, 0 para invisível, 1 para totalmente visível.
+    cor_grafico: Cor do gráfico
+    tamanho_fonte: Tamanho da fonte
+
+    Saída: Até seis sinais plotados na tela (5 sinais e a resultante)
     """
     # Configura o ambiente do Bokeh (opcional, apenas para Jupyter Notebook)
     output_notebook()
@@ -89,35 +102,20 @@ def plotar_sinais_bokeh(vetor_x, lista_vetores_y, titulo="Sinais", x_label="Temp
         warnings.warn("A função suporta no máximo 6 sinais. Apenas os primeiros 6 serão plotados.")
         lista_vetores_y = lista_vetores_y[:6]  # Limita a lista aos primeiros 6 sinais
 
-    # Calcula os limites dos eixos x e y com base nos dados
-    x_min = min(vetor_x)  # Valor mínimo do eixo x
-    x_max = max(vetor_x)  # Valor máximo do eixo x
-
-    # Encontra os valores mínimo e máximo de todos os sinais no eixo y
-    y_min = min([min(y) for y in lista_vetores_y])  # Valor mínimo do eixo y
-    y_max = max([max(y) for y in lista_vetores_y])  # Valor máximo do eixo y
-
-    # Adiciona uma margem de 10% aos limites para melhor visualização
-    margem_x = (x_max - x_min) * 0.1
-    margem_y = (y_max - y_min) * 0.1
-
-    x_min_ajustado = x_min - margem_x
-    x_max_ajustado = x_max + margem_x
-    y_min_ajustado = y_min - margem_y
-    y_max_ajustado = y_max + margem_y
-
-
-    # Cria a figura do Bokeh com os limites ajustados
+    # Cria a figura do Bokeh
     p = figure(
         title=titulo,
         x_axis_label=x_label,
         y_axis_label=y_label,
         width=largura,
         height=altura,
-        tools="pan,box_zoom,wheel_zoom,reset,save",
-        x_range=(x_min_ajustado, x_max_ajustado),  # Limites ajustados do eixo x
-        y_range=(y_min_ajustado, y_max_ajustado)   # Limites ajustados do eixo y
-    )
+        tools="pan,box_zoom,wheel_zoom,reset,save")
+
+    # Configurando as teclas de atalho para s ferramentas
+    
+    p.toolbar.active_drag = p.tools[0]
+
+
 
     # Paleta de cores para os sinais (6 cores)
     cores = Category10[6]
@@ -130,10 +128,31 @@ def plotar_sinais_bokeh(vetor_x, lista_vetores_y, titulo="Sinais", x_label="Temp
         # Adiciona a linha ao gráfico com uma cor da paleta
         p.line('x', 'y', source=fonte, line_width=2, line_color=cores[i], legend_label=f"Sinal {i+1}", line_alpha = alpha)
 
+    # Configurando tamanho da fonte
+
+    font_size = str(tamanho_fonte) + 'pt'
+    p.xaxis.major_label_text_font_size = font_size  # Tamanho da fonte dos números do eixo X
+    p.yaxis.major_label_text_font_size = font_size  # Tamanho da fonte dos números eixo Y 
+    p.xaxis.axis_label_text_font_size = font_size   # Tamanho da fonte do nome do eixo X
+    p.yaxis.axis_label_text_font_size = font_size   # Tamanho da fonte do nome do eixo Y
+
+
     # Colorindo o fundo do gráfico
 
     p.background_fill_color = cor_grafico
-    
+    p.border_fill_color = cor_grafico
+
+    # Colorindo o nome dos eixos
+
+    if(cor_grafico == "white"):
+        p.xaxis.axis_label_text_color = "black"  
+        p.yaxis.axis_label_text_color = "black"
+    elif(cor_grafico == "black"):
+        p.xaxis.axis_label_text_color = "white"  
+        p.yaxis.axis_label_text_color = "white"
+
+
+
     # Configura a legenda
     p.legend.location = "top_left"
     p.legend.click_policy = "hide"  # Permite ocultar as linhas ao clicar na legenda
