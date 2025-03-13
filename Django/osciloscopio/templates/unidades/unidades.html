@@ -1,0 +1,30 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Osciloscopio</title>
+    <link rel="stylesheet" href="{% static '/osciloscopio/css/unidades.css' %}">
+</head>
+<body>
+    <h1>Unidades</h1>
+
+    <form action="{% url 'unidades' %}" method="post"> {% csrf_token %}
+
+        <hr>
+        <br>
+        <br>
+        <input type="number", name = "amplitude" placeholder="Digite a amplitude">
+        <br>
+        <br>
+        <input type="number" name="frequencia" placeholder="Digite a frequencia">
+        <br>
+        <br>
+        <input type="submit" value = "Gerar sinal">
+
+    </form>
+    
+</body>
+</html>
