@@ -1,8 +1,8 @@
 # Bibliotecas utilizadas
-import numpy as np
+
 import matplotlib.pyplot as plt
-import scipy as scp
-from scipy.signal import square
+from scipy.signal import square, sawtooth
+from numpy import linspace, sin, pi, random, abs, fft
 
 
 # Bokeh
@@ -66,8 +66,7 @@ def plotar(vetor_tempo, sinal, nome, largura=1280, altura=720, legenda=None, sal
 
 
 def plotar_sinais_bokeh(vetor_x, 
-                        lista_vetores_y, 
-                        titulo="Sinais", 
+                        lista_vetores_y,
                         x_label="Tempo (s)", 
                         y_label="Amplitude", 
                         largura=1280, 
@@ -104,7 +103,6 @@ def plotar_sinais_bokeh(vetor_x,
 
     # Cria a figura do Bokeh
     p = figure(
-        title=titulo,
         x_axis_label=x_label,
         y_axis_label=y_label,
         width=largura,
@@ -137,23 +135,34 @@ def plotar_sinais_bokeh(vetor_x,
     p.yaxis.axis_label_text_font_size = font_size   # Tamanho da fonte do nome do eixo Y
 
 
-    # Colorindo o fundo do gráfico
+    # Colorindo o fundo do gráfico e a borda
 
     p.background_fill_color = cor_grafico
     p.border_fill_color = cor_grafico
 
-    # Colorindo o nome dos eixos
+
+    # Colorindo o nome dos eixos dependendo da cor do gráfico
 
     if(cor_grafico == "white"):
         p.xaxis.axis_label_text_color = "black"  
         p.yaxis.axis_label_text_color = "black"
+        p.legend.background_fill_color = "white"
+        p.legend.label_text_color = "black"
+        p.xaxis.major_label_text_color = "black"
+        p.yaxis.major_label_text_color = "black"
+
+
     elif(cor_grafico == "black"):
         p.xaxis.axis_label_text_color = "white"  
         p.yaxis.axis_label_text_color = "white"
+        p.legend.background_fill_color = "black"
+        p.legend.label_text_color = "white"
+        p.xaxis.major_label_text_color = "white"
+        p.yaxis.major_label_text_color = "white"
 
 
+    # Configura as configurações principais da legenda
 
-    # Configura a legenda
     p.legend.location = "top_left"
     p.legend.click_policy = "hide"  # Permite ocultar as linhas ao clicar na legenda
 
@@ -186,10 +195,10 @@ def sinal_senoidal(amplitude, frequencia, taxa_amostragem=1000, duracao=1, fase=
         raise ValueError("A duração deve ser maior que zero.")
 
     # Definindo o vetor tempo
-    vetor_tempo = np.linspace(0, duracao, int(taxa_amostragem * duracao), endpoint=False)
+    vetor_tempo = linspace(0, duracao, int(taxa_amostragem * duracao), endpoint=False)
 
     # Sinal gerado
-    s = amplitude * np.sin(2 * np.pi * frequencia * vetor_tempo + fase) + offset
+    s = amplitude * sin(2 * pi * frequencia * vetor_tempo + fase) + offset
 
     # Retornando
     return vetor_tempo, s
@@ -218,8 +227,8 @@ def sinal_triangular(amplitude, frequencia, taxa_amostragem = 1000, duracao = 1,
 
     # Gerando o vetor tempo para ser o eixo x
 
-    vetor_tempo = np.linspace(0, duracao, int(duracao*taxa_amostragem))
-    triangular = (amplitude * scp.signal.sawtooth (2*np.pi*frequencia*vetor_tempo + fase, duty) + offset)
+    vetor_tempo = linspace(0, duracao, int(duracao*taxa_amostragem))
+    triangular = (amplitude * sawtooth (2*pi*frequencia*vetor_tempo + fase, duty) + offset)
 
     return vetor_tempo, triangular
 
@@ -251,10 +260,10 @@ def sinal_quadrado(amplitude, frequencia, taxa_amostragem=1000, duracao=1, fase=
         raise ValueError("O ciclo de trabalho (duty) deve estar entre 0 e 1.")
 
     # Define o vetor de tempo
-    vetor_tempo = np.linspace(0, duracao, int(taxa_amostragem * duracao), endpoint=False)
+    vetor_tempo = linspace(0, duracao, int(taxa_amostragem * duracao), endpoint=False)
 
     # Gera o sinal quadrado usando scipy.signal.square
-    sinal_quadrado = amplitude * square(2 * np.pi * frequencia * vetor_tempo + fase, duty=duty) + offset
+    sinal_quadrado = amplitude * square(2 * pi * frequencia * vetor_tempo + fase, duty=duty) + offset
 
     return vetor_tempo, sinal_quadrado
 
@@ -285,10 +294,10 @@ def ruido_branco(amplitude, num_componentes, duracao=1, offset=0, freq_inicial=0
         raise ValueError("A duração deve ser maior que zero.")
 
     # Gera o vetor de tempo
-    vetor_tempo = np.linspace(0, duracao, num_componentes, endpoint=False)
+    vetor_tempo = linspace(0, duracao, num_componentes, endpoint=False)
 
     # Gera o ruído branco
-    ruido = amplitude * np.random.normal(0, 1, num_componentes) + offset
+    ruido = amplitude * random.normal(0, 1, num_componentes) + offset
 
     return vetor_tempo, ruido
 
@@ -316,10 +325,10 @@ def transformada_fourier(vetor_tempo, sinal, retornar_magnitude=True):
     delta_t = vetor_tempo[1] - vetor_tempo[0]
 
     # Aplicando a transformada de fourier no sinal de entrada
-    fft_sinal = np.fft.fft(sinal)
+    fft_sinal = fft.fft(sinal)
 
     # Definindo o vetor de frequências
-    freqs = np.fft.fftfreq(num_amostras, d=delta_t)
+    freqs = fft.fftfreq(num_amostras, d=delta_t)
 
     # Utilizando uma mascara para filtrar os valores positivos da frequência (pois os negativos não importam para nós)
     mascara = freqs >= 0
@@ -327,7 +336,7 @@ def transformada_fourier(vetor_tempo, sinal, retornar_magnitude=True):
     fft_sinal_positivo = fft_sinal[mascara]
 
     if retornar_magnitude:
-        return freqs_positivas, np.abs(fft_sinal_positivo)
+        return freqs_positivas, abs(fft_sinal_positivo)
     else:
         return freqs_positivas, fft_sinal_positivo
     
@@ -342,59 +351,3 @@ def transformada_fourier(vetor_tempo, sinal, retornar_magnitude=True):
 
 
 #FUNÇÃO PARA GERAR SINAIS
-
-def gerar_sinal(tipo_sinal, amplitude, frequencia, duracao, offset):
-
-    # Calcula o número de pontos
-    num_pontos = int(duracao * taxaAmostragem)
-
-    vetor_tempo = np.linspace(0, duracao, num_pontos, endpoint = False) #Vetor para criar as séries
-    sinal_criado = None
-
-    #SENOIDAL
-    if tipo_sinal == 'a': 
-        fase = float(input('Digite a fase da onda'))
-        sinal_criado = amplitude * np.sin(2*np.pi*frequencia*vetor_tempo + fase) + offset
-    elif tipo_sinal == 'b':
-        fase = float(input('Digite a fase da onda'))
-        duty = float(input('Digite o duty cycle'))
-        sinal_criado = amplitude * scp.signal.square(2*np.pi*frequencia*vetor_tempo, duty = duty)
-    else:
-        print('Sinal inválido')
-    return sinal_criado
-
-
-''' FUNÇÃO PARA APLICAR AS OPERAÇÕES ENTRE AS SÉRIES ATIVAS '''
-
-def aplicar_operacoes(series_ativas, operacoes):
-    # Verifica se existem pelo menos duas séries ativas
-    if len(series_ativas) < 2:
-        print('Pelo menos duas séries precisam estar ativas para efetuar as operações')
-        return None
-    # Verifica se o número de operações é compatível com o número de séries
-
-    if len(operacoes) != len(series_ativas) - 1:
-        print('O número de operações deve ser exatamente 1 a menos do que o número de séries ativas')
-        return None
-        
-    serie_resultante = series_ativas[0].copy()
-
-    # Aqui vai uma curiosidade insana que em meio a codificação acabei deixando passar:
-    
-    # LEMBRAR SEMPRE QUE QUANDO ATRIBUIR UM OBJETO (UM PONTEIRO DO OBJETO) A UMA VARIÁVEL EM PYTHON (UM OBJETO,)
-    # QUALQUER ALTERAÇÃO NA VARIÁVEL ATRIBUÍDA IRÁ ALTERAR O OBJETO 'APONTADO', POR ISSO USAMOS UMA CÓPIA DA INSTÂNCIA
-
-    
-    for i, operacao in enumerate(operacoes):
-        if operacao == '+':
-            serie_resultante += series_ativas[i+1]
-        elif operacao == '-':
-            serie_resultante -= series_ativas[i+1]
-        elif operacao == '*':
-            serie_resultante *= series_ativas[i+1]
-        elif operacao == '/':
-            serie_resultante /= series_ativas[i+1]
-        else:
-            print(f'Operação "{operacao}" inválida.  Use apenas "+", "-", "*" ou "/".')
-            return None
-    return serie_resultante
