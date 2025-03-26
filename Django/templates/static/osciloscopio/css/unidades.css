@@ -47,14 +47,34 @@ body{
     z-index: 1;
 }
 
-#centro-tela{
+#centro-janela{
 
+    width: 100%;
+    height: 100%;
     border-bottom-left-radius: 20px;
     border-bottom-right-radius: 20px;
     justify-content: flex-start;
     align-items: center; 
     align-self: stretch;
     display: inline-flex;
-    background-color: green;
+    background-color: #8c8c8c;
     z-index: 2;
+}
+
+.aba-esquerda{
+    width: 10%;
+    align-self: stretch;
+    background: #C1C1C1;
+
+    border-bottom-left-radius: 20px;
+    border-right: 5px #000000 solid;
+    border-image: linear-gradient(80deg, #C1C1C1, #8c8c8c) 1;
+
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    display: inline-flex;
+
+    border
+
 }
