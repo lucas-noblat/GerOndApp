@@ -1,17 +1,9 @@
 
-# Virtual environment
-venv/
-.venv/
-env/
-ENV/
-
 # Python cache
 __pycache__/
 *.py[cod]
 *.pyc
 __pycache__/functions.cpython-311.pyc
-
-
 
 # Installer logs
 pip-log.txt

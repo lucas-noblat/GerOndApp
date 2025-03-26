@@ -9,10 +9,9 @@
     <link rel="stylesheet" href="{% static '/osciloscopio/css/unidades.css' %}">
 </head>
 <body>
-    <h1>Unidades</h1>
 
     <form action="{% url 'unidades' %}" method="post"> {% csrf_token %}
-
+        <!-- 
         <hr>
         <br>
         <br>
@@ -23,8 +22,42 @@
         <br>
         <br>
         <input type="submit" value = "Gerar sinal">
-
+        -->
     </form>
-    
+
+    <svg id="ondinha" viewBox="0 0 2160 335" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M740.835 217.171C463.634 -38.7146 0 3.02575 0 3.02575V527.5H2160V310.633C2160 310.633 1852.36 66.9971 1489.82 66.9971C1127.29 66.9971 1018.04 473.056 740.835 217.171Z" fill="#D9D9D9" fill-opacity="0.5"/>
+    </svg>
+
+ 
+    <div id ="janela-principal">
+
+        <!-- janela-cabeçalho -->
+
+        <div id = "box-titulo">
+            
+            <!-- Logo LIOC -->
+            <a href="http://www.lioc.oceanica.ufrj.br/" title = "Vai pro site do LIOC" target="_blank">
+                <img style="width: 150px; height: 70px" src=" {% static 'osciloscopio/imagens/logo-lioc.png' %}" />
+            </a>
+
+            <!-- Título  -->
+            <div style="text-align: center; color: var(--Fundo-site-LIOC, #143C85); font-size: 40px; font-family: Wavefont; font-weight: 400; word-wrap: break-word">GerOndApp</div>
+
+            <!-- Logo ReNOMO -->
+
+            <a  href="https://renomo.org.br"
+                title="Vai pro site da ReNOMO"
+                target="_blank">
+
+                <img style="width: 162px; height: 67px" src="{% static 'osciloscopio/imagens/Logo-ReNOMO.png' %}" />
+            </a>
+
+        </div>
+        <div id = "centro-tela">
+
+        </div>
+    </div>
+
 </body>
 </html>
