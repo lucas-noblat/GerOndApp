@@ -23,13 +23,13 @@ body{
 #box-titulo{
     
     width: 90vw;
+    height: 10vh;
     background: #D9D9D9;
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
     border-bottom: 1px black solid;
     justify-content: space-between;         
     align-items: center;
-    gap: auto;
     display: inline-flex;
 
 }
@@ -75,4 +75,26 @@ body{
     align-items: flex-start;
     display: inline-flex;
 
+}
+
+#titulo{
+    height: auto;
+    text-align: center;
+    color:#143C85;
+    font-size: 40px;
+    max-height: 100%;
+    font-family: Wavefont;
+    font-weight: 400;
+    word-wrap: break-word;
+    
+}
+
+#logo-renomo{
+    width: 40%;
+
+}
+
+#logo-lioc{
+    width: 40%; 
+    height: 70px;
 }

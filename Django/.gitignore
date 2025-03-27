@@ -1,0 +1,17 @@
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyc
+__pycache__/functions.cpython-311.pyc
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
