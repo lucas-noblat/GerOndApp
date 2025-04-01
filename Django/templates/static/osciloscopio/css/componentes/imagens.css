@@ -1,0 +1,40 @@
+#ondinha {
+    position: fixed;
+    width: 100vw;
+    bottom: 0;
+    opacity: 0.5;
+    object-fit: cover;
+    z-index: -1;
+}
+
+
+.icon{
+    width: 50%;
+    height: 50%;
+    display: absolute;
+}
+.img-container {
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 10vw;
+    height: auto;
+  
+}
+
+.img {
+    max-width: 100%;
+    max-height: 50px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    transition: var(--transicao-padrao);
+
+}
+
+.img:hover {
+    transform: scale(1.1);
+}
+

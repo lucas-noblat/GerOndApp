@@ -1,0 +1,17 @@
+:root {
+    --azul-lioc: #143C85;
+    --cinza-claro: #C1C1C1;
+    --cinza-medio: #8C8C8C;
+    --cinza-fundo: #D9D9D9;
+    
+    --largura-janela: 80vw;
+    --altura-janela: 90vh;
+    
+    --curva-borda: clamp(5px, 2%, 10px);
+    --espessura-borda: clamp(1px, 0.5vw, 3px);
+    
+    --sombra-externa: 0px 2px 4px rgba(0, 0, 0, 0.2);
+    --sombra-interna: 0px 4px 4px rgba(0, 0, 0, 0.25) inset;
+    
+    --transicao-padrao: all 0.3s ease;
+}

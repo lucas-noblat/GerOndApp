@@ -1,0 +1,23 @@
+#janela-principal {
+    width: var(--largura-janela);
+    height: var(--altura-janela);
+    background: var(--cinza-medio);
+    box-shadow: var(--sombra-interna);
+    border-radius: var(--curva-borda);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 1;
+    overflow: hidden;
+}
+
+#centro-janela {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    justify-content: flex-start;
+    align-items: center; 
+    background-color: var(--cinza-medio);
+    
+}

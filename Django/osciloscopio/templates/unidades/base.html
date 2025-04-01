@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Osciloscópio{% endblock %}</title>
+    <link rel="stylesheet" href="{% static '/osciloscopio/css/main.css' %}?v={% now 'U' %}">
+</head>
+<body>
+        <!-- janela-cabeçalho -->
+        <div id ="janela-principal">
+            {% include 'unidades/barra-superior.html' %}  <!-- Importa o cabeçalho -->
+        
+            <!-- Centro da janela-->
+            <div id = "centro-janela">
+                {% include 'unidades/aba-esquerda.html' %}
+                {% include 'unidades/aba-central.html' %}
+                {% include 'unidades/aba-direita.html' %}
+                {% block content %}{% endblock %} <!-- Área de conteúdo das páginas -->
+            </div>
+
+           
+            
+        </div>
+ 
+        <svg id="ondinha" viewBox="0 0 2160 335" fill="none">
+            <path d="M740.835 217.171C463.634 -38.7146 0 3.02575 0 3.02575V527.5H2160V310.633C2160 310.633 1852.36 66.9971 1489.82 66.9971C1127.29 66.9971 1018.04 473.056 740.835 217.171Z" fill="#D9D9D9" fill-opacity="0.5"/>
+        </svg>
+  
+</body>
+</html>

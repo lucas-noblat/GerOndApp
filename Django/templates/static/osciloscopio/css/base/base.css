@@ -1,0 +1,40 @@
+
+body {
+    min-height: 100vh;
+    background-color: var(--azul-lioc);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    margin: 0;
+}
+
+h1 {
+    color: var(--azul-lioc);
+    margin: 0;
+    white-space: nowrap;
+    text-align: center;
+    font-size: 2vw;
+    font-family: 'Wavefont', Arial, sans-serif;
+    word-wrap: break-word;
+}
+
+h2{
+    color: black;
+    text-align: center;
+    font-size: 1.1vw;
+}
+
+.titulo-container{
+    padding: 5px;
+}
+
+#titulo-unidades{
+    text-align: center;
+    font-size: 1.5vw;
+    color: black;
+}
+
+#container-unidades-titulo{
+    height: 5%;
+}

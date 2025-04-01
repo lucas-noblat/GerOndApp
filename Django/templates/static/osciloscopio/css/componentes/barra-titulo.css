@@ -1,0 +1,16 @@
+.container-superior {
+    width: 100%;
+    height: 10%;
+    min-height: 5%;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    
+    border-top-left-radius: var(--curva-borda);
+    border-top-right-radius: var(--curva-borda);
+    background: var(--cinza-fundo);
+    border-bottom: var(--espessura-borda) solid #666;
+    box-shadow: var(--sombra-externa);
+}

@@ -1,0 +1,54 @@
+<form method="post" class="oscilloscope-form">
+    {% csrf_token %}
+    
+    <div class="form-container">
+      <!-- Amplitude -->
+      <div class="form-group">
+        <label for="amplitude" class="form-label">Amplitude</label>
+        <div class="form-input-group">
+          {{ form.amplitude }}
+          <div class="form-unit">m</div>
+        
+        </div>
+      </div>
+      
+      <!-- Período -->
+      <div class="form-group">
+        <label for="period" class="form-label">Período</label>
+        <div class="form-input-single">
+          {{ form.period }}
+          <div class="form-unit">Hz</div>
+        </div>
+      </div>
+      
+      <!-- Duração -->
+      <div class="form-group">
+        <label for="duration" class="form-label">Duração</label>
+        <div class="form-input-single">
+          {{ form.duration }}
+          <div class="form-unit">s</div>
+        </div>
+      </div>
+      
+      <!-- Frequência -->
+      <div class="form-group">
+        <label for="frequency" class="form-label">Frequência</label>
+        <div class="form-input-single">
+          {{ form.frequency }}
+          <div class="form-unit">Hz</div>
+        </div>
+      </div>
+      
+      <!-- Fase -->
+      <div class="form-group">
+        <label for="phase" class="form-label">Fase</label>
+        <div class="form-input-single">
+          {{ form.phase }}
+          <div class="form-unit">rad</div>
+        </div>
+      </div>
+      <button type="submit" class="form-submit">Enviar</button>
+    </div>
+    
+
+  </form>
