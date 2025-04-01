@@ -20,21 +20,26 @@ h1 {
 }
 
 h2{
+    text-align: center;
+    margin: 0;
+    font-size: 1.5vw;
+    padding: 2px;
+
+}
+
+h3{
     color: black;
     text-align: center;
     font-size: 1.1vw;
+    
 }
 
-.titulo-container{
-    padding: 5px;
-}
+.container-titulo{
+    
+    height: 8%;
 
-#titulo-unidades{
-    text-align: center;
-    font-size: 1.5vw;
-    color: black;
-}
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
-#container-unidades-titulo{
-    height: 5%;
 }

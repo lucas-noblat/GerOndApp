@@ -4,6 +4,9 @@
     max-width: 600px;
     
     display: flex;
+    flex-direction: column;
+
+    align-items: center;
     
 
     flex: 1;
@@ -13,7 +16,7 @@
   
   .form-container {
    
-    height: 100%;
+    flex: 1;
     
     display: flex;
     flex-direction: column;
@@ -27,15 +30,14 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    
-    
+    padding: 2px;
 
   }
   
   .form-label {
     text-align: center;
     color: black;
-    font-size: 1.4vw;
+    font-size: 1.1vw;
   }
   
   .form-input-group,
@@ -89,11 +91,11 @@
     color: white;
     border: none;
     padding: 10px 20px;
-    font-size: 16px;
+    font-size: 1.1vw;
     cursor: pointer;
     border-radius: 4px;
     display: block;
-    margin: 20px auto 0;
+    margin-bottom: 10px;
   }
   
   /* Responsividade */
