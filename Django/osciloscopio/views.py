@@ -10,31 +10,20 @@ from bokeh.palettes import Category10  # Paleta de cores para os sinais
 from bokeh.plotting import figure
 from bokeh.embed import components
 
-
 import warnings
-
-from .forms import OscilloscopeForm
-
-def parameter_form(request):
-    if request.method == 'POST':
-        form = OscilloscopeForm(request.POST)
-        if form.is_valid():
-            # Processar os dados aqui
-            amplitude = form.cleaned_data['amplitude']
-            period = form.cleaned_data['period']
-            # ... outros campos
-            return render(request, 'success.html')
-    else:
-        form = OscilloscopeForm()
-    
-    return render(request, 'oscilloscope_form.html', {'form': form})
-
 
 def unidades(request):
     if request.method == "GET":
         return render(request, 'unidades/conteudo.html')
     elif request.method == "POST":
         return HttpResponse('Respondido!')
+    
+def entradas(request):
+    if request.method == "GET":
+        return render(request, 'unidades/conteudo.html')
+    elif request.method == "POST":
+        return HttpResponse('Respondido!')
+    
     
     
 def configuracoes(request):

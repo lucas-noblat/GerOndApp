@@ -96,10 +96,11 @@
   justify-content: center;
   position: relative;
   height: 50%;
+
   padding: 5px;
 
-  border: 1px solid green;
  }
+
   
   /* Campos do formulário */
   input[type="number"],
