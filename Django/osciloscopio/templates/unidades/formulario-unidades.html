@@ -1,4 +1,4 @@
-<form method="post" class="oscilloscope-form">
+<form action = " {% url 'unidades' %} " method="post" class="formulario-entrada">
     {% csrf_token %}
     
     <div class="form-container">
@@ -6,45 +6,59 @@
       <div class="form-group">
         <label for="amplitude" class="form-label">Amplitude</label>
         <div class="form-input-group">
-          {{ form.amplitude }}
-          <div class="form-unit">m</div>
-        
+          <select name="unidade-amplitude" id="unidade-amplitude">
+            <option value="m">m</option>
+            <option value="m/s">m/s</option>
+            <option value="m/s²">m/s²</option>
+          </select>
         </div>
       </div>
       
       <!-- Período -->
       <div class="form-group">
-        <label for="period" class="form-label">Período</label>
+        <label for="unidade-periodo" class="form-label">Período</label>
         <div class="form-input-single">
-          {{ form.period }}
-          <div class="form-unit">Hz</div>
+          <select name="unidade-periodo" id="unidade-periodo">
+            <option value="m">m</option>
+            <option value="m/s">m/s</option>
+            <option value="m/s²">m/s²</option>
+          </select>        
         </div>
       </div>
       
       <!-- Duração -->
       <div class="form-group">
-        <label for="duration" class="form-label">Duração</label>
+        <label for="unidade-duracao" class="form-label">Duração</label>
         <div class="form-input-single">
-          {{ form.duration }}
-          <div class="form-unit">s</div>
+          <select name="unidade-duracao" id="unidade-duracao">
+            <option value="m">m</option>
+            <option value="m/s">m/s</option>
+            <option value="m/s²">m/s²</option>
+          </select>        
         </div>
       </div>
       
       <!-- Frequência -->
       <div class="form-group">
-        <label for="frequency" class="form-label">Frequência</label>
+        <label for="unidade-frequencia" class="form-label">Frequência</label>
         <div class="form-input-single">
-          {{ form.frequency }}
-          <div class="form-unit">Hz</div>
+          <select name="unidade-frequencia" id="unidade-frequencia">
+            <option value="m">m</option>
+            <option value="m/s">m/s</option>
+            <option value="m/s²">m/s²</option>
+          </select>        
         </div>
       </div>
       
       <!-- Fase -->
       <div class="form-group">
-        <label for="phase" class="form-label">Fase</label>
+        <label for="unidade-fase" class="form-label">Fase</label>
         <div class="form-input-single">
-          {{ form.phase }}
-          <div class="form-unit">rad</div>
+          <select name="unidade-fase" id="unidade-fase">
+            <option value="m">m</option>
+            <option value="m/s">m/s</option>
+            <option value="m/s²">m/s²</option>
+          </select>        
         </div>
       </div>
       
