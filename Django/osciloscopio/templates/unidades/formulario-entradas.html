@@ -1,0 +1,68 @@
+<form  id = "form-entrada" action=" {% url 'unidades' %}" method="post">
+    <!-- Forma do sinal -->
+    <div class="form-group" id="grupo-forma-sinal">
+        <label for="entrada-amplitude" class="form-label">Forma do sinal</label>
+        <div class="form-select">
+            <select name="entrada-forma-sinal" id="entrada-forma-sinal">
+                <option value="senoidal">Senoidal</option>
+                <option value="quadrada">Quadrada</option>
+                <option value="triangular">Triangular</option>
+                <option value="ruido-branco">Ruído Branco</option>
+            </select>        
+        </div>            
+    </div>
+
+    <div class = "container-par-entradas">
+        <!-- Amplitude -->
+        <div class="form-group" id="grupo-amplitude">
+            <label for="entrada-amplitude" class="form-label">Amplitude</label>
+            <div class="form-number">
+                <input type="number" name="entrada-amplitude" id="entrada-amplitude" min= 0 max = 100 value = 1>
+            </div>            
+        </div> 
+
+        <!-- Intervalo -->
+        <div class="form-group" id="grupo-intervalo">
+            <label for="wave-format" class="form-label">Intervalo</label>
+            <div class="form-number">
+                <input type="number" name="entrada-intervalo" id="entrada-intervalo" min= 0 max = 100 step = 0.1 value = 0.1>
+            </div>            
+        </div>
+    </div>
+
+    <div class = "container-par-entradas">
+        <!-- Frequência -->
+        <div class="form-group" id="grupo-amplitude">
+            <label for="wave-format" class="form-label">Frequência</label>
+            <div class="form-number">
+                <input type="number" name="entrada-frequencia" id="entrada-frequencia" min= 0 max = 100 value = 1>
+            </div>            
+        </div> 
+        
+        <!-- Fase -->
+        <div class="form-group" id="grupo-intervalo">
+            <label for="wave-format" class="form-label">Fase</label>
+            <div class="form-number">
+                <input type="number" name="entrada-fase" id="entrada-fase" min= 0 max = 100 value = 0>
+            </div>            
+        </div>
+    </div>
+
+    <div class = "container-par-entradas">
+        <!-- Duração -->
+        <div class="form-group" id="grupo-amplitude">
+            <label for="wave-format" class="form-label">Duração</label>
+            <div class="form-number">
+                <input type="number" name="entrada-duracao" id="entrada-duracao" min= 0 max = 100 value = 1>
+            </div>            
+        </div> 
+        
+        <!-- Offset -->
+        <div class="form-group" id="grupo-intervalo">
+            <label for="wave-format" class="form-label">Offset</label>
+            <div class="form-number">
+                <input type="number" name="entrada-offset" id="entrada-offset" min= 0 max = 100 value = 0>
+            </div>            
+        </div>
+    </div>
+</form>

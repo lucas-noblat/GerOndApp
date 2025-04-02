@@ -22,7 +22,7 @@
     flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
-    
+
 
   }
   
@@ -30,6 +30,9 @@
     width: 100%;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
     padding: 2px;
 
   }
@@ -41,24 +44,62 @@
   }
   
   .form-input-group,
-  .form-input-single {
+  .form-number {
+
     display: flex;
     flex-direction: column;
     align-items: center;
-    position: relative;
+    justify-content: center;
     height: 50%;
-    padding: 5px;
+    width: 50%;
+    box-shadow: 1px 1px 5px;
+
+    background-color: white;
+    margin: 5px;
   
   }
   
-  .form-input-single {
-    justify-content: space-between;
+  #entrada-amplitude{
+    height: 100%;
+    width: 100%;
   }
-  
+  #entrada-intervalo{
+    height: 100%;
+    width: 100%;
+  }
+  #entrada-frequencia{
+    height: 100%;
+    width: 100%;
+  }
+  #entrada-fase{
+    height: 100%;
+    width: 100%;
+  }
+  #entrada-duracao{
+    height: 100%;
+    width: 100%;
+  }
+  #entrada-offset{
+    height: 100%;
+    width: 100%;
+  }
+
   .form-unit {
     color: black;
     font-size: 1vw;
   }
+
+ .form-select{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  height: 50%;
+  padding: 5px;
+
+  border: 1px solid green;
+ }
   
   /* Campos do formulário */
   input[type="number"],
@@ -95,7 +136,7 @@
     display: block;
     margin-bottom: 10px;
   }
-  
+
   /* Responsividade */
   @media (max-width: 600px) {
     .form-group {

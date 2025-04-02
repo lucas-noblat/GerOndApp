@@ -70,8 +70,7 @@
 
 .container-inputs{
     height: 55%;
-   
-   
+ 
     display: flex;
     flex-direction: column;
     
@@ -79,8 +78,21 @@
     justify-content: space-between;
 
     padding: 5px;
+    
 }
 
+#form-entrada{
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+
+
+
+}
 .container-par-entradas{
 
     width: 100%;
@@ -101,18 +113,7 @@
 
 }
 
-#aba-futura1{
+#abas-futuras>div{
     width: 25%;
 }
 
-#aba-futura2{
-    width: 25%;
-}
-
-#aba-futura3{
-    width: 25%;
-}
-
-#aba-futura4{
-    width: 25%;
-}
