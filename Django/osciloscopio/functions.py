@@ -77,13 +77,14 @@ def plotar_sinais_bokeh(vetor_x,
     # Paleta de cores para os sinais (6 cores)
     cores = Category10[6]
 
+
     # Plota cada sinal
-    for i, vetor_y in enumerate(lista_vetores_y):
+    for i, lista_vetores_y in enumerate(lista_vetores_y):
         # Cria um ColumnDataSource para armazenar os dados
         #fonte = ColumnDataSource(data={'x': vetor_x, 'y': vetor_y})
 
         # Adiciona a linha ao gráfico com uma cor da paleta
-        p.line(vetor_x, lista_vetores_y, line_width=2, line_color=cores[i], legend_label=f"Sinal {i+1}", line_alpha = alpha)
+        p.line(vetor_x, lista_vetores_y, line_width=2, legend_label=f'Sinal {i+1}', line_color=cores[i], line_alpha = alpha)
 
     # Configurando tamanho da fonte
 
@@ -126,7 +127,7 @@ def plotar_sinais_bokeh(vetor_x,
     p.legend.click_policy = "hide"  # Permite ocultar as linhas ao clicar na legenda
 
     # Exibe o gráfico
-    show(p)
+
 
     return p
 

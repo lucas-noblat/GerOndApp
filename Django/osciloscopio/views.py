@@ -15,7 +15,29 @@ import warnings
 
 def unidades(request):
     if request.method == "GET":
-        plot = fc.plotar_sinais_bokeh([1,2,3],[1,2,3], largura=1100, altura=600, cor_grafico='black')
+        vetor_tempo, seno = fc.sinal_senoidal(amplitude=1, frequencia=10)
+        quad = fc.sinal_quadrado(amplitude=5,frequencia=1)[1]
+        triangular = fc.sinal_triangular(amplitude=5, frequencia=2, duty = 0.5)[1]
+        ruido_branco = fc.ruido_branco(amplitude=2, num_componentes=len(vetor_tempo))[1]
+
+        #plot = fc.plotar_sinais_bokeh(vetor_tempo,[seno], largura=1200, altura=620, cor_grafico='black')
+
+        #plot = fc.plotar_sinais_bokeh(vetor_tempo,[seno, quad], largura=1200, altura=620, cor_grafico='black')
+
+        #plot = fc.plotar_sinais_bokeh(vetor_tempo,[seno, quad, triangular], largura=1200, altura=620, cor_grafico='black')
+
+        plot = fc.plotar_sinais_bokeh(vetor_tempo,[seno, ruido_branco, triangular, quad], largura=1200, altura=620, cor_grafico='white')
+
+
+
+        frequencia, magnitude = fc.transformada_fourier(vetor_tempo, seno)
+
+        lim_freqs = int(len(vetor_tempo)/10)
+
+        espectro = fc.plotar_sinais_bokeh(frequencia[: lim_freqs], [magnitude[: lim_freqs]], x_label="Frequências", y_label="Magnitude", largura=1200, altura=620)
+
+        show(espectro)
+
         script, div = components(plot)
         return render(request, 'unidades/conteudo.html', {'script':script, 'div':div}) # 
     

@@ -50,7 +50,14 @@
 
     z-index: 0;
 }
+
 .area-grafico{
-    width: 100%;
+    
+    width: 99%;
     height: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
 }

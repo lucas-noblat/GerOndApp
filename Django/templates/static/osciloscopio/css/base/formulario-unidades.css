@@ -28,12 +28,14 @@
   
   .form-group {
     width: 100%;
+
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 
     padding: 2px;
+
 
   }
   
@@ -59,29 +61,10 @@
   
   }
   
-  #entrada-amplitude{
+  #entrada-numero-sinal{
     height: 100%;
     width: 100%;
-  }
-  #entrada-intervalo{
-    height: 100%;
-    width: 100%;
-  }
-  #entrada-frequencia{
-    height: 100%;
-    width: 100%;
-  }
-  #entrada-fase{
-    height: 100%;
-    width: 100%;
-  }
-  #entrada-duracao{
-    height: 100%;
-    width: 100%;
-  }
-  #entrada-offset{
-    height: 100%;
-    width: 100%;
+    font-size: 20px;
   }
 
   .form-unit {
@@ -96,8 +79,20 @@
   justify-content: center;
   position: relative;
   height: 50%;
+  width: 50%;
 
   padding: 5px;
+
+ }
+
+ #select-numero-sinal{
+  flex:1;
+ /*border: 1px solid salmon;*/
+
+ }
+
+ #select-forma-sinal{
+  /*border: 1px solid salmon;*/ 
 
  }
 
@@ -108,8 +103,9 @@
     border: none;
     background: transparent;
     font-family: 'Wavefont', sans-serif;
-    font-size: 18px;
-    width: 80px;
+    font-size: 20px;
+    width: 100%;
+    padding-left: 10px;
     outline: none;
   }
   
