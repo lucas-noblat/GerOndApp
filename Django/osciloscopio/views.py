@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from . import functions as fc
 
 # Bokeh
 
@@ -14,7 +15,10 @@ import warnings
 
 def unidades(request):
     if request.method == "GET":
-        return render(request, 'unidades/conteudo.html')
+        plot = fc.plotar_sinais_bokeh([1,2,3],[1,2,3], largura=1100, altura=600, cor_grafico='black')
+        script, div = components(plot)
+        return render(request, 'unidades/conteudo.html', {'script':script, 'div':div}) # 
+    
     elif request.method == "POST":
         return HttpResponse('Respondido!')
     
@@ -30,6 +34,10 @@ def configuracoes(request):
     return render(request, 'configuracoes/configuracoes.html')
 
 '''
+
+
+
+
 
 def bokeh_view(request):
     # Crie um gráfico simples

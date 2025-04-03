@@ -12,6 +12,15 @@
 
     </div>
     <div class="area-grafico">
+        {{ div | safe }}
+            <!-- Scripts do Bokeh -->
+        {{ cdn_js | safe }}
+        {{ script | safe }}
+    </div>  
+</div>
+
+<!--
+
         <div class="popup">
             
             <div class="popup-conteudo">
@@ -20,5 +29,5 @@
                   <button class="fechar">&times;</button>
             </div>
           </div>
-    </div>  
-</div>
+
+-->
