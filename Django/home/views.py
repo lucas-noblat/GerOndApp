@@ -15,7 +15,7 @@ import warnings
 
 def unidades(request):
     if request.method == "GET":
-        vetor_tempo, seno = fc.sinal_senoidal(amplitude=1, frequencia=10)
+        vetor_tempo, seno = fc.sinal_senoidal(amplitude=1, frequencia=1)
         quad = fc.sinal_quadrado(amplitude=5,frequencia=1)[1]
         triangular = fc.sinal_triangular(amplitude=5, frequencia=2, duty = 0.5)[1]
         ruido_branco = fc.ruido_branco(amplitude=2, num_componentes=len(vetor_tempo))[1]
@@ -36,7 +36,7 @@ def unidades(request):
 
         espectro = fc.plotar_sinais_bokeh(frequencia[: lim_freqs], [magnitude[: lim_freqs]], x_label="Frequências", y_label="Magnitude", largura=1200, altura=620)
 
-        show(espectro)
+        #show(espectro)
 
         script, div = components(plot)
         return render(request, 'unidades/conteudo.html', {'script':script, 'div':div}) # 
@@ -52,7 +52,7 @@ def entradas(request):
     
     
     
-def configuracoes(request):
+def espectro(request):
     return render(request, 'configuracoes/configuracoes.html')
 
 '''
