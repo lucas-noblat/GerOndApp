@@ -10,13 +10,13 @@
 <body>
         <!-- janela-cabeçalho -->
         <div id ="janela-principal">
-            {% include 'unidades/barra-superior.html' %}  <!-- Importa o cabeçalho -->
+            {% include 'home/barra-superior.html' %}  <!-- Importa o cabeçalho -->
         
             <!-- Centro da janela-->
             <div id = "centro-janela">
-                {% include 'unidades/aba-esquerda.html' %}
-                {% include 'unidades/aba-central.html' %}
-                {% include 'unidades/aba-direita.html' %}
+                {% include 'home/aba-esquerda.html' %}
+                {% include 'home/aba-central.html' %}
+                {% include 'home/aba-direita.html' %}
                 {% block content %}{% endblock %} <!-- Área de conteúdo das páginas -->
             </div>
 
@@ -36,5 +36,7 @@
 <script type="text/javascript" src="https://cdn.bokeh.org/bokeh/release/bokeh-tables-3.7.2.min.js"></script>
 <script type="text/javascript" src="https://cdn.bokeh.org/bokeh/release/bokeh-mathjax-3.7.2.min.js"></script>
 <script type="text/javascript" src="https://cdn.bokeh.org/bokeh/release/bokeh-api-3.7.2.min.js"></script>
+
+<script src="{% static 'home/js/index.js' %}"></script>
 
 </html>

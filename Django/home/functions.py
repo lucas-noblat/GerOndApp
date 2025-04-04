@@ -27,7 +27,7 @@ taxaAmostragem = 1000 #Hz/s
 def plotar_sinais_bokeh(vetor_x, 
                         lista_vetores_y,
                         x_label="Tempo (s)", 
-                        y_label="Amplitude", 
+                        y_label="Amplitude",
                         largura=1280, 
                         altura=400, 
                         is_spectrum=False, 
@@ -64,8 +64,7 @@ def plotar_sinais_bokeh(vetor_x,
     p = figure(
         x_axis_label=x_label,
         y_axis_label=y_label,
-        width=largura,
-        height=altura,
+        sizing_mode = "stretch_both",       
         tools="pan,box_zoom,wheel_zoom,reset,save")
 
     # Configurando as teclas de atalho para s ferramentas

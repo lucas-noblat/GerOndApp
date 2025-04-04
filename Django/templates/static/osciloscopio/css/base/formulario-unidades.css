@@ -64,7 +64,7 @@
   #entrada-numero-sinal{
     height: 100%;
     width: 100%;
-    font-size: 20px;
+    font-size: 18px;
   }
 
   .form-unit {
@@ -73,13 +73,14 @@
   }
 
  .form-select{
+
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   position: relative;
   height: 50%;
-  width: 50%;
+  width: 60%;
 
   padding: 5px;
 
@@ -90,20 +91,14 @@
  /*border: 1px solid salmon;*/
 
  }
-
- #select-forma-sinal{
-  /*border: 1px solid salmon;*/ 
-
- }
-
-  
+ 
   /* Campos do formulário */
   input[type="number"],
   input[type="text"] {
     border: none;
     background: transparent;
     font-family: 'Wavefont', sans-serif;
-    font-size: 20px;
+    font-size: 18px;
     width: 100%;
     padding-left: 10px;
     outline: none;

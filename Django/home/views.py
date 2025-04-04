@@ -13,9 +13,9 @@ from bokeh.embed import components
 
 import warnings
 
-def unidades(request):
+def osciloscopio(request):
     if request.method == "GET":
-        vetor_tempo, seno = fc.sinal_senoidal(amplitude=1, frequencia=1)
+        vetor_tempo, seno = fc.sinal_senoidal(amplitude=10, frequencia=1)
         quad = fc.sinal_quadrado(amplitude=5,frequencia=1)[1]
         triangular = fc.sinal_triangular(amplitude=5, frequencia=2, duty = 0.5)[1]
         ruido_branco = fc.ruido_branco(amplitude=2, num_componentes=len(vetor_tempo))[1]
@@ -26,7 +26,7 @@ def unidades(request):
 
         #plot = fc.plotar_sinais_bokeh(vetor_tempo,[seno, quad, triangular], largura=1200, altura=620, cor_grafico='black')
 
-        plot = fc.plotar_sinais_bokeh(vetor_tempo,[seno, ruido_branco, triangular, quad], largura=1200, altura=620, cor_grafico='white')
+        plot = fc.plotar_sinais_bokeh(vetor_tempo,[seno, ruido_branco, triangular, quad], largura=1200, altura=620, cor_grafico='black')
 
 
 
@@ -39,7 +39,7 @@ def unidades(request):
         #show(espectro)
 
         script, div = components(plot)
-        return render(request, 'unidades/conteudo.html', {'script':script, 'div':div}) # 
+        return render(request, 'home/conteudo.html', {'script':script, 'div':div}) # 
     
     elif request.method == "POST":
         return HttpResponse('Respondido!')

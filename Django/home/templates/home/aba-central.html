@@ -4,7 +4,7 @@
                 <h3>Osciloscópio</h3>
             </div>
 
-        <a href="http://127.0.0.1:8000/osciloscopio" id="ancora-espectro"> 
+        <a href="http://127.0.0.1:8000/home/espectro" id="ancora-espectro"> 
             <div id = "aba-espectro" class="aba-aplicacao" role="button" tabindex="0">
                 <h3>Espectro</h2>
             </div>
@@ -16,10 +16,13 @@
 
     </div>
     <div class="area-grafico">
-        {{ div | safe }}
+        <div class = "grafico">
+            {{ div | safe }}
             <!-- Scripts do Bokeh -->
-        {{ cdn_js | safe }}
-        {{ script | safe }}
+            {{ cdn_js | safe }}
+            {{ script | safe }}   
+        </div>
+
     </div>  
 </div>
 

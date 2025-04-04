@@ -3,7 +3,7 @@ from . import views
 
 urlpatterns = [
 
-    path('', views.unidades, name="unidades"),
+    path('', views.osciloscopio, name="osciloscopio"),
     path('espectro/', views.espectro, name = "configuracoes")
 
 
