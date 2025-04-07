@@ -16,6 +16,13 @@ import warnings
 def osciloscopio(request):
     if request.method == "GET":
 
+
+        amplitude = 1
+        frequencia = 1
+        duracao = 1
+        offset = 0
+        fase = 0
+
         vetor_tempo, seno = fc.sinal_senoidal(amplitude=1, frequencia=1)
         plot = fc.plotar_sinais_bokeh(vetor_tempo,[seno], cor_grafico='black')
 
@@ -28,7 +35,17 @@ def osciloscopio(request):
         #show(espectro)
 
         script, div = components(plot)
-        return render(request, 'home/conteudo.html', {'script':script, 'div':div}) # 
+        contexto = {
+                'script':script, 
+                'div':div,
+                'amplitude':amplitude, 
+                'frequencia':frequencia, 
+                'duracao': duracao, 
+                'offset':offset, 
+                'fase': fase
+                    }
+
+        return render(request, 'home/conteudo.html', contexto) 
     
     elif request.method == "POST":
 
@@ -40,15 +57,18 @@ def osciloscopio(request):
         duracao = float(request.POST.get("entrada-duracao"))
         offset = float(request.POST.get("entrada-offset"))
         fase = float(request.POST.get("entrada-fase"))
-
+        
+        num_componentes= int(1000 * duracao)
 
         match forma_sinal:
             case "senoidal": 
                 vetor_tempo, sinal = fc.sinal_senoidal(amplitude=amplitude, frequencia=frequencia, duracao=duracao, offset=offset, fase=fase)
             case "quadrada":
                 vetor_tempo, sinal = fc.sinal_quadrado(amplitude=amplitude, frequencia=frequencia, duracao=duracao, fase=fase,offset=offset)
-
-       
+            case "triangular":
+                vetor_tempo, sinal = fc.sinal_triangular(amplitude=amplitude, frequencia=frequencia, duracao=duracao, fase=fase, offset=offset, duty = 0.5)
+            case "ruido-branco":
+                vetor_tempo, sinal = fc.ruido_branco(amplitude=amplitude, num_componentes=num_componentes , duracao=duracao, offset=offset)
         plot = fc.plotar_sinais_bokeh(vetor_tempo,[sinal], cor_grafico='black')
         script, div = components(plot)
 
