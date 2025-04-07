@@ -26,6 +26,14 @@
     color: black;
 }
 
+#abas-sinais{
+    height: 60%;
+}
+
+#container-sinais{
+    flex: 0;
+    height: 10%;
+}
 
 
 .container-conjunto-abas{
@@ -48,7 +56,7 @@
 }
 
 .container-futuro{
-    flex: 1;   
+flex: 1;
 }
 
 #container-configuracoes{
@@ -135,7 +143,7 @@
 
 #abas-futuras{
 
-    height: 20%;
+    height: 30%;
 
 }
 

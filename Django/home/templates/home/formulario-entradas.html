@@ -1,27 +1,14 @@
 <form  id = "form-entrada" action=" {% url 'osciloscopio' %}" method="post" class="formulario-entrada">
+    {% csrf_token %}
+
     <!-- Forma do sinal -->
     <div class = "container-par-entradas" id = "par-number-sinal">
-
-        <div class="form-group" id="grupo-numero-sinal">
-            <div class="form-select" id = "select-numero-sinal">
-                <select name="entrada-numero-sinal" id="entrada-numero-sinal">
-                    <option value="s1">Sinal 1</option>
-                    <option value="s2">Sinal 2</option>
-                    <option value="s3">Sinal 3</option>
-                    <option value="s4">Sinal 4</option>
-                    <option value="s5">Sinal 5</option>
-                </select>        
-            </div> 
-        </div>
-
-
-
         <div class="form-group" id="grupo-forma-sinal">
             <label for="entrada-forma-sinal" class="form-label">Forma do sinal</label>
             <div class="form-select" id = "select-forma-sinal">
-                <select name="entrada-forma-sinal" id="entrada-forma-sinal">
-                    <option value="senoidal">Senoidal</option>
-                    <option value="quadrada">Quadrada</option>
+                <select name="entrada-forma-sinal" id="entrada-forma-sinal" value = {{forma}}>
+                    <option value="senoidal"  {% if ultima_forma == 'senoidal' %} selected {% endif %}>Senoidal</option>
+                    <option value="quadrada"  {% if ultima_forma == 'quadrada' %} selected{% endif %}>Quadrada</option>
                     <option value="triangular">Triangular</option>
                     <option value="ruido-branco">Ruído Branco</option>
                 </select>        
@@ -35,7 +22,7 @@
         <div class="form-group" id="grupo-amplitude">
             <label for="entrada-amplitude" class="form-label">Amplitude</label>
             <div class="form-number">
-                <input type="number" name="entrada-amplitude" id="entrada-amplitude" min= 0 max = 100 value = 1>
+                <input type="number" name="entrada-amplitude" id="entrada-amplitude" min= 0 max = 100 value = {{amplitude}}>
             </div>            
         </div> 
 
@@ -50,25 +37,25 @@
 
     <div class = "container-par-entradas">
         <!-- Frequência -->
-        <div class="form-group" id="grupo-amplitude">
+        <div class="form-group" id="grupo-frequencia">
             <label for="entrada-frequencia" class="form-label">Frequência</label>
             <div class="form-number">
-                <input type="number" name="entrada-frequencia" id="entrada-frequencia" min= 0 max = 100 value = 1>
+                <input type="number" name="entrada-frequencia" id="entrada-frequencia" min= 0 max = 100 value = {{frequencia}}>
             </div>            
         </div> 
         
         <!-- Fase -->
-        <div class="form-group" id="grupo-intervalo">
+        <div class="form-group" id="grupo-fase">
             <label for="entrada-group" class="form-label">Fase</label>
             <div class="form-number">
-                <input type="number" name="entrada-fase" id="entrada-fase" min= 0 max = 100 value = 0>
+                <input type="number" name="entrada-fase" id="entrada-fase" min= 0 max = 100 value = {{fase}}>
             </div>            
         </div>
     </div>
 
     <div class = "container-par-entradas">
         <!-- Duração -->
-        <div class="form-group" id="grupo-amplitude">
+        <div class="form-group" id="grupo-duracao">
             <label for="entrada-duracao" class="form-label">Duração</label>
             <div class="form-number">
                 <input type="number" name="entrada-duracao" id="entrada-duracao" min= 0 max = 100 value = 1>
@@ -83,5 +70,5 @@
             </div>            
         </div>
     </div>
-    <button type="button" id="botao-input" onclick="enviarDados()">Gerar sinal</button>
+    <button type="submit" id="botao-input" >Gerar sinal</button>
 </form>

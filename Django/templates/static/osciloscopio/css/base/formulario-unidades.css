@@ -60,12 +60,6 @@
     margin: 5px;
     padding-right: 5px;
       }
-  
-  #entrada-numero-sinal{
-    height: 100%;
-    width: 100%;
-    font-size: 18px;
-  }
 
   .form-unit {
     color: black;
@@ -83,12 +77,6 @@
   width: 60%;
 
   padding: 5px;
-
- }
-
- #select-numero-sinal{
-  flex:1;
- /*border: 1px solid salmon;*/
 
  }
  

@@ -15,26 +15,15 @@ import warnings
 
 def osciloscopio(request):
     if request.method == "GET":
-        vetor_tempo, seno = fc.sinal_senoidal(amplitude=10, frequencia=1)
-        quad = fc.sinal_quadrado(amplitude=5,frequencia=1)[1]
-        triangular = fc.sinal_triangular(amplitude=5, frequencia=2, duty = 0.5)[1]
-        ruido_branco = fc.ruido_branco(amplitude=2, num_componentes=len(vetor_tempo))[1]
 
-        #plot = fc.plotar_sinais_bokeh(vetor_tempo,[seno], largura=1200, altura=620, cor_grafico='black')
+        vetor_tempo, seno = fc.sinal_senoidal(amplitude=1, frequencia=1)
+        plot = fc.plotar_sinais_bokeh(vetor_tempo,[seno], cor_grafico='black')
 
-        #plot = fc.plotar_sinais_bokeh(vetor_tempo,[seno, quad], largura=1200, altura=620, cor_grafico='black')
+        #frequencia, magnitude = fc.transformada_fourier(vetor_tempo, seno)
 
-        #plot = fc.plotar_sinais_bokeh(vetor_tempo,[seno, quad, triangular], largura=1200, altura=620, cor_grafico='black')
+        #lim_freqs = int(len(vetor_tempo)/10)
 
-        plot = fc.plotar_sinais_bokeh(vetor_tempo,[seno, ruido_branco, triangular, quad], largura=1200, altura=620, cor_grafico='black')
-
-
-
-        frequencia, magnitude = fc.transformada_fourier(vetor_tempo, seno)
-
-        lim_freqs = int(len(vetor_tempo)/10)
-
-        espectro = fc.plotar_sinais_bokeh(frequencia[: lim_freqs], [magnitude[: lim_freqs]], x_label="Frequências", y_label="Magnitude", largura=1200, altura=620)
+        #espectro = fc.plotar_sinais_bokeh(frequencia[: lim_freqs], [magnitude[: lim_freqs]], x_label="Frequências", y_label="Magnitude", largura=1200, altura=620)
 
         #show(espectro)
 
@@ -42,7 +31,41 @@ def osciloscopio(request):
         return render(request, 'home/conteudo.html', {'script':script, 'div':div}) # 
     
     elif request.method == "POST":
-        return HttpResponse('Respondido!')
+
+        request.session['ultima_forma'] = request.POST.get('entrada-forma-sinal')
+
+        forma_sinal = request.POST.get("entrada-forma-sinal")
+        amplitude = float(request.POST.get("entrada-amplitude"))
+        frequencia = float(request.POST.get("entrada-frequencia"))
+        duracao = float(request.POST.get("entrada-duracao"))
+        offset = float(request.POST.get("entrada-offset"))
+        fase = float(request.POST.get("entrada-fase"))
+
+
+        match forma_sinal:
+            case "senoidal": 
+                vetor_tempo, sinal = fc.sinal_senoidal(amplitude=amplitude, frequencia=frequencia, duracao=duracao, offset=offset, fase=fase)
+            case "quadrada":
+                vetor_tempo, sinal = fc.sinal_quadrado(amplitude=amplitude, frequencia=frequencia, duracao=duracao, fase=fase,offset=offset)
+
+       
+        plot = fc.plotar_sinais_bokeh(vetor_tempo,[sinal], cor_grafico='black')
+        script, div = components(plot)
+
+        contexto = {
+                'script':script, 
+                'div':div,
+                'ultima_forma': request.session.get('ultima_forma', 'valor_padrao'),
+                'amplitude':amplitude, 
+                'frequencia':frequencia, 
+                'duracao': duracao, 
+                'offset':offset, 
+                'fase': fase
+                    }
+
+        
+        
+        return render(request, 'home/conteudo.html', contexto) 
     
 def entradas(request):
     if request.method == "GET":
@@ -52,8 +75,16 @@ def entradas(request):
     
     
     
+    
 def espectro(request):
     return render(request, 'configuracoes/configuracoes.html')
+
+
+def forms(request):
+    if request.method == "POST":
+        amplitude = request.POST.get("amplitude")
+        return HttpResponse(f"Amplitude = {amplitude}")
+
 
 '''
 
