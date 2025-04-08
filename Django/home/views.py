@@ -14,15 +14,18 @@ from bokeh.embed import components
 import warnings
 
 def osciloscopio(request):
+
+
+
+
     if request.method == "GET":
-
-
+        
         amplitude = 1
         frequencia = 1
         duracao = 1
         offset = 0
         fase = 0
-
+        intervalo = 0
         vetor_tempo, seno = fc.sinal_senoidal(amplitude=1, frequencia=1)
         plot = fc.plotar_sinais_bokeh(vetor_tempo,[seno], cor_grafico='black')
 
@@ -42,7 +45,8 @@ def osciloscopio(request):
                 'frequencia':frequencia, 
                 'duracao': duracao, 
                 'offset':offset, 
-                'fase': fase
+                'fase': fase,
+                'intervalo': intervalo
                     }
 
         return render(request, 'home/conteudo.html', contexto) 
@@ -51,6 +55,7 @@ def osciloscopio(request):
 
         request.session['ultima_forma'] = request.POST.get('entrada-forma-sinal')
 
+        intervalo = 0
         forma_sinal = request.POST.get("entrada-forma-sinal")
         amplitude = float(request.POST.get("entrada-amplitude"))
         frequencia = float(request.POST.get("entrada-frequencia"))
@@ -69,7 +74,8 @@ def osciloscopio(request):
                 vetor_tempo, sinal = fc.sinal_triangular(amplitude=amplitude, frequencia=frequencia, duracao=duracao, fase=fase, offset=offset, duty = 0.5)
             case "ruido-branco":
                 vetor_tempo, sinal = fc.ruido_branco(amplitude=amplitude, num_componentes=num_componentes , duracao=duracao, offset=offset)
-        plot = fc.plotar_sinais_bokeh(vetor_tempo,[sinal], cor_grafico='black')
+        
+        plot = fc.plotar_sinais_bokeh(vetor_tempo, [sinal], cor_grafico='black')
         script, div = components(plot)
 
         contexto = {
@@ -80,7 +86,8 @@ def osciloscopio(request):
                 'frequencia':frequencia, 
                 'duracao': duracao, 
                 'offset':offset, 
-                'fase': fase
+                'fase': fase,
+                'intervalo': intervalo
                     }
 
         
