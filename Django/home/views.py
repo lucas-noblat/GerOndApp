@@ -10,38 +10,42 @@ import warnings
 
 def osciloscopio(request):
 
-
-
+    sinais = []
 
     if request.method == "GET":
         
-        amplitude = 1
-        frequencia = 1
-        duracao = 1
-        offset = 0
-        fase = 0
-        intervalo = 0
-        vetor_tempo, seno = fc.sinal_senoidal(amplitude=1, frequencia=1)
-        plot = fc.plotar_sinais_bokeh(vetor_tempo,[seno], cor_grafico='black')
+        # Parâmetros padrão 
 
-        #frequencia, magnitude = fc.transformada_fourier(vetor_tempo, seno)
+        parametros = resgatar_formulario(request)
 
-        #lim_freqs = int(len(vetor_tempo)/10)
+        # Gerando sinal e vetor_tempo
+        vetor_tempo, seno = fc.gerar_sinal(parametros)
 
-        #espectro = fc.plotar_sinais_bokeh(frequencia[: lim_freqs], [magnitude[: lim_freqs]], x_label="Frequências", y_label="Magnitude", largura=1200, altura=620)
+        sinais.append(seno)
+
+        # Gerando a figura que será plotada
+        plot = fc.plotar_sinais_bokeh(vetor_tempo, sinais, cor_grafico='black')
+
+        
+
 
         #show(espectro)
 
+
+        # Script e div que serão enviado ao contexto html
         script, div = components(plot)
+
+        # Gerando contexto para renderizar em html
         contexto = {
-                'script':script, 
-                'div':div,
-                'amplitude':amplitude, 
-                'frequencia':frequencia, 
-                'duracao': duracao, 
-                'offset':offset, 
-                'fase': fase,
-                'intervalo': intervalo
+            'script':script, 
+            'div':div,
+            'ultima_forma': request.session.get('ultima_forma', 'valor_padrao'),
+            'amplitude':parametros['amplitude'], 
+            'frequencia':parametros['frequencia'], 
+            'duracao': parametros['duracao'], 
+            'offset':parametros['offset'], 
+            'fase': parametros['fase'],
+            'intervalo': 0
                     }
 
         return render(request, 'home/conteudo.html', contexto) 
@@ -55,39 +59,29 @@ def osciloscopio(request):
         request.session['ultima_forma'] = request.POST.get('entrada-forma-sinal')
         intervalo = 0
 
-        amplitude = float(request.POST.get("entrada-amplitude", 1))
-        frequencia = float(request.POST.get("entrada-frequencia", 1))
-        duracao = float(request.POST.get("entrada-duracao", 1))
-        forma_sinal = request.POST.get("entrada-forma-sinal", "senoidal")
-        offset = float(request.POST.get("entrada-offset", 0))
-        fase = float(request.POST.get("entrada-fase", 0))
-        
-        num_componentes= int(1000 * duracao)
+        # Criando um dicionário com os parâmetros envolvidos
+        parametros = resgatar_formulario(request)
 
-        print(f'amplitude = {amplitude}')
-        match forma_sinal:
-            case "senoidal": 
-                vetor_tempo, sinal = fc.sinal_senoidal(amplitude=amplitude, frequencia=frequencia, duracao=duracao, offset=offset, fase=fase)
-            case "quadrada":
-                vetor_tempo, sinal = fc.sinal_quadrado(amplitude=amplitude, frequencia=frequencia, duracao=duracao, fase=fase,offset=offset)
-            case "triangular":
-                vetor_tempo, sinal = fc.sinal_triangular(amplitude=amplitude, frequencia=frequencia, duracao=duracao, fase=fase, offset=offset, duty = 0.5)
-            case "ruido-branco":
-                vetor_tempo, sinal = fc.ruido_branco(amplitude=amplitude, num_componentes=num_componentes , duracao=duracao, offset=offset)
-        
-        plot = fc.plotar_sinais_bokeh(vetor_tempo, [sinal], cor_grafico='black')
+        # Gerando o sinal e o vetor tempo
+        vetor_tempo, sinal = fc.gerar_sinal(parametros)
+
+        # Adicionando o sinal gerado a lista de sinais
+        sinais.append(sinal)
+
+        # Gerando a figura e os scritps
+        plot = fc.plotar_sinais_bokeh(vetor_tempo, sinais, cor_grafico='black')
         script, div = components(plot)
 
         contexto = {
-                'script':script, 
-                'div':div,
-                'ultima_forma': request.session.get('ultima_forma', 'valor_padrao'),
-                'amplitude':amplitude, 
-                'frequencia':frequencia, 
-                'duracao': duracao, 
-                'offset':offset, 
-                'fase': fase,
-                'intervalo': intervalo
+            'script':script, 
+            'div':div,
+            'ultima_forma': request.session.get('ultima_forma', 'valor_padrao'),
+            'amplitude':parametros['amplitude'], 
+            'frequencia':parametros['frequencia'], 
+            'duracao': parametros['duracao'], 
+            'offset':parametros['offset'], 
+            'fase': parametros['fase'],
+            'intervalo': intervalo
                     }
 
         
@@ -112,25 +106,16 @@ def forms(request):
         amplitude = request.POST.get("amplitude")
         return HttpResponse(f"Amplitude = {amplitude}")
 
+def resgatar_formulario(request):
+        
+        # Criando um dicionário com os parâmetros envolvidos
+        parametros = {
+            'amplitude': float(request.POST.get("entrada-amplitude", 1.0)),
+            'frequencia': float(request.POST.get("entrada-frequencia", 1.0)),
+            'duracao': float(request.POST.get("entrada-duracao", 1.0)),
+            'forma_sinal': request.POST.get("entrada-forma-sinal", "senoidal"),
+            'offset': float(request.POST.get("entrada-offset", 0.0)),
+            'fase': float(request.POST.get("entrada-fase", 0.0))
+        }
 
-'''
-
-
-
-
-
-def bokeh_view(request):
-    # Crie um gráfico simples
-    plot = figure(title="Gráfico Bokeh", x_axis_label='X', y_axis_label='Y')
-    plot.line([1, 2, 3, 4, 5], [6, 7, 2, 4, 5], line_width=2)
-    
-    # Gere os componentes JavaScript e HTML
-    script, div = components(plot)
-    
-    return render(request, 'bokeh_template.html', {
-        'bokeh_script': script,
-        'bokeh_div': div
-    })
-
-
-'''
+        return parametros

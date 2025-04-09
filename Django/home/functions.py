@@ -2,7 +2,7 @@
 
 import matplotlib.pyplot as plt
 from scipy.signal import square, sawtooth
-from numpy import linspace, sin, pi, random, abs, fft
+from numpy import linspace, sin, pi, random, abs, fft, array
 
 
 # Bokeh
@@ -159,7 +159,7 @@ def sinal_senoidal(amplitude, frequencia, taxa_amostragem=1000, duracao=1, fase=
     vetor_tempo = linspace(0, duracao, int(taxa_amostragem * duracao), endpoint=False)
 
     # Sinal gerado
-    s = amplitude * sin(2 * pi * frequencia * vetor_tempo + fase) + offset
+    s = array(amplitude * sin(2 * pi * frequencia * vetor_tempo + fase) + offset)
 
     # Retornando
     return vetor_tempo, s
@@ -189,7 +189,7 @@ def sinal_triangular(amplitude, frequencia, taxa_amostragem = 1000, duracao = 1,
     # Gerando o vetor tempo para ser o eixo x
 
     vetor_tempo = linspace(0, duracao, int(duracao*taxa_amostragem))
-    triangular = (amplitude * sawtooth (2*pi*frequencia*vetor_tempo + fase, duty) + offset)
+    triangular = array(amplitude * sawtooth (2*pi*frequencia*vetor_tempo + fase, duty) + offset)
 
     return vetor_tempo, triangular
 
@@ -224,7 +224,7 @@ def sinal_quadrado(amplitude, frequencia, taxa_amostragem=1000, duracao=1, fase=
     vetor_tempo = linspace(0, duracao, int(taxa_amostragem * duracao), endpoint=False)
 
     # Gera o sinal quadrado usando scipy.signal.square
-    sinal_quadrado = amplitude * square(2 * pi * frequencia * vetor_tempo + fase, duty=duty) + offset
+    sinal_quadrado = array(amplitude * square(2 * pi * frequencia * vetor_tempo + fase, duty=duty) + offset)
 
     return vetor_tempo, sinal_quadrado
 
@@ -258,9 +258,43 @@ def ruido_branco(amplitude, num_componentes, duracao=1, offset=0, freq_inicial=0
     vetor_tempo = linspace(0, duracao, num_componentes, endpoint=False)
 
     # Gera o ruído branco
-    ruido = amplitude * random.normal(0, 1, num_componentes) + offset
+    ruido = array(amplitude * random.normal(0, 1, num_componentes) + offset)
 
     return vetor_tempo, ruido
+
+
+def gerar_sinal(parametros):
+
+
+        # Gerando o sinal conforme o tipo inserido
+
+        match parametros['forma_sinal']:
+            case "senoidal": 
+                vetor_tempo, sinal = sinal_senoidal(amplitude=parametros['amplitude'], 
+                                                       frequencia=parametros['frequencia'], 
+                                                       duracao=parametros['duracao'],
+                                                       offset=parametros['offset'],
+                                                       fase=parametros['fase'])
+            case "quadrada":
+                vetor_tempo, sinal = sinal_quadrado(amplitude=parametros['amplitude'], 
+                                                    frequencia=parametros['frequencia'], 
+                                                    duracao=parametros['duracao'], 
+                                                    fase=parametros['fase'],
+                                                    offset=parametros['offset'])
+            case "triangular":
+                vetor_tempo, sinal = sinal_triangular(amplitude=parametros['amplitude'], 
+                                                      frequencia=parametros['frequencia'], 
+                                                      duracao=parametros['duracao'], 
+                                                      fase=parametros['fase'], 
+                                                      offset=parametros['offset'], 
+                                                      duty = 0.5)
+            case "ruido-branco":
+                num_componentes = int(1000 * parametros['duracao'])
+                vetor_tempo, sinal = ruido_branco(amplitude=parametros['amplitude'], 
+                                                  num_componentes=num_componentes , 
+                                                  duracao=parametros['duracao'], 
+                                                  offset=parametros['offset'])
+        return vetor_tempo, sinal
 
 
 # TRANSFORMADA DE FOURIER
