@@ -4,11 +4,6 @@ from . import functions as fc
 
 # Bokeh
 
-from bokeh.plotting import figure, show # Para criar a figure e mostra-la
-from bokeh.io import output_notebook  # Para exibir no Jupyter Notebook
-from bokeh.models import ColumnDataSource # Para atualizar em tempo real
-from bokeh.palettes import Category10  # Paleta de cores para os sinais
-from bokeh.plotting import figure
 from bokeh.embed import components
 
 import warnings
@@ -53,18 +48,23 @@ def osciloscopio(request):
     
     elif request.method == "POST":
 
+        # Adiciona à sessão
+        if 'sinais' not in request.session:
+            request.session['sinais'] = []  # Inicializa a lista se não existir
+      
         request.session['ultima_forma'] = request.POST.get('entrada-forma-sinal')
-
         intervalo = 0
-        forma_sinal = request.POST.get("entrada-forma-sinal")
-        amplitude = float(request.POST.get("entrada-amplitude"))
-        frequencia = float(request.POST.get("entrada-frequencia"))
-        duracao = float(request.POST.get("entrada-duracao"))
-        offset = float(request.POST.get("entrada-offset"))
-        fase = float(request.POST.get("entrada-fase"))
+
+        amplitude = float(request.POST.get("entrada-amplitude", 1))
+        frequencia = float(request.POST.get("entrada-frequencia", 1))
+        duracao = float(request.POST.get("entrada-duracao", 1))
+        forma_sinal = request.POST.get("entrada-forma-sinal", "senoidal")
+        offset = float(request.POST.get("entrada-offset", 0))
+        fase = float(request.POST.get("entrada-fase", 0))
         
         num_componentes= int(1000 * duracao)
 
+        print(f'amplitude = {amplitude}')
         match forma_sinal:
             case "senoidal": 
                 vetor_tempo, sinal = fc.sinal_senoidal(amplitude=amplitude, frequencia=frequencia, duracao=duracao, offset=offset, fase=fase)
