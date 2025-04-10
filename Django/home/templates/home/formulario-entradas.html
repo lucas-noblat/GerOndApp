@@ -6,7 +6,7 @@
         <div class="form-group" id="grupo-forma-sinal">
             <label for="entrada-forma-sinal" class="form-label">Forma do sinal</label>
             <div class="form-select" id = "select-forma-sinal">
-                <select name="entrada-forma-sinal" id="entrada-forma-sinal" value = {{forma}}>
+                <select name="entrada-forma-sinal" id="entrada-forma-sinal" value = {{forma}} >
                     <option value="senoidal"  {% if ultima_forma == 'senoidal' %} selected {% endif %}>Senoidal</option>
                     <option value="quadrada"  {% if ultima_forma == 'quadrada' %} selected{% endif %}>Quadrada</option>
                     <option value="triangular" {% if ultima_forma == 'triangular' %} selected{% endif %} >Triangular</option>
@@ -70,5 +70,12 @@
             </div>            
         </div>
     </div>
+
+    <div id = "campo-dinamico">
+    </div>
+
+
     <button type="submit" id="botao-input" >Gerar sinal</button>
 </form>
+
+

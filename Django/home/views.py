@@ -81,6 +81,7 @@ def osciloscopio(request):
             'duracao': parametros['duracao'], 
             'offset':parametros['offset'], 
             'fase': parametros['fase'],
+            'forma_sinal': parametros['forma_sinal'],
             'intervalo': intervalo
                     }
 
