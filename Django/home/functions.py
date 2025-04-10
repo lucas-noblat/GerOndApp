@@ -271,25 +271,30 @@ def gerar_sinal(parametros):
         match parametros['forma_sinal']:
             case "senoidal": 
                 vetor_tempo, sinal = sinal_senoidal(amplitude=parametros['amplitude'], 
-                                                       frequencia=parametros['frequencia'], 
-                                                       duracao=parametros['duracao'],
-                                                       offset=parametros['offset'],
-                                                       fase=parametros['fase'])
+                                                    frequencia=parametros['frequencia'], 
+                                                    duracao=parametros['duracao'],
+                                                    offset=parametros['offset'],
+                                                    fase=parametros['fase'],
+                                                    taxa_amostragem=parametros['rate'])
             case "quadrada":
                 vetor_tempo, sinal = sinal_quadrado(amplitude=parametros['amplitude'], 
                                                     frequencia=parametros['frequencia'], 
                                                     duracao=parametros['duracao'], 
                                                     fase=parametros['fase'],
-                                                    offset=parametros['offset'])
+                                                    offset=parametros['offset'],
+                                                    duty=parametros['duty'],
+                                                    taxa_amostragem=parametros['rate'])
+                                                    
             case "triangular":
                 vetor_tempo, sinal = sinal_triangular(amplitude=parametros['amplitude'], 
                                                       frequencia=parametros['frequencia'], 
                                                       duracao=parametros['duracao'], 
                                                       fase=parametros['fase'], 
-                                                      offset=parametros['offset'], 
-                                                      duty = 0.5)
+                                                      offset=parametros['offset'],
+                                                      taxa_amostragem=parametros['rate'], 
+                                                      duty = parametros['duty'])
             case "ruido-branco":
-                num_componentes = int(1000 * parametros['duracao'])
+                num_componentes = int(parametros['rate'] * parametros['duracao'])
                 vetor_tempo, sinal = ruido_branco(amplitude=parametros['amplitude'], 
                                                   num_componentes=num_componentes , 
                                                   duracao=parametros['duracao'], 

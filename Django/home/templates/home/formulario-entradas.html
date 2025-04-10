@@ -1,12 +1,14 @@
 <form  id = "form-entrada" action=" {% url 'osciloscopio' %}" method="post" class="formulario-entrada">
     {% csrf_token %}
 
+    <input type="hidden" id="ultimo_sinal" name="ultimo_sinal">
+
     <!-- Forma do sinal -->
     <div class = "container-par-entradas" id = "par-number-sinal">
         <div class="form-group" id="grupo-forma-sinal">
             <label for="entrada-forma-sinal" class="form-label">Forma do sinal</label>
             <div class="form-select" id = "select-forma-sinal">
-                <select name="entrada-forma-sinal" id="entrada-forma-sinal" value = {{forma}} >
+                <select name="entrada-forma-sinal" id="entrada-forma-sinal" value = {{forma}} onchange="mostrarDivDuty()" >
                     <option value="senoidal"  {% if ultima_forma == 'senoidal' %} selected {% endif %}>Senoidal</option>
                     <option value="quadrada"  {% if ultima_forma == 'quadrada' %} selected{% endif %}>Quadrada</option>
                     <option value="triangular" {% if ultima_forma == 'triangular' %} selected{% endif %} >Triangular</option>
@@ -26,11 +28,11 @@
             </div>            
         </div> 
 
-        <!-- Intervalo -->
+        <!-- Taxa de amostragem -->
         <div class="form-group" id="grupo-intervalo">
-            <label for="entrada-intervalo" class="form-label">Intervalo</label>
+            <label for="entrada-rate" class="form-label">Rate</label>
             <div class="form-number">
-                <input type="number" name="entrada-intervalo" id="entrada-intervalo" min= 0 max = 100 step = 0.1  value = {{intervalo}} required>
+                <input type="number" name="entrada-rate" id="entrada-rate" min= 0 max = 5000 step = 5  value = {{rate}} required>
             </div>            
         </div>
     </div>
@@ -40,7 +42,7 @@
         <div class="form-group" id="grupo-frequencia">
             <label for="entrada-frequencia" class="form-label">Frequência</label>
             <div class="form-number">
-                <input type="number" name="entrada-frequencia" id="entrada-frequencia" min= 0 max = 100  value = {{frequencia}}  value = 1  required>
+                <input type="number" name="entrada-frequencia" id="entrada-frequencia" min= 0 max = 100  value = {{frequencia}}  required>
             </div>            
         </div> 
         
@@ -48,7 +50,7 @@
         <div class="form-group" id="grupo-fase">
             <label for="entrada-group" class="form-label">Fase</label>
             <div class="form-number">
-                <input type="number" name="entrada-fase" id="entrada-fase" min= 0 max = 100  value = {{fase}}  value = 0  required>
+                <input type="number" name="entrada-fase" id="entrada-fase" min= 0 max = 100  value = {{fase}}   required>
             </div>            
         </div>
     </div>
@@ -58,7 +60,7 @@
         <div class="form-group" id="grupo-duracao">
             <label for="entrada-duracao" class="form-label">Duração</label>
             <div class="form-number">
-                <input type="number" name="entrada-duracao" id="entrada-duracao" min= 0 max = 100 value = {{duracao}}  value = 1 required>
+                <input type="number" name="entrada-duracao" id="entrada-duracao" min= 0 max = 100 value = {{duracao}} required>
             </div>            
         </div> 
         
@@ -71,8 +73,14 @@
         </div>
     </div>
 
-    <div id = "campo-dinamico">
-    </div>
+    <!-- Duty -->
+
+        <div class="form-group" id="grupo-duty" style="display: none;">
+            <label for="entrada-duty" class="form-label">Duty</label>
+                <div class="form-number">
+                    <input type="number" name="entrada-duty" id="entrada-duty" min= 0 max = 1 step = 0.05 value = {{dutye}} required>
+                </div>            
+        </div>
 
 
     <button type="submit" id="botao-input" >Gerar sinal</button>

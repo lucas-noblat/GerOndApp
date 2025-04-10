@@ -39,13 +39,14 @@ def osciloscopio(request):
         contexto = {
             'script':script, 
             'div':div,
-            'ultima_forma': request.session.get('ultima_forma', 'valor_padrao'),
-            'amplitude':parametros['amplitude'], 
-            'frequencia':parametros['frequencia'], 
-            'duracao': parametros['duracao'], 
-            'offset':parametros['offset'], 
-            'fase': parametros['fase'],
-            'intervalo': 0
+            'ultima_forma': 'senoidal',
+            'amplitude':1,
+            'rate': 1000, 
+            'frequencia':1, 
+            'duracao': 1, 
+            'offset':0, 
+            'fase': 0,
+            'duty': 0.5
                     }
 
         return render(request, 'home/conteudo.html', contexto) 
@@ -55,9 +56,13 @@ def osciloscopio(request):
         # Adiciona à sessão
         if 'sinais' not in request.session:
             request.session['sinais'] = []  # Inicializa a lista se não existir
+
+        # Pega os valores anteriores para mostrar quando a página atualizar
       
-        request.session['ultima_forma'] = request.POST.get('entrada-forma-sinal')
-        intervalo = 0
+
+        sessao_anterior = request.session
+
+        resgatarEntradas(sessao_anterior, request)
 
         # Criando um dicionário com os parâmetros envolvidos
         parametros = resgatar_formulario(request)
@@ -75,14 +80,16 @@ def osciloscopio(request):
         contexto = {
             'script':script, 
             'div':div,
-            'ultima_forma': request.session.get('ultima_forma', 'valor_padrao'),
-            'amplitude':parametros['amplitude'], 
-            'frequencia':parametros['frequencia'], 
-            'duracao': parametros['duracao'], 
-            'offset':parametros['offset'], 
-            'fase': parametros['fase'],
+            'ultima_forma':  sessao_anterior.get('ultima_forma', 'valor_padrao'),
             'forma_sinal': parametros['forma_sinal'],
-            'intervalo': intervalo
+            'amplitude': sessao_anterior.get('ultima_amplitude', 'valor_padrao'), 
+            'rate': sessao_anterior.get('ultimo_rate', 'valor_padrao'),
+            'frequencia':sessao_anterior.get('ultima_frequencia', 'valor_padrao'), 
+            'duracao': sessao_anterior.get('ultima_duracao', 'valor_padrao'), 
+            'offset':sessao_anterior.get('ultimo_offset', 'valor_padrao'), 
+            'fase': sessao_anterior.get('ultima_fase', 'valor_padrao'),
+            'dutye': sessao_anterior.get('ultimo_duty', 'valor_padrao')
+
                     }
 
         
@@ -113,10 +120,22 @@ def resgatar_formulario(request):
         parametros = {
             'amplitude': float(request.POST.get("entrada-amplitude", 1.0)),
             'frequencia': float(request.POST.get("entrada-frequencia", 1.0)),
+            'rate': float(request.POST.get("entrada-rate", 1000.0)),
             'duracao': float(request.POST.get("entrada-duracao", 1.0)),
             'forma_sinal': request.POST.get("entrada-forma-sinal", "senoidal"),
             'offset': float(request.POST.get("entrada-offset", 0.0)),
-            'fase': float(request.POST.get("entrada-fase", 0.0))
+            'fase': float(request.POST.get("entrada-fase", 0.0)),
+            'duty': float(request.POST.get("entrada-duty", 0.5))
         }
 
         return parametros
+
+def resgatarEntradas(sessao_anterior, request):
+        sessao_anterior['ultima_forma'] = request.POST.get('entrada-forma-sinal')
+        sessao_anterior['ultima_amplitude'] = request.POST.get('entrada-amplitude')
+        sessao_anterior['ultimo_rate'] = request.POST.get('entrada-rate')
+        sessao_anterior['ultima_frequencia'] = request.POST.get('entrada-frequencia')
+        sessao_anterior['ultima_duracao'] = request.POST.get('entrada-duracao')
+        sessao_anterior['ultima_fase'] = request.POST.get('entrada-fase')
+        sessao_anterior['ultimo_offset'] = request.POST.get('entrada-offset')
+        sessao_anterior['ultimo_duty'] = request.POST.get('entrada-duty')
