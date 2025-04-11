@@ -115,20 +115,28 @@ def forms(request):
         return HttpResponse(f"Amplitude = {amplitude}")
 
 def resgatar_formulario(request):
-        
-        # Criando um dicionário com os parâmetros envolvidos
-        parametros = {
-            'amplitude': float(request.POST.get("entrada-amplitude", 1.0)),
-            'frequencia': float(request.POST.get("entrada-frequencia", 1.0)),
-            'rate': float(request.POST.get("entrada-rate", 1000.0)),
-            'duracao': float(request.POST.get("entrada-duracao", 1.0)),
-            'forma_sinal': request.POST.get("entrada-forma-sinal", "senoidal"),
-            'offset': float(request.POST.get("entrada-offset", 0.0)),
-            'fase': float(request.POST.get("entrada-fase", 0.0)),
-            'duty': float(request.POST.get("entrada-duty", 0.5))
+
+
+    # Proteção contra primeira entrada vazia do duty
+
+    if request.POST.get("entrada-duty") == '':
+        duty = 0.5
+    else:
+        duty = float(request.POST.get('entrada-duty', 0.5)) 
+
+    # Criando um dicionário com os parâmetros envolvidos
+    parametros = {
+        'amplitude': float(request.POST.get("entrada-amplitude", 1.0)),
+        'frequencia': float(request.POST.get("entrada-frequencia", 1.0)),
+        'rate': float(request.POST.get("entrada-rate", 1000.0)),
+        'duracao': float(request.POST.get("entrada-duracao", 1.0)),
+        'forma_sinal': request.POST.get("entrada-forma-sinal", "senoidal"),
+        'offset': float(request.POST.get("entrada-offset", 0.0)),
+        'fase': float(request.POST.get("entrada-fase", 0.0)),
+        'duty': duty
         }
 
-        return parametros
+    return parametros
 
 def resgatarEntradas(sessao_anterior, request):
         sessao_anterior['ultima_forma'] = request.POST.get('entrada-forma-sinal')
