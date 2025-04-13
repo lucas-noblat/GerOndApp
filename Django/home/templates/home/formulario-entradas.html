@@ -1,14 +1,14 @@
 <form  id = "form-entrada" action=" {% url 'osciloscopio' %}" method="post" class="formulario-entrada">
     {% csrf_token %}
 
-    <input type="hidden" id="ultimo_sinal" name="ultimo_sinal">
-
+    <input type="hidden" name = "numero_sinal" id = "numero_sinal" value= "{{sinal_ativo|default:'1'}}">
+    
     <!-- Forma do sinal -->
     <div class = "container-par-entradas" id = "par-number-sinal">
         <div class="form-group" id="grupo-forma-sinal">
             <label for="entrada-forma-sinal" class="form-label">Forma do sinal</label>
             <div class="form-select" id = "select-forma-sinal">
-                <select name="entrada-forma-sinal" id="entrada-forma-sinal" value = {{forma}} onchange="mostrarDivDuty()" >
+                <select name="entrada-forma-sinal" id="entrada-forma-sinal" value = {{forma}}  >
                     <option value="senoidal"  {% if ultima_forma == 'senoidal' %} selected {% endif %}>Senoidal</option>
                     <option value="quadrada"  {% if ultima_forma == 'quadrada' %} selected{% endif %}>Quadrada</option>
                     <option value="triangular" {% if ultima_forma == 'triangular' %} selected{% endif %} >Triangular</option>
@@ -48,7 +48,7 @@
         
         <!-- Fase -->
         <div class="form-group" id="grupo-fase">
-            <label for="entrada-group" class="form-label">Fase</label>
+            <label for="entrada-fase" class="form-label">Fase</label>
             <div class="form-number">
                 <input type="number" name="entrada-fase" id="entrada-fase" min= 0 max = 100  value = {{fase}}   required>
             </div>            
@@ -78,7 +78,7 @@
         <div class="form-group" id="grupo-duty" style="display: none;">
             <label for="entrada-duty" class="form-label">Duty</label>
                 <div class="form-number">
-                    <input type="number" name="entrada-duty" id="entrada-duty" min= 0 max = 1 step = 0.05 value = {{dutye}} required>
+                    <input type="number" name="entrada-duty" id="entrada-duty" min= 0 max = 1 step = 0.05 value = "{{duty}}">
                 </div>            
         </div>
 

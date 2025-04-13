@@ -1,67 +1,66 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from . import functions as fc
+from numpy import array
 
 # Bokeh
 
 from bokeh.embed import components
 
-import warnings
-
 def osciloscopio(request):
 
-    sinais = []
+
+    script = None
+    div = None
+    sessao_anterior = request.session
+
+    duty = 0.5
+
+
+    if 'sinais' not in request.session:
+        request.session['sinais'] = [None] * 5
+        request.session['ultimo_duty'] = 0.5  # Valor padrão
+
+    
+    # Obtém o sinal ativo do request (POST ou GET)
+    try:
+        # Tenta converter para int, com fallback seguro
+        sinal_ativo = int(request.POST.get('numero_sinal', 
+                          request.GET.get('numero_sinal', 
+                          request.session.get('sinal_ativo', 1))))
+    except (ValueError, TypeError):
+        sinal_ativo = 1  # Valor padrão se conversão falhar
+
+    request.session['sinal_ativo'] = sinal_ativo  # Persiste na sessão
+
+    print(sinal_ativo)
+
 
     if request.method == "GET":
         
-        # Parâmetros padrão 
-
-        parametros = resgatar_formulario(request)
-
-        # Gerando sinal e vetor_tempo
-        vetor_tempo, seno = fc.gerar_sinal(parametros)
-
-        sinais.append(seno)
-
-        # Gerando a figura que será plotada
-        plot = fc.plotar_sinais_bokeh(vetor_tempo, sinais, cor_grafico='black')
-
-        
-
-
-        #show(espectro)
-
-
-        # Script e div que serão enviado ao contexto html
-        script, div = components(plot)
-
-        # Gerando contexto para renderizar em html
-        contexto = {
-            'script':script, 
-            'div':div,
-            'ultima_forma': 'senoidal',
-            'amplitude':1,
-            'rate': 1000, 
-            'frequencia':1, 
-            'duracao': 1, 
-            'offset':0, 
+ # Configuração inicial apenas no primeiro acesso
+        parametros = {
+            'forma_sinal': 'senoidal',
+            'amplitude': 1,
+            'rate': 1000,
+            'frequencia': 1,
+            'duracao': 1,
+            'offset': 0,
             'fase': 0,
-            'duty': 0.5
-                    }
+            'duty': 0.5,
+            'sinal_ativo': 1,
+            'range_1_5': range(1, 6)
+        }
+        vetor_tempo, seno = fc.gerar_sinal(parametros)
+        sinais = request.session['sinais']
+        sinais[0] = seno.tolist()  # Converte para lista serializável
+        request.session['sinais'] = sinais
 
-        return render(request, 'home/conteudo.html', contexto) 
     
     elif request.method == "POST":
 
-        # Adiciona à sessão
-        if 'sinais' not in request.session:
-            request.session['sinais'] = []  # Inicializa a lista se não existir
-
         # Pega os valores anteriores para mostrar quando a página atualizar
-      
-
-        sessao_anterior = request.session
-
+    
         resgatarEntradas(sessao_anterior, request)
 
         # Criando um dicionário com os parâmetros envolvidos
@@ -70,31 +69,50 @@ def osciloscopio(request):
         # Gerando o sinal e o vetor tempo
         vetor_tempo, sinal = fc.gerar_sinal(parametros)
 
-        # Adicionando o sinal gerado a lista de sinais
-        sinais.append(sinal)
+        # Armazenando o sinal na nossa lista de sinais
 
-        # Gerando a figura e os scritps
-        plot = fc.plotar_sinais_bokeh(vetor_tempo, sinais, cor_grafico='black')
-        script, div = components(plot)
+        duty = sessao_anterior.get('ultimo_duty', 0.5)
 
-        contexto = {
-            'script':script, 
-            'div':div,
-            'ultima_forma':  sessao_anterior.get('ultima_forma', 'valor_padrao'),
-            'forma_sinal': parametros['forma_sinal'],
-            'amplitude': sessao_anterior.get('ultima_amplitude', 'valor_padrao'), 
-            'rate': sessao_anterior.get('ultimo_rate', 'valor_padrao'),
-            'frequencia':sessao_anterior.get('ultima_frequencia', 'valor_padrao'), 
-            'duracao': sessao_anterior.get('ultima_duracao', 'valor_padrao'), 
-            'offset':sessao_anterior.get('ultimo_offset', 'valor_padrao'), 
-            'fase': sessao_anterior.get('ultima_fase', 'valor_padrao'),
-            'dutye': sessao_anterior.get('ultimo_duty', 'valor_padrao')
+        # Atualiza o sinal ativo na sessão
+        sinais = request.session['sinais']
+        sinais[sinal_ativo-1] = sinal.tolist()
+        request.session['sinais'] = sinais
+        request.session.modified = True
 
-                    }
 
+    sinais_para_plotar = []
+
+    for i, s in enumerate(request.session['sinais']):
+        if s is not None:
+            # Converte de volta para array numpy se necessário
+            sinais_para_plotar.append(array(s))
+
+
+    plot = fc.plotar_sinais_bokeh(vetor_tempo, sinais_para_plotar, cor_grafico='black')
+
+    script, div = components(plot)
+
+    
+    print(sinal_ativo)
         
+    contexto = {
+        'script':script, 
+        'div':div,
+        'ultima_forma':  sessao_anterior.get('ultima_forma', 'valor_padrao'),
+        'forma_sinal': parametros['forma_sinal'],
+        'amplitude': sessao_anterior.get('ultima_amplitude', 1), 
+        'rate': sessao_anterior.get('ultimo_rate', 1000),
+        'frequencia':sessao_anterior.get('ultima_frequencia', 1), 
+        'duracao': sessao_anterior.get('ultima_duracao', 1), 
+        'offset':sessao_anterior.get('ultimo_offset', 0), 
+        'fase': sessao_anterior.get('ultima_fase', 0),
+        'duty': duty,
+        'sinal_ativo': sinal_ativo,
+        'range_1_5': range(1, 6)
+            }
         
-        return render(request, 'home/conteudo.html', contexto) 
+
+    return render(request, 'home/conteudo.html', contexto) 
     
 def entradas(request):
     if request.method == "GET":
@@ -106,7 +124,7 @@ def entradas(request):
     
     
 def espectro(request):
-    return render(request, 'configuracoes/configuracoes.html')
+    return render(request, 'espectro/configuracoes.html')
 
 
 def forms(request):
@@ -125,16 +143,19 @@ def resgatar_formulario(request):
         duty = float(request.POST.get('entrada-duty', 0.5)) 
 
     # Criando um dicionário com os parâmetros envolvidos
-    parametros = {
-        'amplitude': float(request.POST.get("entrada-amplitude", 1.0)),
-        'frequencia': float(request.POST.get("entrada-frequencia", 1.0)),
-        'rate': float(request.POST.get("entrada-rate", 1000.0)),
-        'duracao': float(request.POST.get("entrada-duracao", 1.0)),
-        'forma_sinal': request.POST.get("entrada-forma-sinal", "senoidal"),
-        'offset': float(request.POST.get("entrada-offset", 0.0)),
-        'fase': float(request.POST.get("entrada-fase", 0.0)),
-        'duty': duty
+    try:
+        parametros = {
+            'amplitude': float(request.POST.get("entrada-amplitude", 1.0)),
+            'frequencia': float(request.POST.get("entrada-frequencia", 1.0)),
+            'rate': float(request.POST.get("entrada-rate", 1000.0)),
+            'duracao': float(request.POST.get("entrada-duracao", 1.0)),
+            'forma_sinal': request.POST.get("entrada-forma-sinal", "senoidal"),
+            'offset': float(request.POST.get("entrada-offset", 0.0)),
+            'fase': float(request.POST.get("entrada-fase", 0.0)),
+            'duty': duty
         }
+    except ValueError:
+            return JsonResponse({'status': 'error', 'message': 'Amplitude inválida'}, status=400)
 
     return parametros
 

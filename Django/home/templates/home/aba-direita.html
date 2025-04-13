@@ -6,25 +6,34 @@
     <div class = "container-futuro" id = "container-sinais">
         <div id = "abas-sinais" class = "container-conjunto-abas" >
 
-            <div class="container-aba" id="sinal-1">
-                <h3>S1</h3>
+            <div class = "container-aba" id = "sinal-1">
+                <button type="button" class="botao-sinal {% if sinal_ativo == 1 %} active {% endif %}"
+                data-sinal="1">
+                S1
+                </button>
             </div>
+            <div class = "container-aba" id = "sinal-1">
+                <button type="button" class="botao-sinal {% if sinal_ativo == 2 %} active {% endif %}"
+                data-sinal="2">
+                S2
+                </button>
+            </div>  
+            <div class = "container-aba" id = "sinal-1">
+                <button type="button" class="botao-sinal {% if sinal_ativo == 3 %}active{% endif %}"
+                data-sinal="3">
+                S3
+                </button>
+            </div>  
+            <div class = "container-aba" id = "sinal-1">
+                <button type="button" class="botao-sinal {% if sinal_ativo == 4 %}active{% endif %}"
+                data-sinal="4">
+                S4
+                </button>
+            </div>  
+            <div class = "container-aba" id = "sinal-1">
+                <button type="button" class="botao-sinal {% if sinal_ativo == 5 %} active {% endif %}" data-sinal="5">S5</button>
+            </div>  
 
-            <div class="container-aba" id="sinal-2">
-                <h3>S2</h3>
-            </div>
-
-            <div class="container-aba" id="sinal-3">
-                <h3>S3</h3>
-            </div>
-
-            <div class="container-aba" id="sinal-4">
-                <h3>S4</h3>
-            </div>
-
-            <div class="container-aba" id="sinal-5">
-                <h3>S5</h3>
-            </div>
         </div>
  
     </div>
