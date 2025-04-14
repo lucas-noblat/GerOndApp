@@ -51,5 +51,8 @@ function mostrarDivDuty() {
     }
 }
 
-// Inicialização quando o DOM estiver pronto
-document.addEventListener('DOMContentLoaded', iniciarAbas);
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    iniciarAbas();
+});
