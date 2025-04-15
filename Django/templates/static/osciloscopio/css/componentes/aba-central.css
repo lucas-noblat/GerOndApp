@@ -16,6 +16,7 @@
 
 .aba-aplicacao{
 
+    
     width: 12.5%;
     height: 100%;
 
@@ -31,17 +32,6 @@
     z-index: 1;
 
     overflow: hidden;
-}
-
-.aba-aplicacao:focus{
-    
-    transform-origin: bottom center; /* Ponto de origem na base */
-    transform: scale(1.1); /* Aumenta apenas na vertical (para cima) */
-    transition: transform 0.3s ease; /* Animação suave */
-
-    z-index: 2;
-
-
 }
 
 .barra-sinais{
@@ -63,7 +53,7 @@
 
 }
 
-.grafico_tempo{
+.grafico{
 
     width: 95%;
     height: 90%;
@@ -88,9 +78,14 @@
 
 .aba-btn.active{
     background: #b3b3b3;
-    transform: scale(1.5em);
     color: white;
-    border-bottom: 3px solid #2472a5;
+    border-bottom: 3px solid var(--azul-lioc);
+        
+    transform-origin: bottom center; /* Ponto de origem na base */
+    transform: scale(1.01); /* Aumenta apenas na vertical (para cima) */
+    transition: transform 0.3s ease; /* Animação suave */
+
+    z-index: 10;
 }
 
 /* Garante que o gráfico do Bokeh ocupe todo o espaço */

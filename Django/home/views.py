@@ -11,13 +11,21 @@ def osciloscopio(request):
     script = None
     div = None
     sessao_anterior = request.session
+
+    # Define os valores que serão utilizados para todos os sinais
+
     duty = 0.5
+    duracao = 1
+    rate = 1000
+    parametros = []
 
     # Inicializa as listas de sinais
     if 'sinais' not in request.session:
         request.session['sinais'] = [None] * 5
+    elif 'sinais_espectro' not in request.session:
         request.session['sinais_espectro'] = [None] * 5
-        request.session['ultimo_duty'] = 0.5
+    elif 'sinais_parametros' not in request.session:
+        request.session['sinais_parametros'] = [None] * 5
 
     # Obtém o sinal ativo
     try:
@@ -39,58 +47,90 @@ def osciloscopio(request):
             'offset': 0,
             'fase': 0,
             'duty': 0.5,
-            'sinal_ativo': 1,
-            'range_1_5': range(1, 6)
+            'sinal_ativo': 1
         }
+
+        # Gera sinais e a respectiva frequência
         
         vetor_tempo, seno = fc.gerar_sinal(parametros)
         freqs, magnitude = fc.transformada_fourier(vetor_tempo, seno)
 
+        # Inicia sinais com o valor 
         sinais = request.session['sinais']
         sinais_espectro = request.session['sinais_espectro']
+        sinais_parametros = request.session['sinais_parametros']
         
+        # Adiciona sinal a lista (inicialmente vazia)
         sinais[0] = seno.tolist()
-        sinais_espectro[0] = magnitude.tolist()  # Convertido para lista
+        sinais_espectro[0] = magnitude.tolist()  # Convertido para lista serializável
+        sinais_parametros[0] = parametros
 
+        # Salva os sinais na sessão Django
         request.session['sinais'] = sinais
         request.session['sinais_espectro'] = sinais_espectro
+        request.session['sinais_parametros'] = sinais_parametros
+
+        
 
     elif request.method == "POST":
+
+        # Resgata entradas anteriores
         resgatarEntradas(sessao_anterior, request)
+
+        # Recebe entradas
         parametros = resgatar_formulario(request)
+
+        # Altera o valor de todos os rates e duração caso o rate for trocado
+
+        if parametros['duracao'] != request.session.get('ultima_duracao') or parametros['rate'] != request.session.get('ultimo_rate'):
+            atualizar_duracao_rate(request, parametros['duracao'], parametros['rate'])
+
+        # Inicia a sessão
+        sinais = request.session['sinais']
+        sinais_espectro = request.session['sinais_espectro']
+        sinais_parametros = request.session['sinais_parametros']
         
+        # Gera o sinal e sua frequência baseado nos parametros de entrada 
         vetor_tempo, sinal = fc.gerar_sinal(parametros)
         freqs, magnitude = fc.transformada_fourier(vetor_tempo, sinal)
         
+        # Recebe o ultimo duty
         duty = sessao_anterior.get('ultimo_duty', 0.5)
         
-        sinais = request.session['sinais']
-        sinais_espectro = request.session['sinais_espectro']
-        
+        # Adiciona o sinal a lista
         sinais[sinal_ativo-1] = sinal.tolist()
-        sinais_espectro[sinal_ativo-1] = magnitude.tolist()  # Convertido para lista
-        
+        sinais_espectro[sinal_ativo-1] = magnitude.tolist()  # Convertido para lista serializável
+        sinais_parametros[sinal_ativo-1] = parametros
+
+        # Salva os valores das listas de sinais e parâmetros na sessão        
         request.session['sinais'] = sinais
         request.session['sinais_espectro'] = sinais_espectro
+        request.session['sinais_parametros'] = sinais_parametros
+
         request.session.modified = True
 
     # Prepara dados para plotagem
     sinais_para_plotar = []
     espectro_sinais_para_plotar = []
     
+    # Filtra apenas os vetores que foram preenchidos com entradas para ser plotado
     for i, (s_tempo, s_freq) in enumerate(zip(request.session['sinais'], 
                                            request.session['sinais_espectro'])):
         if s_tempo is not None and s_freq is not None:
+            s_tempo
             sinais_para_plotar.append(array(s_tempo))
             espectro_sinais_para_plotar.append(array(s_freq))
 
     # Gera plots
     plot = fc.plotar_sinais_bokeh(vetor_tempo, sinais_para_plotar, cor_grafico='black')
-    plot_freq = fc.plotar_sinais_bokeh(freqs, espectro_sinais_para_plotar, cor_grafico="white")
+    plot_freq = fc.plotar_sinais_bokeh(freqs, espectro_sinais_para_plotar, cor_grafico="white", x_label = "Frequência", y_label = "Magnitude")
 
+    # Gera os scrips Django para mostrar no navegador
     script, div = components(plot)
     script_freq, div_freq = components(plot_freq)
 
+
+    # Contexto a ser enviado pro html
     contexto = {
         'script': script, 
         'div': div,
@@ -105,8 +145,7 @@ def osciloscopio(request):
         'offset': sessao_anterior.get('ultimo_offset', 0), 
         'fase': sessao_anterior.get('ultima_fase', 0),
         'duty': duty,
-        'sinal_ativo': sinal_ativo,
-        'range_1_5': range(1, 6)
+        'sinal_ativo': sinal_ativo
     }
 
     return render(request, 'home/conteudo.html', contexto)
@@ -129,6 +168,43 @@ def forms(request):
     if request.method == "POST":
         amplitude = request.POST.get("amplitude")
         return HttpResponse(f"Amplitude = {amplitude}")
+    
+
+
+def atualizar_duracao_rate(request, nova_duracao, novo_rate):
+    sinais = request.session['sinais']
+    sinais_espectro = request.session['sinais_espectro']
+    sinais_parametros = request.session['sinais_parametros']
+
+
+    for i in range(5):
+        if sinais_parametros[i] is not None:
+
+            # Cria novos parametrõs atualizando rate e duração
+
+            novos_parametros = {
+                **sinais_parametros[i],
+                'duracao': nova_duracao,
+                'rate': novo_rate
+            }
+
+            # Regenera o sinal com os novos parâmetros
+            vetor_tempo, sinal_atualizado = fc.gerar_sinal(novos_parametros)
+            freqs, magnitude_atualizada = fc.transformada_fourier(vetor_tempo, sinal_atualizado)
+            
+            # Atualiza as listas
+            sinais[i] = sinal_atualizado.tolist()
+            sinais_espectro[i] = magnitude_atualizada.tolist()
+            sinais_parametros[i] = novos_parametros
+    
+    # Atualiza a sessão
+    request.session['sinais'] = sinais
+    request.session['sinais_espectro'] = sinais_espectro
+    request.session['sinais_parametros'] = sinais_parametros
+    request.session.modified = True
+
+
+    
 
 def resgatar_formulario(request):
 
@@ -153,7 +229,7 @@ def resgatar_formulario(request):
             'duty': duty
         }
     except ValueError:
-            return JsonResponse({'status': 'error', 'message': 'Amplitude inválida'}, status=400)
+            return JsonResponse({'status': 'error', 'message': 'Entradas inválida'}, status=400)
 
     return parametros
 

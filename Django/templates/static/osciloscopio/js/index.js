@@ -17,6 +17,8 @@ function iniciarAbas() {
     mostrarDivDuty(); // Configura estado inicial
 }
 
+
+// ATIVAR AS ABAS
 function ativarAba(sinal) {
     // Remove classe active de todas as abas
     document.querySelectorAll('.botao-sinal').forEach(aba => {
@@ -51,8 +53,40 @@ function mostrarDivDuty() {
     }
 }
 
+function trocarAbas(aba_clicada){
+    
+    document.querySelectorAll('.aba-btn').forEach(button => {
+        button.classList.remove('active');
+    });
+
+    document.querySelectorAll('.grafico').forEach(grafico =>{
+        grafico.style.display = 'none';
+    })
 
 
+    const aba_ativa = document.querySelector(`.aba-btn#btn-${aba_clicada}`);
+    const grafico_ativo = document.querySelector(`.grafico#grafico_${aba_clicada}`)
+
+    if (aba_ativa) {
+        aba_ativa.classList.add('active');
+    } else {
+        window.alert('Essa aba não existe');
+    }
+
+    if (grafico_ativo) {
+        grafico_ativo.style.display = 'flex';
+    } else{
+        window.alert('Esse gráfico não existe');
+    }
+
+}
+
+
+// Inicializa o dom
 document.addEventListener('DOMContentLoaded', function() {
     iniciarAbas();
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+trocarAbas('tempo');
 });

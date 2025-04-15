@@ -1,11 +1,11 @@
 <div id = "aba-central">
     <div class="barra-aplicacoes">
-            <div id = "aba-osciloscopio" class ="aba-aplicacao" data-aba = "tempo">
-                <button class = "aba-btn active">Domínio do tempo</button>
+            <div id = "aba-osciloscopio" class ="aba-aplicacao" data-aba = "tempo" >
+                <button class = "aba-btn active" id = "btn-tempo" onclick = "trocarAbas('tempo')">Domínio do tempo</button>
             </div>
 
-            <div id = "aba-espectro" class="aba-aplicacao" data-aba = "frequencia">
-                <button class = "aba-btn" >Espectro</button>
+            <div id = "aba-espectro" class="aba-aplicacao" data-aba = "frequencia"  >
+                <button class = "aba-btn" onclick = "trocarAbas('frequencia')" id = "btn-frequencia" >Espectro</button>
             </div>
     </div>
 
@@ -27,19 +27,3 @@
 
     </div>  
 </div>
-
-<!-- Scripts do Bokeh -->
-
-
-<!--
-
-        <div class="popup">
-            
-            <div class="popup-conteudo">
-                  <h3>Título do Pop-up</h2>
-                      <p>Este pop-up usa JavaScript para controle avançado.</p>
-                  <button class="fechar">&times;</button>
-            </div>
-          </div>
-
--->
