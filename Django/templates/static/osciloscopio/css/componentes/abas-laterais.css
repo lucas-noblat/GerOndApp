@@ -99,7 +99,6 @@ flex: 1;
 }
 
 .botao-sinal.active{
-    border: 2px solid #007bff;
     font: Helvetica;
     font-weight: bold;
 

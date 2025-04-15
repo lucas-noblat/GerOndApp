@@ -20,27 +20,44 @@ function iniciarAbas() {
 
 // ATIVAR AS ABAS
 function ativarAba(sinal) {
+
     // Remove classe active de todas as abas
     document.querySelectorAll('.botao-sinal').forEach(aba => {
         aba.classList.remove('active');
+        aba.style.border = "";
     });
     
-    // Ativa a aba clicada
+    // Ativa a aba clicada (botão)
     const abaAtiva = document.querySelector(`.botao-sinal[data-sinal="${sinal}"]`);
     if (abaAtiva) {
-        abaAtiva.classList.add('active');
+
+        abaAtiva.classList.add('active');        
+        const coresAbas = {
+            1: "2px solid blue",
+            2: "2px solid orange",
+            3: "2px solid green",
+            4: "2px solid red",
+            5: "2px solid purple"
+        }
+
+        abaAtiva.style.border = coresAbas[sinal] || "2px solid blue";
     }
     
+    // Atualiza o html com as entradas do sinal clicado
+
     // Atualiza campo hidden
     document.getElementById('numero_sinal').value = sinal;
     console.log(`Aba ${sinal} ativada`); // Debug
 }
+
 
 function mostrarDivDuty() {
     const forma = document.getElementById('entrada-forma-sinal').value;
     const dutyDiv = document.getElementById('grupo-duty');
     const dutyInput = document.getElementById('entrada-duty');
     
+
+    // Mostra a div do duty apenas se a forma for triangular ou quadrada
     if (forma === "quadrada" || forma === "triangular") {
         dutyDiv.style.display = "flex";
         dutyInput.disabled = false;

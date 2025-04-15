@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from . import functions as fc
 from numpy import array
+from json import dumps
 
 # Bokeh
 
@@ -19,12 +20,10 @@ def osciloscopio(request):
     rate = 1000
     parametros = []
 
-    # Inicializa as listas de sinais
+    # Inicializa as listas de sinais de uma só vez
     if 'sinais' not in request.session:
         request.session['sinais'] = [None] * 5
-    elif 'sinais_espectro' not in request.session:
         request.session['sinais_espectro'] = [None] * 5
-    elif 'sinais_parametros' not in request.session:
         request.session['sinais_parametros'] = [None] * 5
 
     # Obtém o sinal ativo
@@ -130,6 +129,11 @@ def osciloscopio(request):
     script_freq, div_freq = components(plot_freq)
 
 
+
+    # Converte todos os parâmetros dos sinais para JSON para ser mostrado cada sinal com seu parâmetro
+
+    sinais_json = dumps(request.session.get('sinais_parametros', [{}]*5))
+
     # Contexto a ser enviado pro html
     contexto = {
         'script': script, 
@@ -145,7 +149,8 @@ def osciloscopio(request):
         'offset': sessao_anterior.get('ultimo_offset', 0), 
         'fase': sessao_anterior.get('ultima_fase', 0),
         'duty': duty,
-        'sinal_ativo': sinal_ativo
+        'sinal_ativo': sinal_ativo,
+        'sinais_json': sinais_json
     }
 
     return render(request, 'home/conteudo.html', contexto)
