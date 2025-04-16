@@ -40,11 +40,10 @@ function ativarAba(sinal) {
             5: "2px solid purple"
         }
 
+        // Define a cor da aba dependendo do sinal, por padrão é azul
         abaAtiva.style.border = coresAbas[sinal] || "2px solid blue";
     }
     
-    // Atualiza o html com as entradas do sinal clicado
-
     // Atualiza campo hidden
     document.getElementById('numero_sinal').value = sinal;
     console.log(`Aba ${sinal} ativada`); // Debug
@@ -63,10 +62,13 @@ function mostrarDivDuty() {
         dutyInput.disabled = false;
         dutyInput.required = true;
         dutyDiv.style.width = "50%";
+        document.getElementById('container-input').style.height = "50%";
     } else {
         dutyDiv.style.display = "none";
         dutyInput.disabled = true;
         dutyInput.required = false;
+        document.getElementById('container-input').style.height = "60%";
+
     }
 }
 

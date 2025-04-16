@@ -75,12 +75,14 @@ def plotar_sinais_bokeh(vetor_x,
 
 
     # Plota cada sinal
-    for i, lista_vetores_y in enumerate(lista_vetores_y):
-        # Cria um ColumnDataSource para armazenar os dados
-        #fonte = ColumnDataSource(data={'x': vetor_x, 'y': vetor_y})
+    for i, vetor_y in enumerate(lista_vetores_y):
 
-        # Adiciona a linha ao gráfico com uma cor da paleta
-        p.line(vetor_x, lista_vetores_y, line_width=2, legend_label=f'Sinal {i+1}', line_color=cores[i], line_alpha = alpha)
+        # Plota os sinais em sequência, dá legenda genérica aos sinais e 'resultante' para a resultante
+        if vetor_y is not None:
+            p.line(vetor_x, vetor_y, line_width=2, legend_label=f'Sinal {i+1}', line_color=cores[i], line_alpha = alpha)
+        else:
+            p.line(vetor_x, vetor_y, line_width=2, legend_label='Resultante', line_color='white', line_alpha = alpha)
+
 
     # Configurando tamanho da fonte
 
