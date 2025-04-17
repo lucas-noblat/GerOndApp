@@ -73,14 +73,31 @@
         </div>
     </div>
 
-    <!-- Duty -->
 
+    <div class = "container-par-entradas">
+
+        <!-- Duty -->
         <div class="form-group" id="grupo-duty" style="display: none;">
             <label for="entrada-duty" class="form-label">Duty</label>
                 <div class="form-number">
                     <input type="number" name="entrada-duty" id="entrada-duty" min= 0 max = 1 step = 0.05 value = {{duty}}>
                 </div>            
         </div>
+        
+        <!-- Operação -->
+        <div class="form-group" id="grupo-operacao">
+                    <label for="entrada-operacao" class="form-label">Operação</label>
+                    <div class="form-select" id = "select-operacao">
+                        <select name="entrada-operacao" id="entrada-operacao" value = "soma" >
+                            <option value="soma"   selected>+</option>
+                            <option value="subtracao"  >-</option>
+                            <option value="multiplicacao" >*</option>
+                            <option value="divisao" >/</option>
+                        </select>        
+                    </div>                  
+        </div>
+
+    </div>
 
 
     <button type="submit" id="botao-input" >Gerar sinal</button>

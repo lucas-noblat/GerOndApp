@@ -61,14 +61,11 @@ function mostrarDivDuty() {
         dutyDiv.style.display = "flex";
         dutyInput.disabled = false;
         dutyInput.required = true;
-        dutyDiv.style.width = "50%";
-        document.getElementById('container-input').style.height = "50%";
+        
     } else {
         dutyDiv.style.display = "none";
         dutyInput.disabled = true;
         dutyInput.required = false;
-        document.getElementById('container-input').style.height = "60%";
-
     }
 }
 
@@ -99,6 +96,20 @@ function trocarAbas(aba_clicada){
     }
 
 }
+
+
+// LÓGICA AJAX para atualização em tempo real
+
+/*
+
+document.getElementById("entrada-amplitude").addEventListener("input", function(){
+    const amplitude = this.value;
+    const csrfTokeh = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    fetch("")
+
+})
+    */ 
 
 
 // Inicializa o dom
