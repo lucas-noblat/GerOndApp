@@ -97,76 +97,118 @@ function trocarAbas(aba_clicada){
 
 }
 
+
+
+
 // Função para receber dados (BACKEND -> FRONTEND)
 
 function getData(){
 
-    return new Promise (() => {
-        fetch("http://127.0.0.1:8000/api/getData/")
-        .then(response => {
-            if(!response.ok){
-                throw new Error ("Não foi possível carregar a API");
-            }
-            return response.json();})
-        .then(dados => {
-            console.log(dados.nome);
-        })
-        .catch(error => {
-            console.error(error);
-        });
-    });
+        try{
+            fetch("http://127.0.0.1:8000/api/getData/")
+            .then(response => {
+                if(!response.ok){
+                    throw new Error ("Não foi possível carregar a API");
+                }
+                return response.json();})
+            .then(dados => {
+                console.log(dados.nome);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+        } catch(error){
+            throw error;
+        }
+
 }
 
 // Função para enviar dados (FRONTEND -> BACKEND)
 
 function sendData(){
-    return new Promise(() => {
-        fetch("http://127.0.0.1:8000/api/sendData/",{
-            method: 'POST',
-            headers: {'Content-Type': 'application/json' },
-            body : JSON.stringify([123, 33, 44443, 0])
-            
+
+        const parametros = receberParametros();
+
+
+        try{
+            fetch("http://127.0.0.1:8000/api/sendData/", {
+                method: 'POST',
+                headers: { 'Content-Type' : 'application/json'},
+                body: JSON.stringify({
+                      'amplitude': parametros.amplitude,
+                      'rate': parametros.rate,
+                      'frequencia': parametros.frequencia,
+                      'duracao': parametros.duracao,
+                      'offset': parametros.offset,
+                      'fase': parametros.fase,
+                      'operacao': parametros.operacao,
+                      'duty': parametros.duty,
+                      'forma_sinal': parametros.forma_sinal,
+
+                      'div': parametros.div
+                })
             })
             .then(response => {
-                console.log(response);
+                //console.log(response);
                 if(!response.ok){
-                    throw new Error ("Algo deu errado ao enviar os dados a API");
+                    throw new Error("Não foi possível resgatar api");
                 }
-                return response.json()})
+                const dadosNovos = response.json();
+                return dadosNovos;
+            })
             .then(dados => {
-                console.log(dados)})
+                console.log(dados);
+            })
             .catch(error => console.error(error));
-    });
+        } catch(error){
+            throw error;
+        }
+ 
 }
+
+// RECEBE OS DADOS DO PARÂMETRO
+
+function receberParametros(){
+    const parametros = {
+        amplitude: document.getElementById("entrada-amplitude").value,
+        rate: document.getElementById("entrada-rate").value,
+        frequencia: document.getElementById("entrada-frequencia").value,
+        duracao: document.getElementById("entrada-duracao").value,
+        fase: document.getElementById("entrada-fase").value,
+        offset: document.getElementById("entrada-offset").value,
+        operacao: document.getElementById("entrada-operacao").value,
+        duty: document.getElementById("entrada-duty").value,
+        forma_sinal: document.getElementById("entrada-forma-sinal").value,
+        div: document.getElementById("grafico_tempo").innerHTML
+    }
+    return parametros;
+}
+
 
 // Função assíncrona que irá atualizar os dados
 
 async function atualizarAPI(){
 
-   const resultadoGetData = await getData();
-   console.log(resultadoGetData);
-
-   const resultadoSendData = await sendData();
-   console.log(resultadoSendData);
+    try{
+        const resultadoGetData = await getData();
+        console.log(resultadoGetData);
+     
+        const resultadoSendData = await sendData();
+        console.log(resultadoSendData);
+    } catch(error){
+        console.error(error);
+    }
 
 }
 
 
-fetch("http://127.0.0.1:8000/api/sendData/",{
-    method: 'POST',
-    headers: {'Content-Type': 'application/json' },
-    body : JSON.stringify([123, 33, 44443, 0])
-    
-    })
-    .then(response => {
-        console.log(response);
-        if(!response.ok){
-            throw new Error ("Algo deu errado ao enviar os dados a API");
-        }
-        return response.json()})
-    .then(dados => {
-        console.log(dados)})
-    .catch(error => console.error(error));
+// FUNÇÃO PARA ATUALIZAR O GRAFICO
+
+function atualizarGraficoBokeh(dados) {
+    const graf = document.getElementById("grafico_tempo");
+
+}
+
 
 // Inicializa o dom
 
@@ -175,6 +217,15 @@ document.addEventListener('DOMContentLoaded', function() {
     trocarAbas('tempo');
     atualizarAPI();
 });
+
+
+const amplitude = document.getElementById("entrada-amplitude");
+
+amplitude.addEventListener("change", function() {
+    atualizarAPI();
+})
+
+
 
 
 

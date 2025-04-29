@@ -1,6 +1,5 @@
 # Bibliotecas utilizadas
 
-import matplotlib.pyplot as plt
 from scipy.signal import square, sawtooth
 from numpy import linspace, sin, pi, random, abs, fft, array
 

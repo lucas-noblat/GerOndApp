@@ -13,6 +13,8 @@ def osciloscopio(request):
     div = None
     sessao_anterior = request.session
 
+    
+
     # Define os valores que serão utilizados para todos os sinais
 
     duty = float(0.5)
@@ -37,6 +39,7 @@ def osciloscopio(request):
     request.session['sinal_ativo'] = sinal_ativo
 
     if request.method == "GET":
+        
         parametros = {
             'forma_sinal': 'senoidal',
             'amplitude': 1,
@@ -77,6 +80,13 @@ def osciloscopio(request):
 
     elif request.method == "POST":
 
+        import json
+        # Carrega o arquivo JSON
+
+        dados = json.loads(request.body)
+        
+
+
         # Resgata entradas anteriores
         resgatarEntradas(sessao_anterior, request)
 
@@ -94,7 +104,7 @@ def osciloscopio(request):
         sinais_parametros = request.session['sinais_parametros']
         
         # Gera o sinal e sua frequência baseado nos parametros de entrada 
-        vetor_tempo, sinal = fc.gerar_sinal(parametros)
+        vetor_tempo, sinal = fc.gerar_sinal(dados)
         freqs, magnitude = fc.transformada_fourier(vetor_tempo, sinal)
         
         # Recebe o ultimo duty
