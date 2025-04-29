@@ -97,26 +97,86 @@ function trocarAbas(aba_clicada){
 
 }
 
+// Função para receber dados (BACKEND -> FRONTEND)
 
-// LÓGICA AJAX para atualização em tempo real
+function getData(){
 
-/*
+    return new Promise (() => {
+        fetch("http://127.0.0.1:8000/api/getData/")
+        .then(response => {
+            if(!response.ok){
+                throw new Error ("Não foi possível carregar a API");
+            }
+            return response.json();})
+        .then(dados => {
+            console.log(dados.nome);
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    });
+}
 
-document.getElementById("entrada-amplitude").addEventListener("input", function(){
-    const amplitude = this.value;
-    const csrfTokeh = document.querySelector('[name=csrfmiddlewaretoken]').value;
+// Função para enviar dados (FRONTEND -> BACKEND)
 
-    fetch("")
+function sendData(){
+    return new Promise(() => {
+        fetch("http://127.0.0.1:8000/api/sendData/",{
+            method: 'POST',
+            headers: {'Content-Type': 'application/json' },
+            body : JSON.stringify([123, 33, 44443, 0])
+            
+            })
+            .then(response => {
+                console.log(response);
+                if(!response.ok){
+                    throw new Error ("Algo deu errado ao enviar os dados a API");
+                }
+                return response.json()})
+            .then(dados => {
+                console.log(dados)})
+            .catch(error => console.error(error));
+    });
+}
 
-})
-    */ 
+// Função assíncrona que irá atualizar os dados
 
+async function atualizarAPI(){
+
+   const resultadoGetData = await getData();
+   console.log(resultadoGetData);
+
+   const resultadoSendData = await sendData();
+   console.log(resultadoSendData);
+
+}
+
+
+fetch("http://127.0.0.1:8000/api/sendData/",{
+    method: 'POST',
+    headers: {'Content-Type': 'application/json' },
+    body : JSON.stringify([123, 33, 44443, 0])
+    
+    })
+    .then(response => {
+        console.log(response);
+        if(!response.ok){
+            throw new Error ("Algo deu errado ao enviar os dados a API");
+        }
+        return response.json()})
+    .then(dados => {
+        console.log(dados)})
+    .catch(error => console.error(error));
 
 // Inicializa o dom
-document.addEventListener('DOMContentLoaded', function() {
-    iniciarAbas();
-});
 
 document.addEventListener('DOMContentLoaded', function() {
-trocarAbas('tempo');
+    iniciarAbas();
+    trocarAbas('tempo');
+    atualizarAPI();
 });
+
+
+
+
+
