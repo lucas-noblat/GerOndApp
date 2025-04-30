@@ -7,7 +7,7 @@ from numpy import linspace, sin, pi, random, abs, fft, array
 # Bokeh
 
 from bokeh.plotting import figure, show # Para criar a figure e mostra-la
-from bokeh.io import output_notebook  # Para exibir no Jupyter Notebook
+from bokeh.io import output_notebook, curdoc  # Para exibir no Jupyter Notebook
 from bokeh.models import ColumnDataSource # Para atualizar em tempo real
 from bokeh.palettes import Category10  # Paleta de cores para os sinais
 import warnings
@@ -64,13 +64,13 @@ def plotar_sinais_bokeh(vetor_x,
             vetor_y = [0] * len(vetor_x)
 
         # Cria um ColumnDataSource para esse sinal
-        source = ColumnDataSource(data={'x': vetor_x, 'y': vetor_y})
+        source = ColumnDataSource(data={'x': vetor_x, 'y': vetor_y}, name = "databaseInternoBokeh" + f"{i}")
         sources.append(source)
-        source.name = "databaseInternoBokeh"
 
         legenda = f'Sinal {i+1}' if i < 5 else 'Resultante'
         p.line('x', 'y', source=source, line_width=2, legend_label=legenda,
                line_color=cores[i], line_alpha=alpha)
+        
 
     # Fontes
     font_size = str(tamanho_fonte) + 'pt'
@@ -100,6 +100,10 @@ def plotar_sinais_bokeh(vetor_x,
     # Legenda
     p.legend.location = "top_left"
     p.legend.click_policy = "hide"
+
+    # Adiciona a figura ao objeto correspondente a sessão bokeh nesse momento
+
+    curdoc().add_root(p)
 
     # Retorna a figura e os sources para uso externo
     return p, sources

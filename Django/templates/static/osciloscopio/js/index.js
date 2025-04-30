@@ -161,9 +161,7 @@ function receberParametros(){
         offset: parseFloat(document.getElementById("entrada-offset").value),
         operacao: document.getElementById("entrada-operacao").value,
         duty: parseFloat(document.getElementById("entrada-duty").value),
-        forma_sinal: document.getElementById("entrada-forma-sinal").value,
-        div: document.getElementById("grafico_tempo").innerHTML
-    }
+        forma_sinal: document.getElementById("entrada-forma-sinal").value}
     return parametros;
 }
 
@@ -174,12 +172,14 @@ async function atualizarAPI(){
 
     try{
         const resultadoGetData = await getData();
-        console.log(resultadoGetData);
+        //console.log(resultadoGetData);
      
         const resultadoSendData = await sendData();
-        console.log(resultadoSendData);
+        //console.log(resultadoSendData);
 
-        const source = Bokeh.documents[0].get_model_by_name("databaseInternoBokeh");
+        const source = Bokeh.documents[0].get_model_by_name("databaseInternoBokeh0");
+
+        console.log(resultadoSendData['amplitude']);
 
         if(source && resultadoSendData){            
             source.data.x = resultadoSendData.x;
@@ -215,10 +215,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 const amplitude = document.getElementById("entrada-amplitude");
+const frequencia = document.getElementById("entrada-frequencia");
+
 
 amplitude.addEventListener("change", function() {
     atualizarAPI();
 })
+
+frequencia.addEventListener("change", function() {
+    atualizarAPI();
+})
+
 
 
 
