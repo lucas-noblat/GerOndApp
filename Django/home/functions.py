@@ -23,110 +23,86 @@ taxaAmostragem = 1000 #Hz/s
 
 # FUNÇÃO PARA PLOTAR 1 SÉRIE EM GRÁFICO
 
+from bokeh.plotting import figure
+from bokeh.models import ColumnDataSource
+from bokeh.palettes import Category10
+import warnings
+
 def plotar_sinais_bokeh(vetor_x, 
                         lista_vetores_y,
                         x_label="Tempo (s)", 
                         y_label="Amplitude",
-                        alpha = 1, 
-                        cor_grafico = "white",
-                        tamanho_fonte = 16):
+                        alpha=1, 
+                        cor_grafico="white",
+                        tamanho_fonte=16):
     """
-    Plota até 6 sinais em um único gráfico usando a biblioteca Bokeh.
-
-    Parâmetros:
-    vetor_x: Vetor de valores para o eixo x (tempo ou frequência).
-    lista_vetores_y: Lista de vetores de valores para o eixo y (amplitude ou magnitude).
-    titulo: Título do gráfico.
-    x_label: Rótulo do eixo x.
-    y_label: Rótulo do eixo y.
-    largura: Largura do gráfico em pixels (padrão: 1280).
-    altura: Altura do gráfico em pixels (padrão: 400).
-    is_spectrum: Se True, ajusta os limites do eixo x usando o Teorema de Nyquist.
-    alpha: Visibilidade das linhas, 0 para invisível, 1 para totalmente visível.
-    cor_grafico: Cor do gráfico
-    tamanho_fonte: Tamanho da fonte
-
-    Saída: Até seis sinais plotados na tela (5 sinais e a resultante)
+    Plota até 6 sinais em um único gráfico usando a biblioteca Bokeh com ColumnDataSource.
     """
-    # Configura o ambiente do Bokeh (opcional, apenas para Jupyter Notebook)
-    #output_notebook()
 
-    # Verifica se há mais de 6 sinais
     if len(lista_vetores_y) > 6:
         warnings.warn("A função suporta no máximo 6 sinais. Apenas os primeiros 6 serão plotados.")
-        lista_vetores_y = lista_vetores_y[:6]  # Limita a lista aos primeiros 6 sinais
+        lista_vetores_y = lista_vetores_y[:6]
 
-    # Cria a figura do Bokeh
+    # Cria figura
     p = figure(
         x_axis_label=x_label,
         y_axis_label=y_label,
-        sizing_mode = "stretch_both",       
-        tools="pan,box_zoom,wheel_zoom,reset,save")
-
-    # Configurando as teclas de atalho para s ferramentas
-    
+        sizing_mode="stretch_both",
+        tools="pan,box_zoom,wheel_zoom,reset,save"
+    )
     p.toolbar.active_drag = p.tools[0]
 
-
-
-    # Paleta de cores para os sinais (6 cores)
+    # Cores
     cores = Category10[6]
+    
+    # Lista para guardar os ColumnDataSources
+    sources = []
 
-
-    # Plota cada sinal
+    # Plota cada sinal com ColumnDataSource
     for i, vetor_y in enumerate(lista_vetores_y):
+        if vetor_y is None:
+            vetor_y = [0] * len(vetor_x)
 
-        # Plota os sinais em sequência, dá legenda genérica aos sinais e 'resultante' para a resultante
-        if vetor_y is not None:
-            p.line(vetor_x, vetor_y, line_width=2, legend_label=f'Sinal {i+1}', line_color=cores[i], line_alpha = alpha)
-        else:
-            p.line(vetor_x, vetor_y, line_width=2, legend_label='Resultante', line_color='white', line_alpha = alpha)
+        # Cria um ColumnDataSource para esse sinal
+        source = ColumnDataSource(data={'x': vetor_x, 'y': vetor_y})
+        sources.append(source)
+        source.name = "databaseInternoBokeh"
 
+        legenda = f'Sinal {i+1}' if i < 5 else 'Resultante'
+        p.line('x', 'y', source=source, line_width=2, legend_label=legenda,
+               line_color=cores[i], line_alpha=alpha)
 
-    # Configurando tamanho da fonte
-
+    # Fontes
     font_size = str(tamanho_fonte) + 'pt'
-    p.xaxis.major_label_text_font_size = font_size  # Tamanho da fonte dos números do eixo X
-    p.yaxis.major_label_text_font_size = font_size  # Tamanho da fonte dos números eixo Y 
-    p.xaxis.axis_label_text_font_size = font_size   # Tamanho da fonte do nome do eixo X
-    p.yaxis.axis_label_text_font_size = font_size   # Tamanho da fonte do nome do eixo Y
+    p.xaxis.major_label_text_font_size = font_size
+    p.yaxis.major_label_text_font_size = font_size
+    p.xaxis.axis_label_text_font_size = font_size
+    p.yaxis.axis_label_text_font_size = font_size
 
-
-    # Colorindo o fundo do gráfico e a borda
-
+    # Cor de fundo e borda
     p.background_fill_color = cor_grafico
     p.border_fill_color = cor_grafico
 
+    if cor_grafico == "white":
+        cor = "black"
+    elif cor_grafico == "black":
+        cor = "white"
+    else:
+        cor = "black"
 
-    # Colorindo o nome dos eixos dependendo da cor do gráfico
+    p.xaxis.axis_label_text_color = cor
+    p.yaxis.axis_label_text_color = cor
+    p.legend.background_fill_color = cor_grafico
+    p.legend.label_text_color = cor
+    p.xaxis.major_label_text_color = cor
+    p.yaxis.major_label_text_color = cor
 
-    if(cor_grafico == "white"):
-        p.xaxis.axis_label_text_color = "black"  
-        p.yaxis.axis_label_text_color = "black"
-        p.legend.background_fill_color = "white"
-        p.legend.label_text_color = "black"
-        p.xaxis.major_label_text_color = "black"
-        p.yaxis.major_label_text_color = "black"
-
-
-    elif(cor_grafico == "black"):
-        p.xaxis.axis_label_text_color = "white"  
-        p.yaxis.axis_label_text_color = "white"
-        p.legend.background_fill_color = "black"
-        p.legend.label_text_color = "white"
-        p.xaxis.major_label_text_color = "white"
-        p.yaxis.major_label_text_color = "white"
-
-
-    # Configura as configurações principais da legenda
-
+    # Legenda
     p.legend.location = "top_left"
-    p.legend.click_policy = "hide"  # Permite ocultar as linhas ao clicar na legenda
+    p.legend.click_policy = "hide"
 
-    # Exibe o gráfico
-
-
-    return p
+    # Retorna a figura e os sources para uso externo
+    return p, sources
 
 ''' FUNÇÕES MATEMÁTICAS PARA CRIAR OS SINAIS '''
 

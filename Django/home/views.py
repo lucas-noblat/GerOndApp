@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from . import functions as fc
 from numpy import array
+import json
 from json import dumps
 
 # Bokeh
@@ -80,7 +81,6 @@ def osciloscopio(request):
 
     elif request.method == "POST":
 
-        import json
         # Carrega o arquivo JSON
 
         dados = json.loads(request.body)
@@ -137,8 +137,8 @@ def osciloscopio(request):
     # Adiciona a resultante
 
     # Gera plots
-    plot = fc.plotar_sinais_bokeh(vetor_tempo, sinais_para_plotar, cor_grafico='black')
-    plot_freq = fc.plotar_sinais_bokeh(freqs, espectro_sinais_para_plotar, cor_grafico="white", x_label = "Frequência", y_label = "Magnitude")
+    plot = fc.plotar_sinais_bokeh(vetor_tempo, sinais_para_plotar, cor_grafico='black')[0]
+    plot_freq = fc.plotar_sinais_bokeh(freqs, espectro_sinais_para_plotar, cor_grafico="white", x_label = "Frequência", y_label = "Magnitude")[0]
 
     # Gera os scrips Django para mostrar no navegador
     script, div = components(plot)
@@ -229,6 +229,8 @@ def atualizar_duracao_rate(request, nova_duracao, novo_rate):
 
 def resgatar_formulario(request):
 
+    dados = json.loads(request.body)
+
 
     # Proteção contra primeira entrada vazia do duty
 
@@ -240,7 +242,7 @@ def resgatar_formulario(request):
     # Criando um dicionário com os parâmetros envolvidos
     try:
         parametros = {
-            'amplitude': float(request.POST.get("entrada-amplitude", 1.0)),
+            'amplitude': float(dados.get("amplitude", 1)),
             'frequencia': float(request.POST.get("entrada-frequencia", 1.0)),
             'rate': float(request.POST.get("entrada-rate", 1000.0)),
             'duracao': float(request.POST.get("entrada-duracao", 1.0)),

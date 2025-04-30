@@ -125,41 +125,24 @@ function getData(){
 
 // Função para enviar dados (FRONTEND -> BACKEND)
 
-function sendData(){
+async function sendData(){
 
         const parametros = receberParametros();
 
 
         try{
-            fetch("http://127.0.0.1:8000/api/sendData/", {
+            const response = await fetch("http://127.0.0.1:8000/api/sendData/", {
                 method: 'POST',
                 headers: { 'Content-Type' : 'application/json'},
-                body: JSON.stringify({
-                      'amplitude': parametros.amplitude,
-                      'rate': parametros.rate,
-                      'frequencia': parametros.frequencia,
-                      'duracao': parametros.duracao,
-                      'offset': parametros.offset,
-                      'fase': parametros.fase,
-                      'operacao': parametros.operacao,
-                      'duty': parametros.duty,
-                      'forma_sinal': parametros.forma_sinal,
+                body: JSON.stringify(parametros)
+            })
 
-                      'div': parametros.div
-                })
-            })
-            .then(response => {
-                //console.log(response);
-                if(!response.ok){
-                    throw new Error("Não foi possível resgatar api");
-                }
-                const dadosNovos = response.json();
+            if(!response.ok){
+                throw new Error("Não foi possível resgatar api");}
+            
+                const dadosNovos = await response.json();
+                console.log(dadosNovos);
                 return dadosNovos;
-            })
-            .then(dados => {
-                console.log(dados);
-            })
-            .catch(error => console.error(error));
         } catch(error){
             throw error;
         }
@@ -170,14 +153,14 @@ function sendData(){
 
 function receberParametros(){
     const parametros = {
-        amplitude: document.getElementById("entrada-amplitude").value,
-        rate: document.getElementById("entrada-rate").value,
-        frequencia: document.getElementById("entrada-frequencia").value,
-        duracao: document.getElementById("entrada-duracao").value,
-        fase: document.getElementById("entrada-fase").value,
-        offset: document.getElementById("entrada-offset").value,
+        amplitude: parseFloat(document.getElementById("entrada-amplitude").value),
+        rate: parseFloat(document.getElementById("entrada-rate").value),
+        frequencia: parseFloat(document.getElementById("entrada-frequencia").value),
+        duracao: parseFloat(document.getElementById("entrada-duracao").value),
+        fase: parseFloat(document.getElementById("entrada-fase").value),
+        offset: parseFloat(document.getElementById("entrada-offset").value),
         operacao: document.getElementById("entrada-operacao").value,
-        duty: document.getElementById("entrada-duty").value,
+        duty: parseFloat(document.getElementById("entrada-duty").value),
         forma_sinal: document.getElementById("entrada-forma-sinal").value,
         div: document.getElementById("grafico_tempo").innerHTML
     }
@@ -195,6 +178,18 @@ async function atualizarAPI(){
      
         const resultadoSendData = await sendData();
         console.log(resultadoSendData);
+
+        const source = Bokeh.documents[0].get_model_by_name("databaseInternoBokeh");
+
+        if(source && resultadoSendData){            
+            source.data.x = resultadoSendData.x;
+            source.data.y = resultadoSendData.y;
+            source.change.emit();
+        }
+        else {
+            console.warn("Não foi possível atualizar o gráfico: dados ou source não definidos.");
+        }
+        
     } catch(error){
         console.error(error);
     }

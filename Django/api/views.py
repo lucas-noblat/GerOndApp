@@ -16,7 +16,7 @@ def sendData(request):
    if request.method == "POST":
       import json
       dados = json.loads(request.body)
-      print(dados['div'])
+      print(dados['amplitude'])
 
       return Response(dados)
    return Response({"Método não permitido"}, status = 405)
