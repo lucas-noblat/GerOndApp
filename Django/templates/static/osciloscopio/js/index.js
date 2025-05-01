@@ -155,6 +155,16 @@ async function carregarParametrosSinal(sinal){
         const dados = await getData(sinal);
 
         //console.log(`FORMA SINAL = ${dados['forma_sinal']}`);
+        if(dados['forma_sinal'] == "senoidal" || dados['forma_sinal'] == "ruido-branco"){
+            document.getElementById("grupo-duty").style.display = "None";
+            document.getElementById("entrada-duty").disabled = true;
+
+        }
+        else{
+            document.getElementById("grupo-duty").style.display = "flex";
+            document.getElementById("entrada-duty").disabled = false;
+
+        }
 
         document.getElementById("entrada-amplitude").value = dados['amplitude'];
         document.getElementById("entrada-frequencia").value = dados['frequencia'];
@@ -208,20 +218,25 @@ async function atualizarAPI(){
         console.log(resultadoGetData);
      
         const resultadoSendData = await sendData(sinal);
-        //console.log(resultadoSendData);
+        console.log(resultadoSendData);
 
-        console.log(`databaseInternoBokeh${sinal-1}`);
-        const source = Bokeh.documents[0].get_model_by_name(`databaseInternoBokeh${sinal-1}`);
+        for(let i = 0; i < 5; i++){
 
-        //console.log(resultadoSendData['amplitude']);
+            console.log(`databaseInternoBokeh${i}`);
+            const source = Bokeh.documents[0].get_model_by_name(`databaseInternoBokeh${i}`);
+    
+            //console.log(resultadoSendData['amplitude']);
+    
+            if(source && resultadoSendData && resultadoSendData[i].ativo){            
+                source.data.x = resultadoSendData[i].x;
+                source.data.y = resultadoSendData[i].y;
+                source.change.emit();
 
-        if(source && resultadoSendData){            
-            source.data.x = resultadoSendData.x;
-            source.data.y = resultadoSendData.y;
-            source.change.emit();
-        }
-        else {
-            console.warn("Não foi possível atualizar o gráfico: dados ou source não definidos.");
+                document.getElementById(`cs${i+1}`).style.display = "flex";
+            }
+            else {
+                console.warn("Não foi possível atualizar o gráfico: dados ou source não definidos.");
+            }
         }
         
     } catch(error){
@@ -236,7 +251,6 @@ async function atualizarAPI(){
 function startListeners() {
     const inputs = document.querySelectorAll("input");
     const selects = document.querySelectorAll("select");
-    const sinal = parseInt(document.getElementById("numero_sinal").value);
 
     inputs.forEach(input => {
         input.addEventListener("input", function() {
