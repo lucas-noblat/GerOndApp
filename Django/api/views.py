@@ -56,7 +56,7 @@ def sendData(request):
       sinal["amplitude"] = float(dados.get("amplitude") or sinal["amplitude"])
       sinal["frequencia"] = float(dados.get("frequencia") or sinal["frequencia"])
       sinal["offset"] = float(dados.get("offset") or sinal["offset"])
-      sinal["fase"] = float(dados.get("fase"))
+      sinal["fase"] = float(dados.get("fase")) if dados.get("fase") is not None else 0.0
       sinal["duty"] = float(dados.get("duty") or sinal["duty"])
       sinal["forma_sinal"] = dados.get("forma_sinal") or sinal["forma_sinal"]
       sinal["operacao"] = dados.get("operacao") or sinal["operacao"]
