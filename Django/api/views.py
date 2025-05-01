@@ -40,13 +40,14 @@ def getData(request):
 def sendData(request):
       import json
       dados = json.loads(request.body)
-      sinaisMemoria = sinais_memoria.SINAIS
-
+   
       # Extrai o ID do sinal e converte para int
       sinal_id = int(dados.get("id"))
 
       # Localiza o dicionário do sinal correspondente
-      sinal = next((s for s in sinaisMemoria if s["id"] == sinal_id), None)
+      sinal = next((s for s in sinais_memoria.SINAIS if s["id"] == sinal_id), None)
+
+      print(dados.get("fase"))
 
       if not sinal:
          return Response({"erro": f"Sinal {sinal_id} não encontrado"}, status=404)
@@ -55,7 +56,7 @@ def sendData(request):
       sinal["amplitude"] = float(dados.get("amplitude") or sinal["amplitude"])
       sinal["frequencia"] = float(dados.get("frequencia") or sinal["frequencia"])
       sinal["offset"] = float(dados.get("offset") or sinal["offset"])
-      sinal["fase"] = float(dados.get("fase") or sinal["fase"])
+      sinal["fase"] = float(dados.get("fase"))
       sinal["duty"] = float(dados.get("duty") or sinal["duty"])
       sinal["forma_sinal"] = dados.get("forma_sinal") or sinal["forma_sinal"]
       sinal["operacao"] = dados.get("operacao") or sinal["operacao"]

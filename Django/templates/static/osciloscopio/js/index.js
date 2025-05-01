@@ -178,6 +178,7 @@ async function carregarParametrosSinal(sinal){
 function receberParametros(){
 
     const sinal = document.getElementById('numero_sinal').value;
+    console.log(document.getElementById("entrada-fase").value);
 
     const parametros = {
         id: sinal,
