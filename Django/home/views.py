@@ -58,69 +58,12 @@ def osciloscopio(request):
         vetor_tempo, seno = fc.gerar_sinal(parametros)
         freqs, magnitude = fc.transformada_fourier(vetor_tempo, seno)
 
-        # Inicia sinais com o valor 
-        sinais = request.session['sinais']
-        sinais_espectro = request.session['sinais_espectro']
-        sinais_parametros = request.session['sinais_parametros']
-        
-        # Adiciona sinal a lista (inicialmente vazia)
-        sinais[0] = seno.tolist()
-        sinais_espectro[0] = magnitude.tolist()  # Convertido para lista serializável
-        sinais_parametros[0] = parametros
-        
-
-        # Salva os sinais na sessão Django
-        request.session['sinais'] = sinais
-        request.session['sinais_espectro'] = sinais_espectro
-        request.session['sinais_parametros'] = sinais_parametros
-
-        request.session.modified = True
-
 
         
 
     elif request.method == "POST":
+        print(f'o método é: {request.method}')
 
-        # Carrega o arquivo JSON
-
-        dados = json.loads(request.body)
-        
-
-
-        # Resgata entradas anteriores
-        resgatarEntradas(sessao_anterior, request)
-
-        # Recebe entradas
-        parametros = resgatar_formulario(request)
-
-        # Altera o valor de todos os rates e duração caso o rate for trocado
-
-        if parametros['duracao'] != request.session.get('ultima_duracao') or parametros['rate'] != request.session.get('ultimo_rate'):
-            atualizar_duracao_rate(request, parametros['duracao'], parametros['rate'])
-
-        # Pega os valores relativos a sessão
-        sinais = request.session['sinais']
-        sinais_espectro = request.session['sinais_espectro']
-        sinais_parametros = request.session['sinais_parametros']
-        
-        # Gera o sinal e sua frequência baseado nos parametros de entrada 
-        vetor_tempo, sinal = fc.gerar_sinal(dados)
-        freqs, magnitude = fc.transformada_fourier(vetor_tempo, sinal)
-        
-        # Recebe o ultimo duty
-        duty = sessao_anterior.get('ultimo_duty', 0.5)
-        
-        # Adiciona o sinal a lista
-        sinais[sinal_ativo-1] = sinal.tolist()
-        sinais_espectro[sinal_ativo-1] = magnitude.tolist()  # Convertido para lista serializável
-        sinais_parametros[sinal_ativo-1] = parametros
-
-        # Salva os valores das listas de sinais e parâmetros na sessão        
-        request.session['sinais'] = sinais
-        request.session['sinais_espectro'] = sinais_espectro
-        request.session['sinais_parametros'] = sinais_parametros
-
-        request.session.modified = True
 
     # Prepara dados para plotagem
     sinais_para_plotar = []
@@ -137,8 +80,8 @@ def osciloscopio(request):
     # Adiciona a resultante
 
     # Gera plots
-    plot = fc.plotar_sinais_bokeh(vetor_tempo, sinais_para_plotar, cor_grafico='black')[0]
-    plot_freq = fc.plotar_sinais_bokeh(freqs, espectro_sinais_para_plotar, cor_grafico="white", x_label = "Frequência", y_label = "Magnitude")[0]
+    plot = fc.plotar_sinais_bokeh(cor_grafico='black')[0]
+    plot_freq = fc.plotar_sinais_bokeh(cor_grafico="white", x_label = "Frequência", y_label = "Magnitude")[0]
 
     # Gera os scrips Django para mostrar no navegador
     script, div = components(plot)

@@ -110,7 +110,9 @@ flex: 1;
 
 }
 
-
+#form-entrada{
+    height: 70%;
+}
 #botao-input{
     width: 60%;
     height: 10%;

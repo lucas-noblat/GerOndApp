@@ -9,6 +9,8 @@ function iniciarAbas() {
         btn.addEventListener('click', function() {
             const sinal = this.getAttribute('data-sinal');
             ativarAba(sinal);
+            carregarParametrosSinal(sinal);
+            atualizarAPI();
         });
     });
     
@@ -42,11 +44,16 @@ function ativarAba(sinal) {
 
         // Define a cor da aba dependendo do sinal, por padrão é azul
         abaAtiva.style.border = coresAbas[sinal] || "2px solid blue";
+
+        // Atualiza a URL sem recarregar a página
+        const url = new URL(window.location);
+        url.searchParams.set('sinal', sinal);
+        window.history.pushState({}, '', url);
     }
     
     // Atualiza campo hidden
     document.getElementById('numero_sinal').value = sinal;
-    console.log(`Aba ${sinal} ativada`); // Debug
+    //console.log(`Aba ${sinal} ativada`); // Debug
 }
 
 
@@ -102,36 +109,32 @@ function trocarAbas(aba_clicada){
 
 // Função para receber dados (BACKEND -> FRONTEND)
 
-function getData(){
+async function getData(sinal){
 
         try{
-            fetch("http://127.0.0.1:8000/api/getData/")
-            .then(response => {
-                if(!response.ok){
-                    throw new Error ("Não foi possível carregar a API");
-                }
-                return response.json();})
-            .then(dados => {
-                console.log(dados.nome);
-            })
-            .catch(error => {
-                console.error(error);
-            });
+            const response = await fetch(`http://127.0.0.1:8000/api/getData/?sinal=${sinal}`);
+
+            if(!response.ok){
+                throw new Error ("Não foi possível carregar a API");
+            }
+
+            return response.json();
+     
         } catch(error){
-            throw error;
+            console.error(error);
         }
 
 }
 
 // Função para enviar dados (FRONTEND -> BACKEND)
 
-async function sendData(){
+async function sendData(sinal){
 
         const parametros = receberParametros();
 
 
         try{
-            const response = await fetch("http://127.0.0.1:8000/api/sendData/", {
+            const response = await fetch(`http://127.0.0.1:8000/api/sendData/?sinal=${sinal}`, {
                 method: 'POST',
                 headers: { 'Content-Type' : 'application/json'},
                 body: JSON.stringify(parametros)
@@ -139,20 +142,45 @@ async function sendData(){
 
             if(!response.ok){
                 throw new Error("Não foi possível resgatar api");}
-            
-                const dadosNovos = await response.json();
-                console.log(dadosNovos);
-                return dadosNovos;
+
+            return await response.json();
         } catch(error){
             throw error;
         }
  
 }
 
+async function carregarParametrosSinal(sinal){
+    try{
+        const dados = await getData(sinal);
+
+        //console.log(`FORMA SINAL = ${dados['forma_sinal']}`);
+
+        document.getElementById("entrada-amplitude").value = dados['amplitude'];
+        document.getElementById("entrada-frequencia").value = dados['frequencia'];
+        document.getElementById("entrada-fase").value = dados['fase'];
+        document.getElementById("entrada-offset").value = dados['offset'];
+        document.getElementById("entrada-forma-sinal").value = dados['forma_sinal'];
+        document.getElementById("entrada-operacao").value = dados['operacao'];
+        document.getElementById("entrada-duty").value = dados['duty'];
+    
+        document.getElementById("entrada-duracao").value = dados['duracao'];
+        document.getElementById("entrada-rate").value = dados['rate'];
+
+    }
+    catch(error){
+        console.error(error);
+    }
+}
+
 // RECEBE OS DADOS DO PARÂMETRO
 
 function receberParametros(){
+
+    const sinal = document.getElementById('numero_sinal').value;
+
     const parametros = {
+        id: sinal,
         amplitude: parseFloat(document.getElementById("entrada-amplitude").value),
         rate: parseFloat(document.getElementById("entrada-rate").value),
         frequencia: parseFloat(document.getElementById("entrada-frequencia").value),
@@ -170,16 +198,21 @@ function receberParametros(){
 
 async function atualizarAPI(){
 
+    const sinal =document.getElementById('numero_sinal').value || "1";
+
     try{
-        const resultadoGetData = await getData();
-        //console.log(resultadoGetData);
+
+ 
+        const resultadoGetData = await getData(sinal);
+        console.log(resultadoGetData);
      
-        const resultadoSendData = await sendData();
+        const resultadoSendData = await sendData(sinal);
         //console.log(resultadoSendData);
 
-        const source = Bokeh.documents[0].get_model_by_name("databaseInternoBokeh0");
+        console.log(`databaseInternoBokeh${sinal-1}`);
+        const source = Bokeh.documents[0].get_model_by_name(`databaseInternoBokeh${sinal-1}`);
 
-        console.log(resultadoSendData['amplitude']);
+        //console.log(resultadoSendData['amplitude']);
 
         if(source && resultadoSendData){            
             source.data.x = resultadoSendData.x;
@@ -197,11 +230,25 @@ async function atualizarAPI(){
 }
 
 
-// FUNÇÃO PARA ATUALIZAR O GRAFICO
+// FUNÇÃO PARA ATIVAR OS LISTENERS
 
-function atualizarGraficoBokeh(dados) {
-    const graf = document.getElementById("grafico_tempo");
+function startListeners() {
+    const inputs = document.querySelectorAll("input");
+    const selects = document.querySelectorAll("select");
+    const sinal = parseInt(document.getElementById("numero_sinal").value);
 
+    inputs.forEach(input => {
+        input.addEventListener("input", function() {
+            //console.log(input.id);
+            atualizarAPI();
+        })
+    })
+    
+    selects.forEach(select => {
+        select.addEventListener("change", function(){
+            atualizarAPI();
+        })
+    })
 }
 
 
@@ -210,21 +257,11 @@ function atualizarGraficoBokeh(dados) {
 document.addEventListener('DOMContentLoaded', function() {
     iniciarAbas();
     trocarAbas('tempo');
+    startListeners();
     atualizarAPI();
 });
 
 
-const amplitude = document.getElementById("entrada-amplitude");
-const frequencia = document.getElementById("entrada-frequencia");
-
-
-amplitude.addEventListener("change", function() {
-    atualizarAPI();
-})
-
-frequencia.addEventListener("change", function() {
-    atualizarAPI();
-})
 
 
 

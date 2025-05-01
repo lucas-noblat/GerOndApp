@@ -28,20 +28,16 @@ from bokeh.models import ColumnDataSource
 from bokeh.palettes import Category10
 import warnings
 
-def plotar_sinais_bokeh(vetor_x, 
-                        lista_vetores_y,
+def plotar_sinais_bokeh(
                         x_label="Tempo (s)", 
                         y_label="Amplitude",
                         alpha=1, 
                         cor_grafico="white",
-                        tamanho_fonte=16):
+                        tamanho_fonte=16,
+                        is_spectrum = False):
     """
     Plota até 6 sinais em um único gráfico usando a biblioteca Bokeh com ColumnDataSource.
     """
-
-    if len(lista_vetores_y) > 6:
-        warnings.warn("A função suporta no máximo 6 sinais. Apenas os primeiros 6 serão plotados.")
-        lista_vetores_y = lista_vetores_y[:6]
 
     # Cria figura
     p = figure(
@@ -57,15 +53,19 @@ def plotar_sinais_bokeh(vetor_x,
     
     # Lista para guardar os ColumnDataSources
     sources = []
+    sourcesFreq = []
 
     # Plota cada sinal com ColumnDataSource
-    for i, vetor_y in enumerate(lista_vetores_y):
-        if vetor_y is None:
-            vetor_y = [0] * len(vetor_x)
+    for i in range(6):
 
         # Cria um ColumnDataSource para esse sinal
-        source = ColumnDataSource(data={'x': vetor_x, 'y': vetor_y}, name = "databaseInternoBokeh" + f"{i}")
-        sources.append(source)
+
+        if(is_spectrum):
+            source = ColumnDataSource(data={'x': [], 'y': []}, name = "databaseFreqInternoBokeh" + f"{i}")
+            sourcesFreq.append(source)
+        else:
+            source = ColumnDataSource(data={'x': [], 'y': []}, name = "databaseInternoBokeh" + f"{i}")
+            sources.append(source)
 
         legenda = f'Sinal {i+1}' if i < 5 else 'Resultante'
         p.line('x', 'y', source=source, line_width=2, legend_label=legenda,

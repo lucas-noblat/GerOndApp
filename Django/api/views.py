@@ -10,6 +10,8 @@ sys.path.append(str(caminho_avo))
 # Agora você pode importar o módulo
 from home import functions  # Importa "modulo_pai.py" que está em "pasta_pai/"
 
+from . import sinais_memoria
+
 
 
 from rest_framework.response import Response
@@ -19,27 +21,56 @@ from rest_framework.decorators import api_view
 @api_view(['GET'])
 
 def getData(request):
-   pessoa = {'nome':'Lucas',
-             'idade':5,
-             'altura':1.90}
+
+   sinal_ID = int(request.GET.get('sinal')) #IMPORTANTE CONVERTER
+   sinal = next((sinal for sinal in sinais_memoria.SINAIS if sinal["id"] == sinal_ID), None)
+
+   print("O ID do sinal é=", sinal_ID )
+   print("O sinal tem os parâmetros:", sinal)
+
+   if(sinal):
+      return Response(sinal)
+   else:
+      return Response({'erro': 'Não foi possível acessar o sinal'}, status = 404)
    
-   return Response(pessoa) # RETORNA UM JSON
+
 
 @api_view(['POST'])
 
 def sendData(request):
-   if request.method == "POST":
       import json
       dados = json.loads(request.body)
+      sinaisMemoria = sinais_memoria.SINAIS
 
-      amplitude = float(dados.get("amplitude"))
-      frequencia = float(dados.get("frequencia"))
+      # Extrai o ID do sinal e converte para int
+      sinal_id = int(dados.get("id"))
 
-      vetorX, sinalNovo = functions.sinal_senoidal(amplitude=amplitude, frequencia=frequencia)
+      # Localiza o dicionário do sinal correspondente
+      sinal = next((s for s in sinaisMemoria if s["id"] == sinal_id), None)
+
+      if not sinal:
+         return Response({"erro": f"Sinal {sinal_id} não encontrado"}, status=404)
+
+      # Atualiza os campos do sinal na lista
+      sinal["amplitude"] = float(dados.get("amplitude") or sinal["amplitude"])
+      sinal["frequencia"] = float(dados.get("frequencia") or sinal["frequencia"])
+      sinal["offset"] = float(dados.get("offset") or sinal["offset"])
+      sinal["fase"] = float(dados.get("fase") or sinal["fase"])
+      sinal["duty"] = float(dados.get("duty") or sinal["duty"])
+      sinal["forma_sinal"] = dados.get("forma_sinal") or sinal["forma_sinal"]
+      sinal["operacao"] = dados.get("operacao") or sinal["operacao"]
+
+      
+      for s in sinais_memoria.SINAIS:    
+         s["rate"] = float(dados.get("rate") or sinal["rate"])
+         s["duracao"] = float(dados.get("duracao") or sinal["duracao"])
+
+      # Gera novo sinal com os parâmetros atualizados
+      vetorX, sinalNovo = functions.gerar_sinal(sinal)
+
       
 
-
-      [print(dados[dado]) for dado in dados]
-   return Response({'x': vetorX.tolist(),
-                    'y': sinalNovo.tolist()})
-   return Response({"Método não permitido"}, status = 405)
+      return Response({
+         'x': vetorX.tolist(),
+         'y': sinalNovo.tolist()
+      })
