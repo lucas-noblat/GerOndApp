@@ -71,6 +71,8 @@ def sendData(request):
 
          # Gera novo sinal com os parâmetros atualizados
          vetorX, sinal = (functions.gerar_sinal(s))
+
+         
          sinalAtual = {
              'x' : vetorX.tolist(),
              'y' : sinal.tolist(),
