@@ -65,25 +65,11 @@ def osciloscopio(request):
         print(f'o método é: {request.method}')
 
 
-    # Prepara dados para plotagem
-    sinais_para_plotar = []
-    espectro_sinais_para_plotar = []
-    
-    # Filtra apenas os vetores que foram preenchidos com entradas para ser plotado
-    for i, (s_tempo, s_freq) in enumerate(zip(request.session['sinais'], 
-                                           request.session['sinais_espectro'])):
-        
-        if s_tempo is not None and s_freq is not None:
-            sinais_para_plotar.append(array(s_tempo))
-            espectro_sinais_para_plotar.append(array(s_freq))
-
-    # Adiciona a resultante
-
     # Gera plots
     plot = fc.plotar_sinais_bokeh(cor_grafico='black')[0]
-    plot_freq = fc.plotar_sinais_bokeh(cor_grafico="white", x_label = "Frequência", y_label = "Magnitude")[0]
+    plot_freq = fc.plotar_sinais_bokeh(cor_grafico="white", x_label = "Frequência", y_label = "Magnitude", is_spectrum= True)[0]
 
-    # Gera os scrips Django para mostrar no navegador
+    # Gera os scripts Django para mostrar no navegador
     script, div = components(plot)
     script_freq, div_freq = components(plot_freq)
 

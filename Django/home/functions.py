@@ -59,15 +59,17 @@ def plotar_sinais_bokeh(
     for i in range(6):
 
         # Cria um ColumnDataSource para esse sinal
+        legenda = f'Sinal {i+1}' if i < 5 else 'Resultante'
 
         if(is_spectrum):
-            source = ColumnDataSource(data={'x': [], 'y': []}, name = "databaseFreqInternoBokeh" + f"{i}")
+            source = ColumnDataSource(data={'x': [0], 'y': [0]}, name = "dbf" + f"{i}")
             sourcesFreq.append(source)
+            print(source.name)
         else:
             source = ColumnDataSource(data={'x': [], 'y': []}, name = "databaseInternoBokeh" + f"{i}")
             sources.append(source)
 
-        legenda = f'Sinal {i+1}' if i < 5 else 'Resultante'
+        
         p.line('x', 'y', source=source, line_width=2, legend_label=legenda,
                line_color=cores[i], line_alpha=alpha)
         
@@ -96,6 +98,7 @@ def plotar_sinais_bokeh(
     p.legend.label_text_color = cor
     p.xaxis.major_label_text_color = cor
     p.yaxis.major_label_text_color = cor
+    
 
     # Legenda
     p.legend.location = "top_left"
@@ -106,7 +109,7 @@ def plotar_sinais_bokeh(
     curdoc().add_root(p)
 
     # Retorna a figura e os sources para uso externo
-    return p, sources
+    return p, sourcesFreq if is_spectrum else sources
 
 ''' FUNÇÕES MATEMÁTICAS PARA CRIAR OS SINAIS '''
 

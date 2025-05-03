@@ -70,12 +70,14 @@ def sendData(request):
          
 
          # Gera novo sinal com os parâmetros atualizados
-         vetorX, sinal = (functions.gerar_sinal(s))
-
+         vetorX, sinalTempo = (functions.gerar_sinal(s))
+         frequencia, magnitude = (functions.transformada_fourier(vetorX, sinalTempo))
          
          sinalAtual = {
              'x' : vetorX.tolist(),
-             'y' : sinal.tolist(),
+             'y' : sinalTempo.tolist(),
+             'xFreq': frequencia.tolist(),
+             'yFreq': magnitude.tolist(),
              'ativo' : s["ativo"]
          }
 

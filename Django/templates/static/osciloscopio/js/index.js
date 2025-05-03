@@ -215,27 +215,38 @@ async function atualizarAPI(){
 
  
         const resultadoGetData = await getData(sinal);
-        console.log(resultadoGetData);
+        //console.log(resultadoGetData);
      
         const resultadoSendData = await sendData(sinal);
         console.log(resultadoSendData);
-
+        
         for(let i = 0; i < 5; i++){
 
-            console.log(`databaseInternoBokeh${i}`);
-            const source = Bokeh.documents[0].get_model_by_name(`databaseInternoBokeh${i}`);
-    
-            //console.log(resultadoSendData['amplitude']);
-    
-            if(source && resultadoSendData && resultadoSendData[i].ativo){            
-                source.data.x = resultadoSendData[i].x;
-                source.data.y = resultadoSendData[i].y;
-                source.change.emit();
+            console.log(`Sinal ${i+1}ativo: ${resultadoSendData[i].ativo}`);
 
-                document.getElementById(`cs${i+1}`).style.display = "flex";
-            }
-            else {
-                console.warn("Não foi possível atualizar o gráfico: dados ou source não definidos.");
+            if(resultadoSendData[i].ativo == true){
+                
+                            console.log(`databaseInternoBokeh${i}`);
+                            console.log(`databaseFreqInternoBokeh${i}`);
+
+                            const source = Bokeh.documents[0].get_model_by_name(`databaseInternoBokeh${i}`);
+                            const sourceFreq = Bokeh.documents[1].get_model_by_name(`dbf${i}`)
+                
+                                    
+                            if(source && resultadoSendData ){            
+                                source.data.x = resultadoSendData[i].x;
+                                source.data.y = resultadoSendData[i].y;
+                                source.change.emit();
+                                
+                                sourceFreq.data.x = resultadoSendData[i].xFreq;
+                                sourceFreq.data.y = resultadoSendData[i].yFreq;
+                                source.change.emit();
+                
+                                document.getElementById(`cs${i+1}`).style.display = "flex";
+                            }
+                            else {
+                                console.warn("Não foi possível atualizar o gráfico: dados ou source não definidos.");
+                            }
             }
         }
         
