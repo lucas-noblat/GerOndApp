@@ -281,7 +281,7 @@ def gerar_sinal(parametros):
                                                   num_componentes=num_componentes , 
                                                   duracao=parametros['duracao'], 
                                                   offset=parametros['offset'])
-        return vetor_tempo, sinal
+        return vetor_tempo, array(sinal)
 
 
 # TRANSFORMADA DE FOURIER
@@ -332,4 +332,15 @@ def transformada_fourier(vetor_tempo, sinal, retornar_magnitude=True):
 
 
 
-#FUNÇÃO PARA GERAR SINAIS
+#FUNÇÃO PARA GERAR OPERAÇÕES
+
+def aplicarOperacao(s1, s2, operacao):
+    match (operacao):
+        case "soma":
+            return array(s1 + s2)
+        case "subtracao":
+            return array(s1 - s2)
+        case "multiplicacao":
+            return array(s1 * s2)
+        case "divisao":
+            return array(s1 / s2)

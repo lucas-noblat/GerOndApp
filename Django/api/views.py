@@ -54,24 +54,37 @@ def sendData(request):
 
       # Atualiza os campos do sinal na lista
       sinal["amplitude"] = float(dados.get("amplitude") if dados.get("amplitude") is not None else 0.0)
-      sinal["frequencia"] = float(dados.get("frequencia") or sinal["frequencia"])
+      sinal["frequencia"] = float(dados.get("frequencia") if "frequencia" in dados else sinal["frequencia"])
       sinal["offset"] = float(dados.get("offset") if dados.get("offset") is not None else 0.0)
       sinal["fase"] = float(dados.get("fase")) if dados.get("fase") is not None else 0.0
-      sinal["duty"] = float(dados.get("duty") or sinal["duty"])
+      sinal["duty"] = float(dados.get("duty") if "duty" in dados else sinal["duty"])
       sinal["forma_sinal"] = dados.get("forma_sinal") or sinal["forma_sinal"]
       sinal["operacao"] = dados.get("operacao") or sinal["operacao"]
       sinal["ativo"] = bool(dados.get("ativo") if dados.get("ativo") is not None else True)
 
       sinaisAtivos = []
-      for s in sinais_memoria.SINAIS_PARAMETROS:    
-         s["rate"] = float(dados.get("rate") or sinal["rate"])
+      resultante = None
+      vetorX = []
+       
+      for i, s in enumerate(sinais_memoria.SINAIS_PARAMETROS):    
+         s["rate"] = float(dados["rate"]) if "rate" in dados else s["rate"]
          s["duracao"] = float(dados.get("duracao") or sinal["duracao"])
-         
+         s["ativo"] = (dados.get("sinaisAtivos"))[i]
 
          # Gera novo sinal com os parâmetros atualizados
          vetorX, sinalTempo = (functions.gerar_sinal(s))
          frequencia, magnitude = (functions.transformada_fourier(vetorX, sinalTempo))
          
+
+         if s["ativo"]:
+            if resultante is None:
+               resultante = sinalTempo
+            else:
+               #print(resultante[0])
+
+               resultante = functions.aplicarOperacao(resultante, sinalTempo, s["operacao"])
+
+             
          sinalAtual = {
              'x' : vetorX.tolist(),
              'y' : sinalTempo.tolist(),
@@ -82,6 +95,27 @@ def sendData(request):
 
          sinaisAtivos.append(sinalAtual)
 
+      # Garantindo que a resultante sempre tenha o 1 sinal
+
+      if resultante is None:
+         resultante = []
+         vetorX = []
+
+      # Gerando o dicionário da resultante
+
+      frequenciaRes, magnitudeRes = functions.transformada_fourier(vetorX, resultante)
+
+      res = {
+          'x': vetorX.tolist(),
+          'y': resultante.tolist(),
+          'xFreq': frequenciaRes.tolist(),
+          'yFreq': magnitudeRes.tolist(),
+          'ativo': True
+      }
+
       sinais_memoria.SINAIS = sinaisAtivos.copy()
+
+      # Adicionando a resultante ao JSON 
+      sinais_memoria.SINAIS.append(res)   
 
       return Response(sinais_memoria.SINAIS)

@@ -203,9 +203,10 @@ function receberParametros(){
         fase: parseFloat(document.getElementById("entrada-fase").value),
         offset: parseFloat(document.getElementById("entrada-offset").value),
         operacao: document.getElementById("entrada-operacao").value,
-        duty: parseFloat(document.getElementById("entrada-duty").value),
+        duty: parseFloat(document.getElementById("entrada-duty").value) || 0.5,
         forma_sinal: document.getElementById("entrada-forma-sinal").value,
-        ativo: (document.getElementById(`sinal${sinal}`).checked)}
+        ativo: (document.getElementById(`sinal${sinal}`).checked),
+        sinaisAtivos: get_sinaisAtivos()}
     return parametros;
 }
 
@@ -216,12 +217,22 @@ function receberUnidades(){
     };
 }
 
+function get_sinaisAtivos(){
+    return [
+        (document.getElementById(`sinal1`).checked),
+        (document.getElementById(`sinal2`).checked),
+        (document.getElementById(`sinal3`).checked),
+        (document.getElementById(`sinal4`).checked),
+        (document.getElementById(`sinal5`).checked)
+    ]
+}
 
 // Função assíncrona que irá atualizar os dados
 
 async function atualizarAPI(){
 
     const sinal =document.getElementById('numero_sinal').value || "1";
+
 
     try{
 
@@ -230,12 +241,14 @@ async function atualizarAPI(){
         //console.log(resultadoGetData);
      
         const resultadoSendData = await sendData(sinal);
-        console.log(resultadoSendData);
+        //console.log(resultadoSendData);
+
+    
         
-        for(let i = 0; i < 5; i++){
+        for(let i = 0; i < 6; i++){
 
             //console.log(`Sinal ${i+1}ativo: ${resultadoSendData[i].ativo}`);
-            resultadoSendData[i].ativo = document.getElementById(`sinal${i+1}`).checked ? true : false;
+            resultadoSendData[i].ativo = i !== 5 ? (document.getElementById(`sinal${i+1}`).checked ? true : false) : true;
             
 
             if(resultadoSendData[i].ativo == true){
@@ -253,8 +266,11 @@ async function atualizarAPI(){
                                     y: resultadoSendData[i]['yFreq']
                                 }
                                 source.change.emit();
+
+                                if(i !== 5) {
+                                    document.getElementById(`cs${i+1}`).style.display = "flex";
+                                }
                 
-                                document.getElementById(`cs${i+1}`).style.display = "flex";
                             }
                             else {
                                 console.warn("Não foi possível atualizar o gráfico: dados ou source não definidos.");
