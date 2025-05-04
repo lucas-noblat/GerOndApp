@@ -41,6 +41,7 @@ def plotar_sinais_bokeh(
 
     # Cria figura
     p = figure(
+        name = "Frequencia" if is_spectrum else "Tempo",
         x_axis_label=x_label,
         y_axis_label=y_label,
         sizing_mode="stretch_both",
@@ -62,7 +63,7 @@ def plotar_sinais_bokeh(
         legenda = f'Sinal {i+1}' if i < 5 else 'Resultante'
 
         if(is_spectrum):
-            source = ColumnDataSource(data={'x': [0], 'y': [0]}, name = "dbf" + f"{i}")
+            source = ColumnDataSource(data={'x': [], 'y': []}, name = "dbf" + f"{i}")
             sourcesFreq.append(source)
             print(source.name)
         else:
@@ -106,7 +107,7 @@ def plotar_sinais_bokeh(
 
     # Adiciona a figura ao objeto correspondente a sessão bokeh nesse momento
 
-    curdoc().add_root(p)
+    
 
     # Retorna a figura e os sources para uso externo
     return p, sourcesFreq if is_spectrum else sources

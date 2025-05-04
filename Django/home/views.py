@@ -4,6 +4,7 @@ from . import functions as fc
 from numpy import array
 import json
 from json import dumps
+from bokeh.io import curdoc
 
 # Bokeh
 
@@ -68,10 +69,14 @@ def osciloscopio(request):
     # Gera plots
     plot = fc.plotar_sinais_bokeh(cor_grafico='black')[0]
     plot_freq = fc.plotar_sinais_bokeh(cor_grafico="white", x_label = "Frequência", y_label = "Magnitude", is_spectrum= True)[0]
+    curdoc().add_root(plot)
+    curdoc().add_root(plot_freq)
 
     # Gera os scripts Django para mostrar no navegador
     script, div = components(plot)
     script_freq, div_freq = components(plot_freq)
+
+  
 
 
 

@@ -17,11 +17,15 @@ function iniciarAbas() {
     // Controle do duty cycle
     document.getElementById('entrada-forma-sinal').addEventListener('change', mostrarDivDuty);
     mostrarDivDuty(); // Configura estado inicial
+
+
 }
 
 
 // ATIVAR AS ABAS
 function ativarAba(sinal) {
+
+    document.getElementById(`sinal${sinal}`).checked = true;
 
     // Remove classe active de todas as abas
     document.querySelectorAll('.botao-sinal').forEach(aba => {
@@ -188,7 +192,7 @@ async function carregarParametrosSinal(sinal){
 function receberParametros(){
 
     const sinal = document.getElementById('numero_sinal').value;
-    console.log(document.getElementById("entrada-fase").value);
+    console.log(`Sinal ${sinal} ativo? ` + document.getElementById(`sinal${sinal}`).checked);
 
     const parametros = {
         id: sinal,
@@ -200,8 +204,16 @@ function receberParametros(){
         offset: parseFloat(document.getElementById("entrada-offset").value),
         operacao: document.getElementById("entrada-operacao").value,
         duty: parseFloat(document.getElementById("entrada-duty").value),
-        forma_sinal: document.getElementById("entrada-forma-sinal").value}
+        forma_sinal: document.getElementById("entrada-forma-sinal").value,
+        ativo: (document.getElementById(`sinal${sinal}`).checked)}
     return parametros;
+}
+
+function receberUnidades(){ 
+    return {
+        amplitude: document.getElementById("unidade-amplitude").value,
+        tempo: document.getElementById("unidade-periodo").value
+    };
 }
 
 
@@ -222,24 +234,24 @@ async function atualizarAPI(){
         
         for(let i = 0; i < 5; i++){
 
-            console.log(`Sinal ${i+1}ativo: ${resultadoSendData[i].ativo}`);
+            //console.log(`Sinal ${i+1}ativo: ${resultadoSendData[i].ativo}`);
+            resultadoSendData[i].ativo = document.getElementById(`sinal${i+1}`).checked ? true : false;
+            
 
             if(resultadoSendData[i].ativo == true){
-                
-                            console.log(`databaseInternoBokeh${i}`);
-                            console.log(`databaseFreqInternoBokeh${i}`);
-
                             const source = Bokeh.documents[0].get_model_by_name(`databaseInternoBokeh${i}`);
-                            const sourceFreq = Bokeh.documents[1].get_model_by_name(`dbf${i}`)
+                            const sourceFreq = Bokeh.documents[1].get_model_by_name(`dbf${i}`);
                 
                                     
-                            if(source && resultadoSendData ){            
+                            if(source && resultadoSendData && sourceFreq){            
                                 source.data.x = resultadoSendData[i].x;
                                 source.data.y = resultadoSendData[i].y;
-                                source.change.emit();
+
                                 
-                                sourceFreq.data.x = resultadoSendData[i].xFreq;
-                                sourceFreq.data.y = resultadoSendData[i].yFreq;
+                                sourceFreq.data = {
+                                    x: resultadoSendData[i]['xFreq'],
+                                    y: resultadoSendData[i]['yFreq']
+                                }
                                 source.change.emit();
                 
                                 document.getElementById(`cs${i+1}`).style.display = "flex";
@@ -247,6 +259,20 @@ async function atualizarAPI(){
                             else {
                                 console.warn("Não foi possível atualizar o gráfico: dados ou source não definidos.");
                             }
+            } else {
+                const source = Bokeh.documents[0].get_model_by_name(`databaseInternoBokeh${i}`);
+                const sourceFreq = Bokeh.documents[1].get_model_by_name(`dbf${i}`);
+
+                if(source && resultadoSendData && sourceFreq){            
+                    source.data.x = [];
+                    source.data.y = [];
+                    
+                    sourceFreq.data = {
+                        x: [],
+                        y: []
+                    }
+                    source.change.emit();
+                }
             }
         }
         
@@ -268,13 +294,13 @@ function startListeners() {
             //console.log(input.id);
             atualizarAPI();
         })
-    })
+    });
     
     selects.forEach(select => {
         select.addEventListener("change", function(){
             atualizarAPI();
         })
-    })
+    });
 }
 
 

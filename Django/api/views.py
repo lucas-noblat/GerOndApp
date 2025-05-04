@@ -25,8 +25,8 @@ def getData(request):
    sinal_ID = int(request.GET.get('sinal')) #IMPORTANTE CONVERTER
    sinal = next((sinal for sinal in sinais_memoria.SINAIS_PARAMETROS if sinal["id"] == sinal_ID), None)
 
-   print("O ID do sinal é=", sinal_ID )
-   print("O sinal tem os parâmetros:", sinal)
+   #print("O ID do sinal é=", sinal_ID )
+   #print("O sinal tem os parâmetros:", sinal)
 
    if(sinal):
       return Response(sinal)
@@ -47,7 +47,7 @@ def sendData(request):
       # Localiza o dicionário do sinal correspondente
       sinal = next((s for s in sinais_memoria.SINAIS_PARAMETROS if s["id"] == sinal_id), None)
 
-      print(dados.get("fase"))
+      #print(dados.get("ativo"))
 
       if not sinal:
          return Response({"erro": f"Sinal {sinal_id} não encontrado"}, status=404)
@@ -55,14 +55,13 @@ def sendData(request):
       # Atualiza os campos do sinal na lista
       sinal["amplitude"] = float(dados.get("amplitude") if dados.get("amplitude") is not None else 0.0)
       sinal["frequencia"] = float(dados.get("frequencia") or sinal["frequencia"])
-      sinal["offset"] = float(dados.get("offset") or sinal["offset"])
+      sinal["offset"] = float(dados.get("offset") if dados.get("offset") is not None else 0.0)
       sinal["fase"] = float(dados.get("fase")) if dados.get("fase") is not None else 0.0
       sinal["duty"] = float(dados.get("duty") or sinal["duty"])
       sinal["forma_sinal"] = dados.get("forma_sinal") or sinal["forma_sinal"]
       sinal["operacao"] = dados.get("operacao") or sinal["operacao"]
-      sinal["ativo"] = True
+      sinal["ativo"] = bool(dados.get("ativo") if dados.get("ativo") is not None else True)
 
-      i = 0
       sinaisAtivos = []
       for s in sinais_memoria.SINAIS_PARAMETROS:    
          s["rate"] = float(dados.get("rate") or sinal["rate"])

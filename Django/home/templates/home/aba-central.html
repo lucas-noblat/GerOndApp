@@ -10,19 +10,19 @@
     </div>
 
     <div class="barra-sinais">
-        <div class = "container-visualizacao-sinais" id = "cs1">
+        <div class = "container-visualizacao-sinais" id = "cs1" >
             <label for="sinal1">S1</label>
-            <input type="checkbox" id = "sinal1"></input>
+            <input type="checkbox" id = "sinal1" checked></input>
         </div>
 
         <div class = "container-visualizacao-sinais" id = "cs2" style="display: none;">
             <label for="sinal2">S2</label>
-            <input type="checkbox" id = "sinal2"></input>
+            <input type="checkbox" id = "sinal2" ></input >
         </div>
 
         <div class = "container-visualizacao-sinais" id = "cs3" style="display: none;">
             <label for="sinal3">S3</label>
-            <input type="checkbox" id = "sinal3"></input>
+            <input type="checkbox" id = "sinal3" ></input>
         </div>
 
         <div class = "container-visualizacao-sinais" id = "cs4" style="display: none;">
@@ -40,14 +40,14 @@
         <div class = "grafico" id = "grafico_tempo">
             {{ div | safe }}
             {{ cdn_js | safe }}
-            {{ script | safe }}
         </div>
         <div class = "grafico" id = "grafico_frequencia" style="display: none;">
             {{ div_freq | safe }}
-            {{ script_freq | safe }}    
-
+            
         </div>
-
+        
+        {{ script | safe }}
+        {{ script_freq | safe }}    
 
     </div>  
 </div>
