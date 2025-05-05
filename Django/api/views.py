@@ -25,7 +25,6 @@ def getData(request):
    sinal_ID = int(request.GET.get('sinal')) #IMPORTANTE CONVERTER
    sinal = next((sinal for sinal in sinais_memoria.SINAIS_PARAMETROS if sinal["id"] == sinal_ID), None)
 
-   #print("O ID do sinal é=", sinal_ID )
    #print("O sinal tem os parâmetros:", sinal)
 
    if(sinal):
@@ -58,7 +57,7 @@ def sendData(request):
       sinal["offset"] = float(dados.get("offset") if dados.get("offset") is not None else 0.0)
       sinal["fase"] = float(dados.get("fase")) if dados.get("fase") is not None else 0.0
       sinal["duty"] = float(dados.get("duty") if "duty" in dados else sinal["duty"])
-      sinal["forma_sinal"] = dados.get("forma_sinal") or sinal["forma_sinal"]
+      sinal["forma_sinal"] = dados.get("forma_sinal") if "forma_sinal" in dados else sinal["forma_sinal"]
       sinal["operacao"] = dados.get("operacao") or sinal["operacao"]
       sinal["ativo"] = bool(dados.get("ativo") if dados.get("ativo") is not None else True)
 
@@ -70,7 +69,7 @@ def sendData(request):
          s["rate"] = float(dados["rate"]) if "rate" in dados else s["rate"]
          s["duracao"] = float(dados.get("duracao") or sinal["duracao"])
          s["ativo"] = (dados.get("sinaisAtivos"))[i]
-
+         #print(f"Forma do sinal {i+1} = {s['forma_sinal']}")
          # Gera novo sinal com os parâmetros atualizados
          vetorX, sinalTempo = (functions.gerar_sinal(s))
          frequencia, magnitude = (functions.transformada_fourier(vetorX, sinalTempo))
@@ -78,7 +77,7 @@ def sendData(request):
 
          if s["ativo"]:
             if resultante is None:
-               resultante = sinalTempo
+               resultante = sinalTempo.copy()
             else:
                #print(resultante[0])
 
@@ -95,11 +94,6 @@ def sendData(request):
 
          sinaisAtivos.append(sinalAtual)
 
-      # Garantindo que a resultante sempre tenha o 1 sinal
-
-      if resultante is None:
-         resultante = []
-         vetorX = []
 
       # Gerando o dicionário da resultante
 
@@ -113,7 +107,7 @@ def sendData(request):
           'ativo': True
       }
 
-      sinais_memoria.SINAIS = sinaisAtivos.copy()
+      sinais_memoria.SINAIS = sinaisAtivos
 
       # Adicionando a resultante ao JSON 
       sinais_memoria.SINAIS.append(res)   

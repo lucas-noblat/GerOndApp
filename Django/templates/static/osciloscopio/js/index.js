@@ -192,7 +192,7 @@ async function carregarParametrosSinal(sinal){
 function receberParametros(){
 
     const sinal = document.getElementById('numero_sinal').value;
-    console.log(`Sinal ${sinal} ativo? ` + document.getElementById(`sinal${sinal}`).checked);
+    //console.log(`Sinal ${sinal} ativo? ` + document.getElementById(`sinal${sinal}`).checked);
 
     const parametros = {
         id: sinal,
@@ -207,6 +207,8 @@ function receberParametros(){
         forma_sinal: document.getElementById("entrada-forma-sinal").value,
         ativo: (document.getElementById(`sinal${sinal}`).checked),
         sinaisAtivos: get_sinaisAtivos()}
+
+    console.log(`Formato do sinal ${sinal} = ${parametros['forma_sinal']}`);
     return parametros;
 }
 
