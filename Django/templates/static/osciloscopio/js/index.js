@@ -306,7 +306,29 @@ async function atualizarAPI(){
 function startListeners() {
     const inputs = document.querySelectorAll("input");
     const selects = document.querySelectorAll("select");
+    const aba_config = document.getElementById("container-configuracoes");
+    const overLayerPopup = document.getElementById("blur-popup");
+    const popup = document.getElementById("popup-config");
+    const fechar_popup = document.getElementById("fechar-popup");
 
+
+    function posicionarPopup(){
+        const retangulo = aba_config.getBoundingClientRect();
+
+        const posX = retangulo.right + 10;
+        const posY = retangulo.top;
+
+        popup.style.left = `${posX}px`;
+        popup.style.top = `${posY}px`;
+
+        popup.style.opacity = 1;
+        popup.style.visibility = "visible";
+
+
+    }
+
+
+    // TODOS OS INPUTS NUMÉRICOS
     inputs.forEach(input => {
         input.addEventListener("input", function() {
             //console.log(input.id);
@@ -314,11 +336,31 @@ function startListeners() {
         })
     });
     
+
+    // TODOS OS INPUT DO TIPO SELECT
     selects.forEach(select => {
         select.addEventListener("change", function(){
             atualizarAPI();
         })
     });
+
+    // ABA DE CONFIGURAÇÕES
+    aba_config.addEventListener("click", function(){
+
+        posicionarPopup();
+
+        overLayerPopup.style.opacity = 0.6;
+        overLayerPopup.style.visibility = "visible";
+    });
+
+    fechar_popup.onclick = function () {
+        overLayerPopup.style.opacity = 0;
+        overLayerPopup.style.visibility = "hidden"; 
+
+        popup.style.opacity = 0;
+        popup.style.visibility = "hidden";
+
+    };
 }
 
 

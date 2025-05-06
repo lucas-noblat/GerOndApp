@@ -8,6 +8,19 @@
     <link rel="stylesheet" href="{% static '/osciloscopio/css/main.css' %}?v={% now 'U' %}">
 </head>
 <body>
+
+        <!-- BLUR DO POPUP -->
+
+        <div id = "blur-popup">
+            <div id = "popup-config">
+                <button id = "fechar-popup">X</button>
+                <label for="">Cor do gráfico:</label>
+                <div id="container-checkboxes-cor">
+                    <input type="checkbox" name="checkbox-preto" id="checkbox-preto">
+                    <input type="checkbox" name="checkbox-preto" id="checkbox-preto">
+                </div>
+            </div>
+        </div>
         <!-- janela-cabeçalho -->
         <div id ="janela-principal">
             {% include 'home/barra-superior.html' %}  <!-- Importa o cabeçalho -->

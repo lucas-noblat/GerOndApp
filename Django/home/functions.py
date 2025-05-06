@@ -61,6 +61,7 @@ def plotar_sinais_bokeh(
 
         # Cria um ColumnDataSource para esse sinal
         legenda = f'Sinal {i+1}' if i < 5 else 'Resultante'
+        corLinha = cores[i] if i < 5 else 'magenta'
 
         if(is_spectrum):
             source = ColumnDataSource(data={'x': [], 'y': []}, name = "dbf" + f"{i}")
@@ -72,7 +73,7 @@ def plotar_sinais_bokeh(
 
         
         p.line('x', 'y', source=source, line_width=2, legend_label=legenda,
-               line_color=cores[i], line_alpha=alpha)
+               line_color=corLinha, line_alpha=alpha)
         
 
     # Fontes
