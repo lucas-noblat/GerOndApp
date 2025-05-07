@@ -10,7 +10,6 @@ function iniciarAbas() {
             const sinal = this.getAttribute('data-sinal');
             ativarAba(sinal);
             carregarParametrosSinal(sinal);
-            atualizarAPI();
         });
     });
     
