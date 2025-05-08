@@ -10,6 +10,8 @@ function iniciarAbas() {
             const sinal = this.getAttribute('data-sinal');
             ativarAba(sinal);
             carregarParametrosSinal(sinal);
+            //atualizarAPI();                                     // NO LINUX(OU FIREFOX) faz com que os arquivos sejam atualizados sempre com a mudança da aba
+
         });
     });
     
@@ -199,7 +201,7 @@ function receberParametros(){
         rate: parseFloat(document.getElementById("entrada-rate").value),
         frequencia: parseFloat(document.getElementById("entrada-frequencia").value),
         duracao: parseFloat(document.getElementById("entrada-duracao").value),
-        fase: parseFloat(document.getElementById("entrada-fase").value),
+        fase: parseFloat(document.getElementById("entrada-fase").value) * (Math.PI/180.0),
         offset: parseFloat(document.getElementById("entrada-offset").value),
         operacao: document.getElementById("entrada-operacao").value,
         duty: parseFloat(document.getElementById("entrada-duty").value) || 0.5,
@@ -214,7 +216,8 @@ function receberParametros(){
 function receberUnidades(){ 
     return {
         amplitude: document.getElementById("unidade-amplitude").value,
-        tempo: document.getElementById("unidade-periodo").value
+        tempo: document.getElementById("unidade-duracao").value,
+        frequencia: document.getElementById("unidade-frequencia").value,
     };
 }
 
@@ -237,14 +240,18 @@ async function atualizarAPI(){
 
     try{
 
+        // Atualizando as unidades
+
+        //Bokeh.documents[0].get_model_by_name("Tempo").left[0].axis_label = `Tempo(${unidades['tempo']})`;
+
  
-        const resultadoGetData = await getData(sinal);
+        //const resultadoGetData = await getData(sinal);
         //console.log(resultadoGetData);
      
         const resultadoSendData = await sendData(sinal);
         //console.log(resultadoSendData);
 
-    
+        atualizarUnidades();
         
         for(let i = 0; i < 6; i++){
 
@@ -254,8 +261,7 @@ async function atualizarAPI(){
 
             if(resultadoSendData[i].ativo == true){
                             const source = Bokeh.documents[0].get_model_by_name(`databaseInternoBokeh${i}`);
-                            const sourceFreq = Bokeh.documents[1].get_model_by_name(`dbf${i}`);
-                
+                            const sourceFreq = Bokeh.documents[1].get_model_by_name(`dbf${i}`);                
                                     
                             if(source && resultadoSendData && sourceFreq){            
                                 source.data.x = resultadoSendData[i].x;
@@ -299,6 +305,31 @@ async function atualizarAPI(){
 
 }
 
+
+// FUNÇÃO QUE ATUALIZA UNIDADES
+
+function atualizarUnidades(){
+
+    const unidades = receberUnidades();
+
+    const grafTempo = Bokeh.documents[0].get_model_by_name("Tempo");
+    const grafFreq = Bokeh.documents[1].get_model_by_name("Frequencia");
+
+    //grafFreq && grafTempo ? console.log("Achei") : console.log("Não encontrado");
+
+    if(grafFreq && grafTempo) {
+        grafTempo.left[0].axis_label = `Amplitude(${unidades['amplitude']})`;
+        grafTempo.below[0].axis_label = `Tempo(${unidades['tempo']})`;
+
+        grafFreq.left[0].axis_label = `Magnitude(${unidades['amplitude']})`;
+        grafFreq.below[0].axis_label = `Frequencia(${unidades['frequencia']})`;
+
+    }
+    else {
+        console.warning("Gráficos não encontrados");
+    }
+
+}
 
 // FUNÇÃO PARA ATIVAR OS LISTENERS
 

@@ -81,7 +81,8 @@ def sendData(request):
             else:
                #print(resultante[0])
 
-               resultante = functions.aplicarOperacao(resultante, sinalTempo, s["operacao"])
+               
+               resultante = functions.aplicarOperacao(resultante, sinalTempo, s["operacao"]) 
 
              
          sinalAtual = {

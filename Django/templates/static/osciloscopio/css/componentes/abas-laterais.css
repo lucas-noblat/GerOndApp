@@ -39,6 +39,7 @@
 }
 
 
+
 .container-conjunto-abas{
     display: flex;
 
@@ -67,14 +68,13 @@ flex: 1;
 
 .container-unidades{
 
-    flex: 1;
+    height: 60%;
     display: flex;
     flex-direction: column;
 
     align-items: center;
     justify-content: center;
 
-    padding: 5px;
 }
 
 .container-inputs{
@@ -96,6 +96,18 @@ flex: 1;
     max-width: 30%;
 }
 
+#entradas-globais{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    justify-content: space-evenly;
+
+}
+
+#barra-sinais p{
+    position:static;
+}
 
 
 .botao-sinal{

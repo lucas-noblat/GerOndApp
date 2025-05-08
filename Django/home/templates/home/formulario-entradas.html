@@ -9,10 +9,10 @@
             <label for="entrada-forma-sinal" class="form-label">Forma do sinal</label>
             <div class="form-select" id = "select-forma-sinal">
                 <select name="entrada-forma-sinal" id="entrada-forma-sinal" value = "senoidal"  >
-                    <option value="senoidal"  {% if ultima_forma == 'senoidal' %} selected {% endif %}>Senoidal</option>
-                    <option value="quadrada"  {% if ultima_forma == 'quadrada' %} selected{% endif %}>Quadrada</option>
-                    <option value="triangular" {% if ultima_forma == 'triangular' %} selected{% endif %} >Triangular</option>
-                    <option value="ruido-branco" {% if ultima_forma == 'ruido-branco' %} selected{% endif %}>Ruído Branco</option>
+                    <option value="senoidal" >Senoidal</option>
+                    <option value="quadrada"  >Quadrada</option>
+                    <option value="triangular" >Triangular</option>
+                    <option value="ruido-branco">Ruído Branco</option>
                 </select>        
             </div>            
         </div>
@@ -28,16 +28,6 @@
             </div>            
         </div> 
 
-        <!-- Taxa de amostragem -->
-        <div class="form-group" id="grupo-intervalo">
-            <label for="entrada-rate" class="form-label">Rate</label>
-            <div class="form-number">
-                <input type="number" name="entrada-rate" id="entrada-rate" min= 0 max = 5000 step = 5  value = 1000 required>
-            </div>            
-        </div>
-    </div>
-
-    <div class = "container-par-entradas">
         <!-- Frequência -->
         <div class="form-group" id="grupo-frequencia">
             <label for="entrada-frequencia" class="form-label">Frequência</label>
@@ -45,25 +35,18 @@
                 <input type="number" name="entrada-frequencia" id="entrada-frequencia" min= 0 max = 10000  value = 1  required data-sinais = '{{sinais_json|safe}}'>
             </div>            
         </div> 
-        
-        <!-- Fase -->
-        <div class="form-group" id="grupo-fase">
-            <label for="entrada-fase" class="form-label">Fase(π)</label>
-            <div class="form-number">
-                <input type="number" name="entrada-fase" id="entrada-fase" min= 0 max = 100  value = 0 required>
-            </div>            
-        </div>
+
     </div>
 
     <div class = "container-par-entradas">
-        <!-- Duração -->
-        <div class="form-group" id="grupo-duracao">
-            <label for="entrada-duracao" class="form-label">Duração</label>
+        <!-- Fase -->
+        <div class="form-group" id="grupo-fase">
+            <label for="entrada-fase" class="form-label">Fase(º)</label>
             <div class="form-number">
-                <input type="number" name="entrada-duracao" id="entrada-duracao" min= 1 max = 100 value = 1 m required>
+                <input type="number" name="entrada-fase" id="entrada-fase" value = 0 required>
             </div>            
-        </div> 
-        
+        </div>
+
         <!-- Offset -->
         <div class="form-group" id="grupo-offset">
             <label for="entrada-offset" class="form-label">Offset</label>
@@ -71,6 +54,11 @@
                 <input type="number" name="entrada-offset" id="entrada-offset" value = 0 required>
             </div>            
         </div>
+    </div>
+
+    <div class = "container-par-entradas">
+
+        
     </div>
 
 
@@ -93,6 +81,7 @@
                             <option value="subtracao"  >-</option>
                             <option value="multiplicacao" >*</option>
                             <option value="divisao" >/</option>
+                            <option value="nenhuma"  >N/A</option>
                         </select>        
                     </div>                  
         </div>

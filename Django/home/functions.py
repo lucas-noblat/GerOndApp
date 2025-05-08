@@ -345,3 +345,5 @@ def aplicarOperacao(s1, s2, operacao):
             return array(s1 * s2)
         case "divisao":
             return array(s1 / s2)
+        case "nenhuma":
+            return array(s1)

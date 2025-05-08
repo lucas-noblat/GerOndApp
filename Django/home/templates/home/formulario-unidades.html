@@ -15,26 +15,15 @@
         </div>
       </div>
       
-      <!-- Período -->
-      <div class="form-group">
-        <label for="unidade-periodo" class="form-label">Período</label>
-        <div class="form-select">
-          <select name="unidade-periodo" id="unidade-periodo">
-            <option value="m">m</option>
-            <option value="m/s">m/s</option>
-            <option value="m/s²">m/s²</option>
-          </select>        
-        </div>
-      </div>
       
       <!-- Duração -->
       <div class="form-group">
         <label for="unidade-duracao" class="form-label">Duração</label>
         <div class="form-select">
           <select name="unidade-duracao" id="unidade-duracao">
-            <option value="seg">s</option>
-            <option value="min">m</option>
-            <option value="hour">h</option>
+            <option value="s">s</option>
+            <option value="m">m</option>
+            <option value="h">h</option>
           </select>        
         </div>
       </div>
@@ -48,6 +37,18 @@
           </select>        
         </div>
       </div>
+
+      <!-- Período -->
+      <div class="form-group">
+        <label for="unidade-periodo" class="form-label">Período</label>
+        <div class="form-select">
+          <select name="unidade-periodo" id="unidade-periodo">
+            <option value="m">m</option>
+            <option value="m/s">m/s</option>
+            <option value="m/s²">m/s²</option>
+          </select>        
+        </div>
+      </div>
       
       <!-- Fase -->
       <div class="form-group">
@@ -55,10 +56,11 @@
         <div class="form-select">
           <select name="unidade-fase" id="unidade-fase">
             <option value="rad">rad</option>
+            <option value="º" selected>º</option>
+
           </select>        
         </div>
       </div>
-      
     </div>
 
   </form>
