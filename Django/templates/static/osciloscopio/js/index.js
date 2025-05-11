@@ -252,6 +252,7 @@ async function atualizarAPI(){
         //console.log(resultadoSendData);
 
         atualizarUnidades();
+        atualizarSteps();
         
         for(let i = 0; i < 6; i++){
 
@@ -329,7 +330,30 @@ function atualizarUnidades(){
         console.warning("Gráficos não encontrados");
     }
 
+
+
+
 }
+
+// FUNÇÃO PARA ATUALIZAR OS STES DOS INPUTS
+
+function atualizarSteps(){
+
+    document.querySelectorAll('input[type = "number"').forEach(input => {
+
+        // Atualização do step dos inputs (Pedido do Fábio)
+
+        if(!isNaN(input.value && input.value.trim() !== '')){
+            if(input.value.includes('.') || input.value.includes(','))
+            {
+                input.step = 0.1;
+            } else {
+                input.step = 1;
+            }
+        }
+        })
+}
+
 
 // FUNÇÃO PARA ATIVAR OS LISTENERS
 
