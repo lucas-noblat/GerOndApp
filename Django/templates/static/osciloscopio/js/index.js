@@ -360,6 +360,9 @@ function atualizarSteps(){
 function startListeners() {
     const inputs = document.querySelectorAll("input");
     const selects = document.querySelectorAll("select");
+    const radios = document.querySelectorAll('input[type="radio"]');
+
+
     const aba_config = document.getElementById("container-configuracoes");
     const overLayerPopup = document.getElementById("blur-popup");
     const popup = document.getElementById("popup-config");
@@ -415,6 +418,18 @@ function startListeners() {
         popup.style.visibility = "hidden";
 
     };
+    radios.forEach(radio => {
+
+        radio.addEventListener("click", function(){
+            let cor = radio.value;
+            if(document.getElementById("grafico_tempo").style.display !== "none"){
+                
+                console.log("Grafico tempo ativo!");
+            } else if (document.getElementById("grafico_frequencia").style.display !== "none"){
+                console.log("Grafico frequencia ativado");
+            }
+        });
+    })
 }
 
 
