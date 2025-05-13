@@ -421,18 +421,34 @@ function startListeners() {
     radios.forEach(radio => {
 
         radio.addEventListener("click", function(){
-            let cor = radio.value;
-            if(document.getElementById("grafico_tempo").style.display !== "none"){
-                
-                console.log("Grafico tempo ativo!");
-            } else if (document.getElementById("grafico_frequencia").style.display !== "none"){
-                console.log("Grafico frequencia ativado");
-            }
+            mudarCorGrafico(radio.value);
         });
     })
 }
 
+function mudarCorGrafico(cor){
+    const grafTempo = Bokeh.documents[0].get_model_by_name("Tempo");
+    const grafFreq = Bokeh.documents[1].get_model_by_name("Frequencia");
 
+    if(document.getElementById("grafico_tempo").style.display !== "none" && grafTempo){
+
+        corOposta = (cor === "black" ? "white" : (cor === "white" ? "black": console.log("Cor nao existente"))); 
+
+        grafTempo.background_fill_color = cor;
+        grafTempo.border_fill_color = cor;
+        grafTempo.left[0].axis_label_text_color = corOposta;
+        grafTempo.left[0].axis_line_color = corOposta; 
+        grafTempo.left[0].major_label_text_color = corOposta; 
+        grafTempo.below[0].axis_label_text_color = corOposta;
+        grafTempo.below[0].major_label_text_color = corOposta;
+
+        console.log("Grafico tempo ativo!");
+    } else if (document.getElementById("grafico_frequencia").style.display !== "none" && grafFreq){
+        grafFreq.background_fill_color = cor;
+        grafFreq.border_fill_color = cor;
+        console.log("Grafico frequencia ativado");
+    }
+}
 // Inicializa o dom
 
 document.addEventListener('DOMContentLoaded', function() {
