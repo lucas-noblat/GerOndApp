@@ -9,6 +9,9 @@
             <div id = "aba-espectro" class="aba-aplicacao" data-aba = "frequencia"  >
                 <button class = "aba-btn" onclick = "trocarAbas('frequencia')" id = "btn-frequencia" >Espectro</button>
             </div>
+            <div id = "aba-ambos" class="aba-aplicacao" data-aba = "ambos"  >
+                <button class = "aba-btn" onclick = "trocarAbas('ambos')" id = "btn-ambos" >Ambos</button>
+            </div>
     </div>
 
     <div class="barra-sinais" id = "barra-sinais">
@@ -40,7 +43,7 @@
         </div>
 
     </div>
-    <div class="area-grafico">
+    <div class="area-grafico" id = "area-grafico">
         <div class = "grafico" id = "grafico_tempo">
             {{ div | safe }}
             {{ cdn_js | safe }}

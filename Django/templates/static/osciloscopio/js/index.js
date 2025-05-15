@@ -93,18 +93,27 @@ function trocarAbas(aba_clicada){
 
 
     const aba_ativa = document.querySelector(`.aba-btn#btn-${aba_clicada}`);
-    const grafico_ativo = document.querySelector(`.grafico#grafico_${aba_clicada}`)
+    aba_ativa ? aba_ativa.classList.add('active') : window.alert('Essa aba não existe');
 
-    if (aba_ativa) {
-        aba_ativa.classList.add('active');
+    if(aba_clicada !== "ambos"){   
+        const grafico_ativo = document.querySelector(`.grafico#grafico_${aba_clicada}`);
+    
+       
+        
+        grafico_ativo ? grafico_ativo.style.display = 'flex' : window.alert('Esse gráfico não existe');
+
     } else {
-        window.alert('Essa aba não existe');
-    }
+        const areaGrafico = document.getElementById("area-grafico");
 
-    if (grafico_ativo) {
-        grafico_ativo.style.display = 'flex';
-    } else{
-        window.alert('Esse gráfico não existe');
+        graficos = document.querySelectorAll(".grafico");
+
+        graficos.forEach(grafico => {
+            if(grafico){
+                grafico.style.display = 'flex';
+                grafico.style.height = "50%";
+                grafico.style.margin = "10px";
+            }
+        });
     }
 
 }
