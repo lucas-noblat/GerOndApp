@@ -101,8 +101,12 @@ function trocarAbas(aba_clicada){
        
         
         grafico_ativo ? grafico_ativo.style.display = 'flex' : window.alert('Esse gráfico não existe');
+        grafico_ativo ? grafico_ativo.style.height = '100%' : window.alert("Esse gráfico não existe");
+    } else { // ABA AMBOS
 
-    } else {
+
+
+
         const areaGrafico = document.getElementById("area-grafico");
 
         graficos = document.querySelectorAll(".grafico");
