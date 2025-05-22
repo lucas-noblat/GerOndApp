@@ -51,6 +51,9 @@
 .container-aba{
     width: 50%;
     height: 100%;
+
+    border-right: 1px solid white;
+    border-bottom: 1px solid white;
   
     display: flex;
     justify-content: center;
@@ -61,10 +64,20 @@
 flex: 1;
 }
 
-#container-configuracoes{
-    border-right: 1px solid white;
-    border-bottom: 1px solid white;
+
+.container-aba:hover{
+    background-color: hsl(0, 0%, 49%);
+    transition: all 0.3s ease;
+
 }
+.container-aba.active{
+    background-color: hsl(0, 0%, 49%);
+
+    border-bottom: 2px solid rgb(13, 177, 206);
+    transition: all 0.3s ease;
+
+}
+
 
 .container-unidades{
 

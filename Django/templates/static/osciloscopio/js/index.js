@@ -376,14 +376,15 @@ function startListeners() {
     const radios = document.querySelectorAll('input[type="radio"]');
 
 
-    const aba_config = document.getElementById("container-configuracoes");
+    const abas_config_sobre = document.querySelectorAll(".container-aba");
+
     const overLayerPopup = document.getElementById("blur-popup");
     const popup = document.getElementById("popup-config");
     const fechar_popup = document.getElementById("fechar-popup");
 
 
-    function posicionarPopup(){
-        const retangulo = aba_config.getBoundingClientRect();
+    function posicionarPopup(aba){
+        const retangulo = aba.getBoundingClientRect();
 
         const posX = retangulo.right + 10;
         const posY = retangulo.top;
@@ -414,14 +415,23 @@ function startListeners() {
         })
     });
 
-    // ABA DE CONFIGURAÇÕES
-    aba_config.addEventListener("click", function(){
+    // EVENTOS ABA DA ESQUERDA
 
-        posicionarPopup();
+    abas_config_sobre.forEach(aba => {
+        aba.addEventListener("click", function(){
 
-        overLayerPopup.style.opacity = 0.6;
-        overLayerPopup.style.visibility = "visible";
+            posicionarPopup(aba);
+
+            overLayerPopup.style.transition = "all 0.4 ease";
+    
+            overLayerPopup.style.opacity = 0.6;
+            overLayerPopup.style.visibility = "visible";
+            aba.classList.add('active');
+    
+        });
     });
+    // ABA DE CONFIGURAÇÕES
+
 
     fechar_popup.onclick = function () {
         overLayerPopup.style.opacity = 0;
@@ -429,6 +439,10 @@ function startListeners() {
 
         popup.style.opacity = 0;
         popup.style.visibility = "hidden";
+
+        abas_config_sobre.forEach(aba => {
+            aba.classList.remove('active');
+        });
 
     };
     radios.forEach(radio => {
