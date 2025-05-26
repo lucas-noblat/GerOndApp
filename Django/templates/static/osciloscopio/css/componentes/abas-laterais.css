@@ -48,6 +48,20 @@
 }
 
 
+.cont-aba{
+    width: 50%;
+    height: 100%;
+
+    border-right: 1px solid white;
+    border-bottom: 1px solid white;
+  
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
 .container-aba{
     width: 50%;
     height: 100%;
@@ -59,6 +73,7 @@
     justify-content: center;
     align-items: center;
 }
+
 
 .container-futuro{
 flex: 1;
