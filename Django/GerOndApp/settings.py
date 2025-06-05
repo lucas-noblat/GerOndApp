@@ -21,7 +21,10 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True if ENVIRONMENT == 'development' else False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    h.strip() for h in (env('ALLOWED_HOSTS', default='').split(','))
+    if h.strip()
+]
 
 
 # Application definition
