@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: gerondapp/Dockerfile
+    command: gunicorn GerOndApp.wsgi:application --bind 0.0.0.0:8000
+    env_file:
+      - .env.dev
+    volumes:
+      - .:/app
+      - static_volume:/app/templates/static
+    expose:
+      - "53900"
+    depends_on:
+      - nginx
+
+  nginx:
+    image: nginx:1.23-alpine
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - static_volume:/app/templates/static
+    ports:
+      - "80:80"
+    depends_on:
+      - web
+
+volumes:
+  static_volume:
