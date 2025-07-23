@@ -1,15 +1,5 @@
-# ----- Stage 1: Build das dependências -----
-FROM python:3.11-slim AS builder
+# ----- Stclear
 
-WORKDIR /app
-
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
-
-COPY /../requirements.txt .
-
-RUN pip install --upgrade pip \
- && pip wheel --no-cache-dir --no-deps --wheel-dir /app/wheels -r requirements.txt
 
 # ----- Stage 2: Imagem final -----
 FROM python:3.11-slim
