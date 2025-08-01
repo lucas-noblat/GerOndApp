@@ -6,7 +6,7 @@ WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
-COPY /../requirements.txt .
+COPY requirements.txt .
 
 RUN pip install --upgrade pip \
  && pip wheel --no-cache-dir --no-deps --wheel-dir /app/wheels -r requirements.txt
