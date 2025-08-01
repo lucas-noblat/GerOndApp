@@ -3,13 +3,18 @@ import os
 
 from environ import Env
 
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+
+# Variáveis relativas às variáveis de ambiente
+
 env = Env()
-Env.read_env()
+env_files = BASE_DIR / 'dotenvfiles' / '.env'
+Env.read_env(env_files)
 
 ENVIRONMENT = env('ENVIRONMENT', default='production')
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Quick-start development settings - unsuitable for production
