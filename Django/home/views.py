@@ -106,26 +106,6 @@ def osciloscopio(request):
     return render(request, 'home/conteudo.html', contexto)
 
 
-def entradas(request):
-    if request.method == "GET":
-        return render(request, 'unidades/conteudo.html')
-    elif request.method == "POST":
-        return HttpResponse('Respondido!')
-    
-    
-    
-    
-def espectro(request):
-    return render(request, 'espectro/configuracoes.html')
-
-
-def forms(request):
-    if request.method == "POST":
-        amplitude = request.POST.get("amplitude")
-        return HttpResponse(f"Amplitude = {amplitude}")
-    
-
-
 def atualizar_duracao_rate(request, nova_duracao, novo_rate):
     sinais = request.session['sinais']
     sinais_espectro = request.session['sinais_espectro']

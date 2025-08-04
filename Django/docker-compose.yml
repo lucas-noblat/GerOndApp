@@ -3,17 +3,15 @@ version: '3.8'
 services:
   web:
     build:
-      context: .
-      dockerfile: Django/Dockerfile
-    command: gunicorn GerOndApp.wsgi:application --bind 0.0.0.0:8000
-    volumes:
-      - .:/app
-      - static_volume:/app/staticfiles
-    ports:
-      - "53900:8000"  # Porta externa 53900 mapeada para a interna 8000 (Gunicorn)
-    env_file:
-      - Django/dotenvfiles/.env
-    restart: unless-stopped
+      context: ./
+      dockerfile: Dockerfile
+    #command: gunicorn GerOndApp.wsgi:application --bind 0.0.0.0:8000
+    command: python manage.py runserver 0.0.0.0:8000
 
-volumes:
-  static_volume:
+    volumes:
+      - ./staticfiles:/app/staticfiles
+    ports:
+      - "53900:8000"
+    env_file:
+      - dotenvfiles/.env
+    restart: unless-stopped

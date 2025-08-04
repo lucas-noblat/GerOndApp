@@ -66,7 +66,6 @@ def plotar_sinais_bokeh(
         if(is_spectrum):
             source = ColumnDataSource(data={'x': [], 'y': []}, name = "dbf" + f"{i}")
             sourcesFreq.append(source)
-            print(source.name)
         else:
             source = ColumnDataSource(data={'x': [], 'y': []}, name = "databaseInternoBokeh" + f"{i}")
             sources.append(source)

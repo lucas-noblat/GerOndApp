@@ -75,9 +75,6 @@ def sendData(request):
             if resultante is None:
                resultante = sinalTempo.copy()
             else:
-               #print(resultante[0])
-
-               
                resultante = functions.aplicarOperacao(resultante, sinalTempo, s["operacao"]) 
 
              

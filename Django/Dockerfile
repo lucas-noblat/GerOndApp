@@ -28,4 +28,5 @@ RUN pip install gunicorn
 # Coleta dos estáticos
 RUN python manage.py collectstatic --no-input
 
-CMD ["gunicorn", "GerOndApp.wsgi:application", "--bind", "0.0.0.0:8000"]
+
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

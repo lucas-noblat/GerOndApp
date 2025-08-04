@@ -125,10 +125,15 @@ function trocarAbas(aba_clicada){
 
 // Função para receber dados (BACKEND -> FRONTEND)
 
+
+// Vari�vel para descobrir protocolo e host para usar na api
+
+const BASE_URL = `${window.location.protocol}//${window.location.host}`;
+
 async function getData(sinal){
 
         try{
-            const response = await fetch(`http://127.0.0.1:8000/api/getData/?sinal=${sinal}`);
+            const response = await fetch(`${BASE_URL}/api/getData/?sinal=${sinal}`);
 
             if(!response.ok){
                 throw new Error ("Não foi possível carregar a API");
@@ -150,7 +155,7 @@ async function sendData(sinal){
 
 
         try{
-            const response = await fetch(`http://127.0.0.1:8000/api/sendData/?sinal=${sinal}`, {
+            const response = await fetch(`${BASE_URL}/api/sendData/?sinal=${sinal}`, {
                 method: 'POST',
                 headers: { 'Content-Type' : 'application/json'},
                 body: JSON.stringify(parametros)
@@ -216,7 +221,6 @@ function receberParametros(){
         ativo: (document.getElementById(`sinal${sinal}`).checked),
         sinaisAtivos: get_sinaisAtivos()}
 
-    console.log(`Formato do sinal ${sinal} = ${parametros['forma_sinal']}`);
     return parametros;
 }
 
@@ -452,11 +456,9 @@ function mudarCorGrafico(cor){
         grafTempo.below[0].axis_label_text_color = corOposta;
         grafTempo.below[0].major_label_text_color = corOposta;
 
-        console.log("Grafico tempo ativo!");
     } else if (document.getElementById("grafico_frequencia").style.display !== "none" && grafFreq){
         grafFreq.background_fill_color = cor;
         grafFreq.border_fill_color = cor;
-        console.log("Grafico frequencia ativado");
     }
 }
 // Inicializa o dom
