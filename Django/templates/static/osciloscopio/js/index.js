@@ -10,7 +10,6 @@ function iniciarAbas() {
             const sinal = this.getAttribute('data-sinal');
             ativarAba(sinal);
             carregarParametrosSinal(sinal);
-            //atualizarAPI();                                     // NO LINUX(OU FIREFOX) faz com que os arquivos sejam atualizados sempre com a mudança da aba
 
         });
     });
@@ -58,7 +57,6 @@ function ativarAba(sinal) {
     
     // Atualiza campo hidden
     document.getElementById('numero_sinal').value = sinal;
-    //console.log(`Aba ${sinal} ativada`); // Debug
 }
 
 
@@ -171,8 +169,6 @@ async function sendData(sinal){
 async function carregarParametrosSinal(sinal){
     try{
         const dados = await getData(sinal);
-
-        //console.log(`FORMA SINAL = ${dados['forma_sinal']}`);
         if(dados['forma_sinal'] == "senoidal" || dados['forma_sinal'] == "ruido-branco"){
             document.getElementById("grupo-duty").style.display = "None";
             document.getElementById("entrada-duty").disabled = true;
@@ -206,8 +202,6 @@ async function carregarParametrosSinal(sinal){
 function receberParametros(){
 
     const sinal = document.getElementById('numero_sinal').value;
-    //console.log(`Sinal ${sinal} ativo? ` + document.getElementById(`sinal${sinal}`).checked);
-
     const parametros = {
         id: sinal,
         amplitude: parseFloat(document.getElementById("entrada-amplitude").value),
@@ -255,21 +249,13 @@ async function atualizarAPI(){
 
         // Atualizando as unidades
 
-        //Bokeh.documents[0].get_model_by_name("Tempo").left[0].axis_label = `Tempo(${unidades['tempo']})`;
-
- 
-        //const resultadoGetData = await getData(sinal);
-        //console.log(resultadoGetData);
-     
         const resultadoSendData = await sendData(sinal);
-        //console.log(resultadoSendData);
 
         atualizarUnidades();
         atualizarSteps();
         
         for(let i = 0; i < 6; i++){
 
-            //console.log(`Sinal ${i+1}ativo: ${resultadoSendData[i].ativo}`);
             resultadoSendData[i].ativo = i !== 5 ? (document.getElementById(`sinal${i+1}`).checked ? true : false) : true;
             
 
@@ -328,8 +314,6 @@ function atualizarUnidades(){
 
     const grafTempo = Bokeh.documents[0].get_model_by_name("Tempo");
     const grafFreq = Bokeh.documents[1].get_model_by_name("Frequencia");
-
-    //grafFreq && grafTempo ? console.log("Achei") : console.log("Não encontrado");
 
     if(grafFreq && grafTempo) {
         grafTempo.left[0].axis_label = `Amplitude(${unidades['amplitude']})`;
@@ -402,7 +386,6 @@ function startListeners() {
     // TODOS OS INPUTS NUMÉRICOS
     inputs.forEach(input => {
         input.addEventListener("input", function() {
-            //console.log(input.id);
             atualizarAPI();
         })
     });

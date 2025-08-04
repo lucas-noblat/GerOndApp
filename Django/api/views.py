@@ -25,8 +25,6 @@ def getData(request):
    sinal_ID = int(request.GET.get('sinal')) #IMPORTANTE CONVERTER
    sinal = next((sinal for sinal in sinais_memoria.SINAIS_PARAMETROS if sinal["id"] == sinal_ID), None)
 
-   #print("O sinal tem os parâmetros:", sinal)
-
    if(sinal):
       return Response(sinal)
    else:
@@ -45,8 +43,6 @@ def sendData(request):
 
       # Localiza o dicionário do sinal correspondente
       sinal = next((s for s in sinais_memoria.SINAIS_PARAMETROS if s["id"] == sinal_id), None)
-
-      #print(dados.get("ativo"))
 
       if not sinal:
          return Response({"erro": f"Sinal {sinal_id} não encontrado"}, status=404)
@@ -69,7 +65,7 @@ def sendData(request):
          s["rate"] = float(dados["rate"]) if "rate" in dados else s["rate"]
          s["duracao"] = float(dados.get("duracao") or sinal["duracao"])
          s["ativo"] = (dados.get("sinaisAtivos"))[i]
-         #print(f"Forma do sinal {i+1} = {s['forma_sinal']}")
+
          # Gera novo sinal com os parâmetros atualizados
          vetorX, sinalTempo = (functions.gerar_sinal(s))
          frequencia, magnitude = (functions.transformada_fourier(vetorX, sinalTempo))

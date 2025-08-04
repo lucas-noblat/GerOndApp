@@ -19,7 +19,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('ochefe/', admin.site.urls),
-    #path('admin/', include('admin_honeypot.urls', namespace='admin_honeypot')),
     path('home/', include('home.urls')),
     path('api/', include('api.urls'))
 ]
