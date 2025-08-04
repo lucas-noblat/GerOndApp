@@ -4,27 +4,16 @@ services:
   web:
     build:
       context: .
-      dockerfile: gerondapp/Dockerfile
+      dockerfile: Django/Dockerfile
     command: gunicorn GerOndApp.wsgi:application --bind 0.0.0.0:8000
-    env_file:
-      - .env.dev
     volumes:
       - .:/app
-      - static_volume:/app/templates/static
-    expose:
-      - "53900"
-    depends_on:
-      - nginx
-
-  nginx:
-    image: nginx:1.23-alpine
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
-      - static_volume:/app/templates/static
+      - static_volume:/app/staticfiles
     ports:
-      - "80:80"
-    depends_on:
-      - web
+      - "53900:8000"  # Porta externa 53900 mapeada para a interna 8000 (Gunicorn)
+    env_file:
+      - Django/dotenvfiles/.env
+    restart: unless-stopped
 
 volumes:
   static_volume:
