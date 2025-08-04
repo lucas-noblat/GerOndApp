@@ -1,4 +1,4 @@
-# ----- Stage 1: Build das dependências -----
+# ----- Stage 1: Build das dependencias -----
 FROM python:3.11-slim AS builder
 
 WORKDIR /app
@@ -25,7 +25,6 @@ COPY . .
 
 RUN pip install gunicorn
 
-# Coleta dos estáticos
 RUN python manage.py collectstatic --no-input
 
 
