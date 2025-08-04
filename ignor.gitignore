@@ -1,27 +1,109 @@
+# === VariÃ¡veis de ambiente ===
+.env
+.env.*
+*.env
+*.env.*
+dotenvfiles/.env
 
-# Virtual environment
-venv/
-.venv/
+# === ConfiguraÃ§Ãµes do sistema operacional ===
+.DS_Store         # macOS
+Thumbs.db         # Windows
+ehthumbs.db
+Icon?
+Desktop.ini
+
+# === DiretÃ³rios de dependÃªncias ===
+node_modules/     # Node.js
+venv/             # Python
+.env/             # Algumas ferramentas criam esse nome
 env/
-ENV/
-venv
-
-# Python cache
 __pycache__/
-__pycache__
 *.py[cod]
-*.pyc
-__pycache__/functions.cpython-311.pyc
+*.pyo
 
+# === Logs ===
+*.log
+logs/
+*.out
+*.err
 
+# === Arquivos temporÃ¡rios ===
+*.swp
+*.tmp
+*.bak
+*.old
+*.orig
 
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
+# === Arquivos de build ===
+dist/
+build/
+*.egg-info/
+*.egg
+*.manifest
+*.spec
 
-# Unit test / coverage reports
+# === Arquivos de IDEs e editores ===
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# === Arquivos de banco de dados locais ===
+*.sqlite3
+*.db
+*.db3
+
+# === Arquivos de testes e cobertura ===
+coverage/
 htmlcov/
+*.cover
+*.pyc
+.cache/
 .tox/
 .nox/
-.coverage
-.coverage.*
+
+# === Arquivos de docker/local containers ===
+*.pid
+*.sock
+docker-compose.override.yml
+
+# === Outros ===
+*.pem
+*.key
+*.crt
+*.cert
+*.p12
+
+# === Arquivos de configuraÃ§Ã£o locais ===
+*.local
+*.secret
+*.backup
+
+# === Arquivos de exportaÃ§Ã£o ou dados ===
+*.csv
+*.tsv
+*.xlsx
+*.xls
+*.json
+*.xml
+
+# === Ignorar arquivos de upload temporÃ¡rio ===
+uploads/
+media/
+
+# === Git-specific ===
+*.orig
+
+# Arquivos Python compilados
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Banco de dados SQLite
+*.sqlite3
+*.db
+*.db-journal
+
+# Ambiente virtual
+venv/
+.env/
