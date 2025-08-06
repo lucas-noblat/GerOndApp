@@ -88,6 +88,8 @@ docker-compose.override.yml
 *.json
 *.xml
 
+/staticfiles/
+
 # === Ignorar arquivos de upload temporário ===
 uploads/
 media/
