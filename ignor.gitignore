@@ -20,6 +20,7 @@ env/
 __pycache__/
 *.py[cod]
 *.pyo
+*.pyc
 
 # === Logs ===
 *.log

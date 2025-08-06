@@ -14,7 +14,7 @@ RUN pip install --upgrade pip \
 # ----- Stage 2: Imagem final -----
 FROM python:3.11-slim
 
-WORKDIR /gerondapp
+WORKDIR /Django
 
 ENV PYTHONUNBUFFERED=1
 
@@ -23,9 +23,6 @@ RUN pip install --no-cache /wheels/*
 
 COPY . .
 
-RUN pip install gunicorn
-
 RUN python manage.py collectstatic --no-input
 
-
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["gunicorn", "GerOndApp.wsgi:application", "--bind", "0.0.0.0:8000"]
