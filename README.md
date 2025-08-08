@@ -2,7 +2,7 @@
 
 O **GerOndApp** é uma aplicação web para **geração, manipulação e visualização de sinais** (senoidais, triangulares, quadrados, ruído branco). Projetado para ser utilizado em contexto educacional e de pesquisa, o sistema oferece uma interface interativa, permitindo ao usuário customizar sinais e analisá-los tanto no domínio do tempo quanto da frequência.
 
-🌐 **Acesse o projeto no site do LIOc (FURG) via domínio oficial:**
+🌐 **Acesse o projeto através do site da ReNOMO (FURG) via domínio oficial:**
 https://gerond.renomo.org.br
 
 ---
@@ -134,7 +134,7 @@ GerOndApp/
 | `docker top [container]` | Mostra processos do container |
 
 ### ⚠️ Avisos Importantes
-- NUNCA adicione seu arquivo .env ao repositório (ele está no .gitignore).
+- NUNCA adicione seu arquivo .env a um repositório (ele está no .gitignore).
 
 - A pasta staticfiles/ não deve ser versionada (ela será gerada em produção).
 
