@@ -3,8 +3,9 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
-    command: gunicorn GerOndApp.wsgi:application --bind 0.0.0.0:8000
-
+    command: >
+      sh -c "python manage.py migrate &&
+             gunicorn GerOndApp.wsgi:application --bind 0.0.0.0:8000"
     volumes:
       - ./staticfiles:/django/staticfiles
     ports:
@@ -12,3 +13,5 @@ services:
     env_file:
       - dotenvfiles/.env
     restart: unless-stopped
+volumes:
+  staticfiles:
