@@ -145,7 +145,7 @@ GerOndApp/
 - O domínio oficial é: https://gerond.renomo.org.br
 
 ### 📄 Licença
-Projeto desenvolvido pelo Laboratório de Instrumentação e Óptica (LIOc) - FURG.
+Projeto desenvolvido pelo Laboratório de Instrumentação e Oceânica (LIOC) - UFRJ.
 
 ### ✉️ Contato
 Lucas de Alcantara Noblat – Desenvolvedor (lucasan@dcc.ufrj.br)
