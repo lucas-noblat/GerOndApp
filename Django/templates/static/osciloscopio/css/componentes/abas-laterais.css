@@ -14,7 +14,7 @@
 #aba-direita{
 
     display: block;
-    width: 25%;
+    width: 15%;
     border-right: none;
     border-bottom-left-radius: 0;
     border-left: var(--espessura-borda) solid #666;
@@ -23,7 +23,7 @@
 }
 
 #titulo-entradas{
-    font-size: 1.5vw;
+    font-size: 1vw;
     color: black;
 }
 
@@ -62,7 +62,8 @@
 
 
 
-.container-aba{
+.container-aba, 
+.container-aba-futura{
     width: 50%;
     height: 100%;
 
