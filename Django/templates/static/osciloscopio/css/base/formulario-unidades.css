@@ -17,7 +17,6 @@
   .form-container {
    
     flex: 1;
-    
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
@@ -42,7 +41,7 @@
   .form-label {
     text-align: center;
     color: black;
-    font-size: 1.1vw;
+    font-size: 0.9vw;
   }
   
   .form-input-group,
@@ -115,13 +114,4 @@
     border-radius: 4px;
     display: block;
     margin-bottom: 10px;
-  }
-
-
-
-  /* Responsividade */
-  @media (max-width: 600px) {
-    .form-group {
-      width: 100%;
-    }
   }

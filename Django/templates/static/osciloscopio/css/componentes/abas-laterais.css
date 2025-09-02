@@ -1,5 +1,4 @@
 .aba {
-    width: 10%;
     height: 100%;
     background: var(--cinza-claro);
     border-right: var(--espessura-borda) solid #666;
@@ -11,10 +10,14 @@
 
 }
 
+#aba-esquerda{
+    width: 5%;
+}
+
 #aba-direita{
 
     display: block;
-    width: 25%;
+    width: 15%;
     border-right: none;
     border-bottom-left-radius: 0;
     border-left: var(--espessura-borda) solid #666;
@@ -23,7 +26,7 @@
 }
 
 #titulo-entradas{
-    font-size: 1.5vw;
+    font-size: 1vw;
     color: black;
 }
 
@@ -62,7 +65,8 @@
 
 
 
-.container-aba{
+.container-aba, 
+.container-aba-futura{
     width: 50%;
     height: 100%;
 
@@ -169,6 +173,7 @@ flex: 1;
 }
 
 
+
 #form-entrada{
     width: 100%;
     height: 100%;
@@ -214,6 +219,13 @@ flex: 1;
 
 #abas-futuras>div{
     width: 25%;
+}
+
+
+#entrada-operacao{
+    width: 40px;
+    border: solid 1px green;
+    margin: 0;
 }
 
 
