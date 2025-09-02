@@ -448,6 +448,13 @@ function startListeners() {
             mudarCorGrafico(radio.value);
         });
     })
+
+    // CHECANDO ORIENTAÇÃO
+    
+    window.addEventListener('resize', checkOrientation);
+    window.addEventListener('orientationchange', checkOrientation);
+
+
 }
 
 function mudarCorGrafico(cor){
@@ -472,11 +479,35 @@ function mudarCorGrafico(cor){
     }
 }
 
+
+// FUNÇÃO PARA MUDAR A ORIENTAÇÃO NO MOBILE
+
+function checkOrientation(){
+
+    const ehCelular = window.innerWidth <= 768;
+    const ehRetrato = window.matchMedia("(orientation: portrait)").matches;
+
+    const avisoOrientacao = document.getElementById("rotate-warning");
+    const aplicacao = document.getElementById("janela-principal");
+
+    if(ehCelular && ehRetrato){
+        avisoOrientacao.style.display = 'flex';
+        aplicacao.style.display = 'none';
+    } else {
+        avisoOrientacao.style.display = 'none';
+        aplicacao.style.display = 'block';
+    }
+
+    console.log(`Eh celular: ${ehCelular}\nEh retrato: ${ehRetrato}`);
+
+}
+
 // Inicializa o dom
 
 document.addEventListener('DOMContentLoaded', function() {
     iniciarAbas();
     trocarAbas('tempo');
+    checkOrientation();
     startListeners();
     atualizarAPI();
 });

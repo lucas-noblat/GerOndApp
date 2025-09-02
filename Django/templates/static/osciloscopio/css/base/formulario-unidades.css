@@ -115,12 +115,3 @@
     display: block;
     margin-bottom: 10px;
   }
-
-
-
-  /* Responsividade */
-  @media (max-width: 600px) {
-    .form-group {
-      width: 100%;
-    }
-  }

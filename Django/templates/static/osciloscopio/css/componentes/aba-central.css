@@ -13,7 +13,7 @@
 
     display: flex;
 }
-ab
+
 .aba-aplicacao{
 
     
@@ -30,6 +30,7 @@ ab
 
     cursor: pointer;
     z-index: 1;
+
 
     overflow: hidden;
 }
@@ -103,6 +104,7 @@ ab
     border-top-left-radius: 10px;
     border-color: white;
     cursor: pointer;
+    padding: 10px;
 }
 
 .aba-btn.active{
