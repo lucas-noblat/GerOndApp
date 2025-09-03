@@ -33,7 +33,7 @@ def plotar_sinais_bokeh(
                         y_label="Amplitude",
                         alpha=1, 
                         cor_grafico="white",
-                        tamanho_fonte=14,
+                        tamanho_fonte=16,
                         is_spectrum = False):
     """
     Plota até 6 sinais em um único gráfico usando a biblioteca Bokeh com ColumnDataSource.

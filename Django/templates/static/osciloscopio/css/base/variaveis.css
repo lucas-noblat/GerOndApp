@@ -7,7 +7,7 @@
     --largura-janela: 100%;
     --altura-janela: 90vh;
     
-    --curva-borda: clamp(10px, 4%, 15px);
+    --curva-borda: clamp(5px, 2%, 10px);
     --espessura-borda: clamp(1px, 0.5vw, 3px);
     
     --sombra-externa: 0px 2px 4px rgba(0, 0, 0, 0.2);

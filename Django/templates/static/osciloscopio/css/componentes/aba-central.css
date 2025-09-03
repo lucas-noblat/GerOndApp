@@ -17,7 +17,7 @@
 .aba-aplicacao{
 
     
-    width: 15%;
+    width: 12.5%;
     height: 100%;
 
     display: flex;
@@ -25,7 +25,8 @@
     align-items: center;
 
     
-    
+    /*background-color: var(--cinza-medio);*/
+
 
     cursor: pointer;
     z-index: 1;
