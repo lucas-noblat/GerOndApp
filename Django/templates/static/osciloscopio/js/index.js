@@ -495,7 +495,7 @@ function checkOrientation(){
         aplicacao.style.display = 'none';
     } else {
         avisoOrientacao.style.display = 'none';
-        aplicacao.style.display = 'block';
+        aplicacao.style.display = 'flex';
     }
 
     console.log(`Eh celular: ${ehCelular}\nEh retrato: ${ehRetrato}`);
