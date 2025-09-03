@@ -13,6 +13,5 @@ services:
     env_file:
       - dotenvfiles/.env
     restart: unless-stopped
-    
 volumes:
   staticfiles:

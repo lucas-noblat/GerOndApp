@@ -1,10 +1,6 @@
 #janela-principal {
     width: var(--largura-janela);
     height: var(--altura-janela);
-    max-width: 1440px;
-    min-width: 320px;
-    min-height: 600px;
-
     background: var(--cinza-medio);
     box-shadow: var(--sombra-interna);
     border-radius: var(--curva-borda);
