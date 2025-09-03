@@ -1,6 +1,5 @@
 // CONTROLE DAS ABAS - VERSÃO DEFINITIVA
 function iniciarAbas() {
-
     // Ativa a aba inicial
     const sinalInicial = document.getElementById('numero_sinal').value;
     ativarAba(sinalInicial);
@@ -10,7 +9,7 @@ function iniciarAbas() {
         btn.addEventListener('click', function() {
             const sinal = this.getAttribute('data-sinal');
             ativarAba(sinal);
-            
+            carregarParametrosSinal(sinal);
 
         });
     });
@@ -26,7 +25,7 @@ function iniciarAbas() {
 // ATIVAR AS ABAS
 function ativarAba(sinal) {
 
-    carregarParametrosSinal(sinal);
+    document.getElementById(`sinal${sinal}`).checked = true;
 
     // Remove classe active de todas as abas
     document.querySelectorAll('.botao-sinal').forEach(aba => {
@@ -127,7 +126,7 @@ function trocarAbas(aba_clicada){
 // Função para receber dados (BACKEND -> FRONTEND)
 
 
-// Vari�vel para descobrir protocolo e host para usar na api
+// Vari�vel para descobrir protocolo e host para usar na api
 
 const BASE_URL = `${window.location.protocol}//${window.location.host}`;
 
@@ -174,7 +173,6 @@ async function sendData(sinal){
 
 async function carregarParametrosSinal(sinal){
     try{
-        console.log(sendData(sinal));
         const dados = await getData(sinal);
         if(dados['forma_sinal'] == "senoidal" || dados['forma_sinal'] == "ruido-branco"){
             document.getElementById("grupo-duty").style.display = "None";
@@ -240,8 +238,7 @@ function get_sinaisAtivos(){
         (document.getElementById(`sinal2`).checked),
         (document.getElementById(`sinal3`).checked),
         (document.getElementById(`sinal4`).checked),
-        (document.getElementById(`sinal5`).checked),
-        (document.getElementById('sinal6').checked)
+        (document.getElementById(`sinal5`).checked)
     ]
 }
 
@@ -258,11 +255,12 @@ async function atualizarAPI(){
 
         const resultadoSendData = await sendData(sinal);
 
-        console.log(get_sinaisAtivos());
+        atualizarUnidades();
+        atualizarSteps();
         
         for(let i = 0; i < 6; i++){
 
-            resultadoSendData[i].ativo =  document.getElementById(`sinal${i+1}`).checked ? true : false;
+            resultadoSendData[i].ativo = i !== 5 ? (document.getElementById(`sinal${i+1}`).checked ? true : false) : true;
             
 
             if(resultadoSendData[i].ativo == true){
@@ -279,6 +277,10 @@ async function atualizarAPI(){
                                     y: resultadoSendData[i]['yFreq']
                                 }
                                 source.change.emit();
+
+                                if(i !== 5) {
+                                    document.getElementById(`cs${i+1}`).style.display = "flex";
+                                }
                 
                             }
                             else {
@@ -360,10 +362,10 @@ function startListeners() {
     const inputs = document.querySelectorAll("input");
     const selects = document.querySelectorAll("select");
     const radios = document.querySelectorAll('input[type="radio"]');
-    const sinais = document.querySelectorAll('input[type="checkbox"]');
 
-    // POPUP
+
     const abas_config_sobre = document.querySelectorAll(".container-aba");
+
     const overLayerPopup = document.getElementById("blur-popup");
     const popup = document.getElementById("popup-config");
     const fechar_popup = document.getElementById("fechar-popup");
@@ -388,9 +390,7 @@ function startListeners() {
     // TODOS OS INPUTS NUMÉRICOS
     inputs.forEach(input => {
         input.addEventListener("input", function() {
-            atualizarAPI()
-            atualizarUnidades();
-            atualizarSteps();
+            atualizarAPI();
         })
     });
     
@@ -398,19 +398,9 @@ function startListeners() {
     // TODOS OS INPUT DO TIPO SELECT
     selects.forEach(select => {
         select.addEventListener("change", function(){
-            atualizarUnidades();
-            atualizarSteps();
             atualizarAPI();
         })
     });
-
-    // SINAIS ATIVOS
-
-    sinais.forEach(sinal => {
-        sinal.addEventListener("change", function(){
-            atualizarAPI();
-        })
-    })
 
     // EVENTOS ABA DA ESQUERDA
 
@@ -448,13 +438,6 @@ function startListeners() {
             mudarCorGrafico(radio.value);
         });
     })
-
-    // CHECANDO ORIENTAÇÃO
-    
-    window.addEventListener('resize', checkOrientation);
-    window.addEventListener('orientationchange', checkOrientation);
-
-
 }
 
 function mudarCorGrafico(cor){
@@ -478,36 +461,11 @@ function mudarCorGrafico(cor){
         grafFreq.border_fill_color = cor;
     }
 }
-
-
-// FUNÇÃO PARA MUDAR A ORIENTAÇÃO NO MOBILE
-
-function checkOrientation(){
-
-    const ehCelular = window.innerWidth <= 768;
-    const ehRetrato = window.matchMedia("(orientation: portrait)").matches;
-
-    const avisoOrientacao = document.getElementById("rotate-warning");
-    const aplicacao = document.getElementById("janela-principal");
-
-    if(ehCelular && ehRetrato){
-        avisoOrientacao.style.display = 'flex';
-        aplicacao.style.display = 'none';
-    } else {
-        avisoOrientacao.style.display = 'none';
-        aplicacao.style.display = 'block';
-    }
-
-    console.log(`Eh celular: ${ehCelular}\nEh retrato: ${ehRetrato}`);
-
-}
-
 // Inicializa o dom
 
 document.addEventListener('DOMContentLoaded', function() {
     iniciarAbas();
     trocarAbas('tempo');
-    checkOrientation();
     startListeners();
     atualizarAPI();
 });
