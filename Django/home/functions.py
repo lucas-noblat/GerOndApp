@@ -71,7 +71,7 @@ def plotar_sinais_bokeh(
 
         
         p.line('x', 'y', source=source, line_width=2,
-               line_color=corLinha, line_alpha=alpha)
+               line_color=corLinha, line_alpha=alpha, name=f'linha{i}' if i != 6 else 'linha_resultante')
         
     
     # Fontes

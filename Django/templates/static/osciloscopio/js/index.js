@@ -220,8 +220,7 @@ function receberParametros(){
         operacao: document.getElementById("entrada-operacao").value,
         duty: parseFloat(document.getElementById("entrada-duty").value) || 0.5,
         forma_sinal: document.getElementById("entrada-forma-sinal").value,
-        ativo: (document.getElementById(`sinal${sinal}`).checked),
-        sinaisAtivos: get_sinaisAtivos()}
+        }
 
     return parametros;
 }
@@ -234,16 +233,6 @@ function receberUnidades(){
     };
 }
 
-function get_sinaisAtivos(){
-    return [
-        (document.getElementById(`sinal1`).checked),
-        (document.getElementById(`sinal2`).checked),
-        (document.getElementById(`sinal3`).checked),
-        (document.getElementById(`sinal4`).checked),
-        (document.getElementById(`sinal5`).checked),
-        (document.getElementById('sinal6').checked)
-    ]
-}
 
 // Função assíncrona que irá atualizar os dados
 
@@ -258,49 +247,24 @@ async function atualizarAPI(){
 
         const resultadoSendData = await sendData(sinal);
 
-        console.log(get_sinaisAtivos());
-        
         for(let i = 0; i < 6; i++){
-
-            resultadoSendData[i].ativo =  document.getElementById(`sinal${i+1}`).checked ? true : false;
-            
-
-            if(resultadoSendData[i].ativo == true){
-                            const source = Bokeh.documents[0].get_model_by_name(`databaseInternoBokeh${i}`);
-                            const sourceFreq = Bokeh.documents[1].get_model_by_name(`dbf${i}`);                
+            const source = Bokeh.documents[0].get_model_by_name(`databaseInternoBokeh${i}`);
+            const sourceFreq = Bokeh.documents[1].get_model_by_name(`dbf${i}`);
                                     
-                            if(source && resultadoSendData && sourceFreq){            
-                                source.data.x = resultadoSendData[i].x;
-                                source.data.y = resultadoSendData[i].y;
-
-                                
-                                sourceFreq.data = {
-                                    x: resultadoSendData[i]['xFreq'],
-                                    y: resultadoSendData[i]['yFreq']
-                                }
-                                source.change.emit();
-                
-                            }
-                            else {
-                                console.warn("Não foi possível atualizar o gráfico: dados ou source não definidos.");
-                            }
-            } else {
-                const source = Bokeh.documents[0].get_model_by_name(`databaseInternoBokeh${i}`);
-                const sourceFreq = Bokeh.documents[1].get_model_by_name(`dbf${i}`);
-
-                if(source && resultadoSendData && sourceFreq){            
-                    source.data.x = [];
-                    source.data.y = [];
-                    
-                    sourceFreq.data = {
-                        x: [],
-                        y: []
-                    }
-                    source.change.emit();
+            if(source && resultadoSendData && sourceFreq){                   
+                source.data.x = resultadoSendData[i].x;
+                source.data.y = resultadoSendData[i].y;
+                sourceFreq.data = {
+                    x: resultadoSendData[i]['xFreq'],
+                    y: resultadoSendData[i]['yFreq']
                 }
+                source.change.emit();
+                
+            }else {
+                console.warn("Não foi possível atualizar o gráfico: dados ou source não definidos.");
             }
+            
         }
-        
     } catch(error){
         console.error(error);
     }
@@ -352,12 +316,30 @@ function atualizarSteps(){
         }
         })
 }
+// FUNÇÃO PARA ESCONDER OS SINAIS INICIALMENTE
 
+function inicializarSinais() {
+    for (let i = 0; i < 6; i++) {
+        const linhaTempo = Bokeh.documents[0].get_model_by_name(`linha${i}`);
+        const linhaFreq = Bokeh.documents[1].get_model_by_name(`linha${i}`);
+
+        if (linhaTempo && linhaFreq) {
+            // Apenas o primeiro sinal fica visível
+            if (i === 0) {
+                linhaTempo.visible = true;
+                linhaFreq.visible = true;
+            } else {
+                linhaTempo.visible = false;
+                linhaFreq.visible = false;
+            }
+        }
+    }
+}
 
 // FUNÇÃO PARA ATIVAR OS LISTENERS
 
 function startListeners() {
-    const inputs = document.querySelectorAll("input");
+    const inputs = document.querySelectorAll('input[type="number"]');
     const selects = document.querySelectorAll("select");
     const radios = document.querySelectorAll('input[type="radio"]');
     const sinais = document.querySelectorAll('input[type="checkbox"]');
@@ -404,11 +386,21 @@ function startListeners() {
         })
     });
 
-    // SINAIS ATIVOS
+    // SINAIS VISÍVEIS
 
-    sinais.forEach(sinal => {
+    sinais.forEach((sinal, i) => {
+
+
+        // QUANDO MUDA
         sinal.addEventListener("change", function(){
-            atualizarAPI();
+            const linhaTempo = Bokeh.documents[0].get_model_by_name(`linha${i}`);
+            const linhaFreq = Bokeh.documents[1].get_model_by_name(`linha${i}`);
+
+            if(linhaFreq && linhaTempo) {
+                const ativo = this.checked;
+                linhaTempo.visible = ativo;
+                linhaFreq.visible = ativo;
+            }
         })
     })
 
@@ -498,7 +490,7 @@ function checkOrientation(){
         aplicacao.style.display = 'flex';
     }
 
-    console.log(`Eh celular: ${ehCelular}\nEh retrato: ${ehRetrato}`);
+    //console.log(`Eh celular: ${ehCelular}\nEh retrato: ${ehRetrato}`);
 
 }
 
@@ -510,6 +502,10 @@ document.addEventListener('DOMContentLoaded', function() {
     checkOrientation();
     startListeners();
     atualizarAPI();
+    
+    // PEQUENO DELAY PARA INVISIBILIZAR SINAIS QUE NÃO SEJAM O SINAL1 (AZUL)
+    setTimeout(inicializarSinais, 100);
+ 
 });
 
 

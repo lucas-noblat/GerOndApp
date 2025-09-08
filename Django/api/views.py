@@ -9,6 +9,7 @@ sys.path.append(str(caminho_avo))
 
 # Agora você pode importar o módulo
 from home import functions  # Importa "modulo_pai.py" que está em "pasta_pai/"
+from numpy import linspace, zeros_like
 
 from . import sinais_memoria
 
@@ -55,53 +56,51 @@ def sendData(request):
       sinal["duty"] = float(dados.get("duty") if "duty" in dados else sinal["duty"])
       sinal["forma_sinal"] = dados.get("forma_sinal") if "forma_sinal" in dados else sinal["forma_sinal"]
       sinal["operacao"] = dados.get("operacao") or sinal["operacao"]
-      sinal["ativo"] = bool(dados.get("ativo") if dados.get("ativo") is not None else True)
 
-      sinaisAtivos = []
+      sinais_response = []
       resultante = None
       vetorX = []
        
       for i, s in enumerate(sinais_memoria.SINAIS_PARAMETROS):    
          s["rate"] = float(dados["rate"]) if "rate" in dados else s["rate"]
          s["duracao"] = float(dados.get("duracao") or sinal["duracao"])
-         s["ativo"] = (dados.get("sinaisAtivos"))[i]
 
          # Gera novo sinal com os parâmetros atualizados
-         vetorX, sinalTempo = (functions.gerar_sinal(s))
-         frequencia, magnitude = (functions.transformada_fourier(vetorX, sinalTempo))
-         
+         vetorX, sinalTempo = functions.gerar_sinal(s)
+         frequencia, magnitude = functions.transformada_fourier(vetorX, sinalTempo)
 
-         if s["ativo"]:
-            if resultante is None:
-               resultante = sinalTempo.copy()
-            else:
-               resultante = functions.aplicarOperacao(resultante, sinalTempo, s["operacao"]) 
+ 
+         # Gerando o dicionário da resultante
 
-             
+         if resultante is None:
+            resultante = zeros_like(sinalTempo)
+               
+         resultante = functions.aplicarOperacao(resultante, sinalTempo, s["operacao"])
+
          sinalAtual = {
-             'x' : vetorX.tolist(),
-             'y' : sinalTempo.tolist(),
-             'xFreq': frequencia.tolist(),
-             'yFreq': magnitude.tolist(),
-             'ativo' : s["ativo"]
+               'x': vetorX.tolist(),
+               'y': sinalTempo.tolist(),
+               'xFreq': frequencia.tolist(),
+               'yFreq': magnitude.tolist(),
          }
 
-         sinaisAtivos.append(sinalAtual)
+         sinais_response.append(sinalAtual)
 
 
-      # Gerando o dicionário da resultante
-
-      frequenciaRes, magnitudeRes = functions.transformada_fourier(vetorX, resultante)
-
-      res = {
-          'x': vetorX.tolist(),
-          'y': resultante.tolist(),
-          'xFreq': frequenciaRes.tolist(),
-          'yFreq': magnitudeRes.tolist(),
-          'ativo': True
-      }
-
-      sinais_memoria.SINAIS = sinaisAtivos
+      if resultante is not None:
+         frequenciaRes, magnitudeRes = functions.transformada_fourier(vetorX, resultante)
+         res = {
+            'x': vetorX.tolist(),
+            'y': resultante.tolist(),
+            'xFreq': frequenciaRes.tolist(),
+            'yFreq': magnitudeRes.tolist(),
+         }
+      else:
+         #NENHUM SINAL ATIVO, RESULTANTE VAZIA
+         res = {
+            'x': [], 'y': [], 'xFreq': [], 'yFreq': []}
+         
+      sinais_memoria.SINAIS = sinais_response
 
       # Adicionando a resultante ao JSON 
       sinais_memoria.SINAIS.append(res)   
