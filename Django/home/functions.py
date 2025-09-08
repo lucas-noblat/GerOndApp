@@ -30,7 +30,7 @@ import warnings
 
 def plotar_sinais_bokeh(
                         x_label="Tempo (s)", 
-                        y_label="Amplitude",
+                        y_label="Amplitude (m)",
                         alpha=1, 
                         cor_grafico="white",
                         tamanho_fonte=14,
