@@ -4,6 +4,7 @@
     max-width: 1440px;
     min-width: 320px;
     min-height: 600px;
+    max-height: 90vh;
 
     background: var(--cinza-medio);
     box-shadow: var(--sombra-interna);
@@ -20,8 +21,10 @@
     height: 100%;
 
     display: flex;
+    flex: 1;
     justify-content: flex-start;
     align-items: center; 
     background-color: var(--cinza-medio);
+    overflow: hidden;
     
 }

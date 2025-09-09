@@ -504,7 +504,7 @@ document.addEventListener('DOMContentLoaded', function() {
     atualizarAPI();
     
     // PEQUENO DELAY PARA INVISIBILIZAR SINAIS QUE NÃO SEJAM O SINAL1 (AZUL)
-    setTimeout(inicializarSinais, 100);
+    setTimeout(inicializarSinais, 10);
  
 });
 
