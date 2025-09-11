@@ -265,6 +265,7 @@ async function atualizarAPI(){
             }
             
         }
+        atualizarRanges();
     } catch(error){
         console.error(error);
     }
@@ -319,6 +320,24 @@ function atualizarSteps(){
 // FUNÇÃO PARA ESCONDER OS SINAIS INICIALMENTE
 
 function inicializarSinais() {
+
+    // Gráficos
+
+    const grafTempo = Bokeh.documents[0].get_model_by_name("Tempo");
+    const grafFreq = Bokeh.documents[1].get_model_by_name("Frequencia");
+
+    // SINCRONIZAR A FERRAMENTA RESET COM NOSSA ATUALIZARRANGES()
+
+    grafTempo.on_event("reset", function(){
+        setTimeout(atualizarRanges, 1);
+    });
+    grafFreq.on_event("reset", function(){
+        setTimeout(atualizarRanges, 1);
+    });
+
+
+    // LOOP PARA ESCONDER SINAIS NO FRONT
+
     for (let i = 0; i < 6; i++) {
         const linhaTempo = Bokeh.documents[0].get_model_by_name(`linha${i}`);
         const linhaFreq = Bokeh.documents[1].get_model_by_name(`linha${i}`);
@@ -334,7 +353,77 @@ function inicializarSinais() {
             }
         }
     }
+    setTimeout(atualizarRanges, 1);
 }
+
+// FUNÇÃO PARA AJUSTAR A DIMENSÃO DO GRÁFICO CONFORME SINAIS VISÍVEIS
+
+function atualizarRanges() {
+  // Ajustar gráfico de tempo
+  const docTempo = Bokeh.documents[0];
+  const plotTempo = docTempo.get_model_by_name("Tempo");
+
+  // Ajustar gráfico de frequência
+  const docFreq = Bokeh.documents[1];
+  const plotFreq = docFreq.get_model_by_name("Frequencia");
+
+  let xs = [], ys = [];
+  let xFreqs = [], yFreqs = [];
+
+  // Loop em todos os sinais
+  for (let i = 0; i < 6; i++) {
+    const linhaTempo = docTempo.get_model_by_name(`linha${i}`);
+    const linhaFreq = docFreq.get_model_by_name(`linha${i}`);
+
+    if (linhaTempo && linhaTempo.visible) {
+      xs = xs.concat(linhaTempo.data_source.data['x']);
+      ys = ys.concat(linhaTempo.data_source.data['y']);
+    }
+
+    if (linhaFreq && linhaFreq.visible) {
+      xFreqs = xFreqs.concat(linhaFreq.data_source.data['x']);
+      yFreqs = yFreqs.concat(linhaFreq.data_source.data['y']);
+    }
+  }
+
+const max_X = Math.max(...xs);
+const min_X = Math.min(...xs);
+const max_Y = Math.max(...ys);
+const min_Y = Math.min(...ys);
+
+const max_X_frequencia = Math.max(...xFreqs);
+const min_X_frequencia = Math.min(...xFreqs);
+const max_Y_frequencia = Math.max(...yFreqs);
+const min_Y_frequencia = Math.min(...yFreqs);
+
+const xPadding = (max_X - min_X) * 0.1; 
+const yPadding = (max_Y - min_Y) * 0.1;
+
+const xPaddingFreq = (max_X_frequencia - min_X_frequencia) * 0.1; 
+const yPaddingFreq = (max_Y_frequencia - min_Y_frequencia) * 0.1;
+
+  // Atualizar ranges do tempo
+  if (xs.length > 0 && ys.length > 0) {
+    plotTempo.x_range.start = min_X - xPadding;
+    plotTempo.x_range.end = max_X + xPadding;
+    plotTempo.y_range.start = min_Y - yPadding;
+    plotTempo.y_range.end = max_Y + yPadding;
+  }
+
+  // Atualizar ranges da frequência
+  if (xFreqs.length > 0 && yFreqs.length > 0) {
+    plotFreq.x_range.start = min_X_frequencia - xPaddingFreq;
+    plotFreq.x_range.end = max_X_frequencia + xPaddingFreq;
+    plotFreq.y_range.start = min_Y_frequencia - yPaddingFreq;
+    plotFreq.y_range.end = max_Y_frequencia + yPaddingFreq;
+  }
+
+    plotTempo.change.emit();
+    plotFreq.change.emit();
+
+}
+
+
 
 // FUNÇÃO PARA ATIVAR OS LISTENERS
 
@@ -349,7 +438,6 @@ function startListeners() {
     const overLayerPopup = document.getElementById("blur-popup");
     const popup = document.getElementById("popup-config");
     const fechar_popup = document.getElementById("fechar-popup");
-
 
     function posicionarPopup(aba){
         const retangulo = aba.getBoundingClientRect();
@@ -400,6 +488,7 @@ function startListeners() {
                 const ativo = this.checked;
                 linhaTempo.visible = ativo;
                 linhaFreq.visible = ativo;
+                setTimeout(atualizarRanges, 1);
             }
         })
     })
@@ -496,15 +585,15 @@ function checkOrientation(){
 
 // Inicializa o dom
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     iniciarAbas();
     trocarAbas('tempo');
     checkOrientation();
     startListeners();
-    atualizarAPI();
-    
-    // PEQUENO DELAY PARA INVISIBILIZAR SINAIS QUE NÃO SEJAM O SINAL1 (AZUL)
-    setTimeout(inicializarSinais, 10);
+
+    // ESPERA DADOS SEREM TRAZIDOS DO BACKEND PARA ESCONDER E ATUALIZAR GRÁFICO
+    await atualizarAPI();
+    inicializarSinais();
  
 });
 
