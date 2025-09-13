@@ -119,6 +119,8 @@ function trocarAbas(aba_clicada){
         });
     }
 
+    setTimeout(atualizarRanges, 50);
+
 }
 
 
@@ -329,10 +331,10 @@ function inicializarSinais() {
     // SINCRONIZAR A FERRAMENTA RESET COM NOSSA ATUALIZARRANGES()
 
     grafTempo.on_event("reset", function(){
-        setTimeout(atualizarRanges, 1);
+        setTimeout(atualizarRanges, 50);
     });
     grafFreq.on_event("reset", function(){
-        setTimeout(atualizarRanges, 1);
+        setTimeout(atualizarRanges, 50);
     });
 
 
@@ -353,12 +355,13 @@ function inicializarSinais() {
             }
         }
     }
-    setTimeout(atualizarRanges, 1);
+    setTimeout(atualizarRanges, 50);
 }
 
 // FUNÇÃO PARA AJUSTAR A DIMENSÃO DO GRÁFICO CONFORME SINAIS VISÍVEIS
 
 function atualizarRanges() {
+  
   // Ajustar gráfico de tempo
   const docTempo = Bokeh.documents[0];
   const plotTempo = docTempo.get_model_by_name("Tempo");
@@ -457,10 +460,11 @@ function startListeners() {
 
     // TODOS OS INPUTS NUMÉRICOS
     inputs.forEach(input => {
-        input.addEventListener("input", function() {
-            atualizarAPI()
+        input.addEventListener("input", async function() {
+            await atualizarAPI()
             atualizarUnidades();
             atualizarSteps();
+            atualizarRanges();
         })
     });
     
@@ -468,9 +472,39 @@ function startListeners() {
     // TODOS OS INPUT DO TIPO SELECT
     selects.forEach(select => {
         select.addEventListener("change", function(){
-            atualizarUnidades();
-            atualizarSteps();
-            atualizarAPI();
+
+            if(this.id != "select-tamanho"){ //SELECIONA TODOS MENOS O DO TAMANHO DA JANELA DO POPUP
+                atualizarUnidades();
+                atualizarSteps();
+                atualizarAPI();
+            } else { // SE FOR O SELECT DA MUDANÇA DE TELA MUDA O TAMANHO DA TELA
+
+                const janela = document.getElementById("janela-principal");
+                if(janela) {
+                    switch(this.value){
+                        case "pequeno":
+                            janela.style.width = "960px";
+                            janela.style.height = "540px";
+                            break;    
+                        case "medio":
+                            janela.style.width = "1280px";
+                            janela.style.height = "720px";
+                            break;                     
+                         case "grande":
+                            janela.style.width = "1600px";
+                            janela.style.height = "900px";
+                            break; 
+                         case "enorme":
+                            janela.style.width = "1920px";
+                            janela.style.height = "1080px";
+                            break;                    
+                        default:
+                            console.error("Tamanho inexistente");
+                    }
+                }
+                
+
+            }
         })
     });
 
@@ -488,7 +522,7 @@ function startListeners() {
                 const ativo = this.checked;
                 linhaTempo.visible = ativo;
                 linhaFreq.visible = ativo;
-                setTimeout(atualizarRanges, 1);
+                setTimeout(atualizarRanges, 50);
             }
         })
     })
@@ -553,6 +587,7 @@ function mudarCorGrafico(cor){
         grafTempo.left[0].major_label_text_color = corOposta; 
         grafTempo.below[0].axis_label_text_color = corOposta;
         grafTempo.below[0].major_label_text_color = corOposta;
+        grafTempo.below[0].axis_line_color = corOposta;
 
     } else if (document.getElementById("grafico_frequencia").style.display !== "none" && grafFreq){
         grafFreq.background_fill_color = cor;

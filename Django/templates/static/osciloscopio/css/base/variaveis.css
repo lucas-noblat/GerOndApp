@@ -4,8 +4,8 @@
     --cinza-medio: #8C8C8C;
     --cinza-fundo: #D9D9D9;
     
-    --largura-janela: 100%;
-    --altura-janela: 90vh;
+    --largura-janela: 1600px;
+    --altura-janela: 1200px;
     
     --curva-borda: clamp(10px, 4%, 15px);
     --espessura-borda: clamp(1px, 0.5vw, 3px);

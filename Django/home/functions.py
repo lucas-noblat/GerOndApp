@@ -45,11 +45,14 @@ def plotar_sinais_bokeh(
         x_axis_label=x_label,
         y_axis_label=y_label,
         x_range = (0, 1),
-        y_range = (-1, 1),
+        y_range = (-1,1),
+
         sizing_mode="stretch_both",
         tools="pan,box_zoom,wheel_zoom,reset,save"
     )
     p.toolbar.active_drag = p.tools[0]
+
+
 
     # Cores
     cores = Category10[6]

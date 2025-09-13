@@ -14,12 +14,28 @@
         <div id = "blur-popup">
         </div>
         <div id = "popup-config">
-            <button id = "fechar-popup">X</button>
-            <label for="cor">Cor do gráfico<label>
-            <div id="container-checkboxes-cor">
-                <input type="radio" name="cor" id="checkbox-preto" class="cor-btn" value = "black">
-                <input type="radio" name="cor" id="checkbox-branco" class = "cor-btn" value = "white">
+            <div id="popup-header">
+                <button id = "fechar-popup">X</button>
             </div>
+            <div id="conteudo-popup">
+                <div id = "container-tamanhos-janela">
+                    <label for="tamanhos-janela">Tamanho da janela</label>
+                    <select name="tamanhos-janela" id="select-tamanho">
+                        <option value="pequeno">960x540</option>
+                        <option value="medio">1280x720</option>
+                        <option value="grande" selected>1600x900</option>
+                        <option value="enorme">1920x1080</option>
+                    </select>
+                </div>
+                <label for="cor">Cor do gráfico<label>
+                <div id="container-checkboxes-cor">
+                    <input type="radio" name="cor" id="checkbox-preto" class="cor-btn" value = "black">
+                    <input type="radio" name="cor" id="checkbox-branco" class = "cor-btn" value = "white">
+                </div>
+
+
+            </div>
+            
         </div>
 
         <!-- AVISO DE ROTAÇÃO PARA MOBILE -->
@@ -40,9 +56,6 @@
                 {% include 'home/aba-direita.html' %}
                 {% block content %}{% endblock %} <!-- Área de conteúdo das páginas -->
             </div>
-
-           
-            
         </div>
  
         <svg id="ondinha" viewBox="0 0 2160 335" fill="none">
