@@ -447,12 +447,13 @@ function startListeners() {
     const sinais = document.querySelectorAll('input[type="checkbox"]');
 
     // POPUP
+    let popup = null;
+
     const abas_config_sobre = document.querySelectorAll(".container-aba");
     const overLayerPopup = document.getElementById("blur-popup");
-    const popup = document.getElementById("popup-config");
-    const fechar_popup = document.getElementById("fechar-popup");
+    const fechar_popup = document.querySelectorAll(".fechar-popup");
 
-    function posicionarPopup(aba){
+    function posicionarPopup(aba, popup){
         const retangulo = aba.getBoundingClientRect();
 
         const posX = retangulo.right + 10;
@@ -541,8 +542,13 @@ function startListeners() {
 
     abas_config_sobre.forEach(aba => {
         aba.addEventListener("click", function(){
+            if(aba.id == "configuracoes"){
+                popup = document.getElementById("popup-config");
+            } else if (aba.id == "sobre"){
+                popup = document.getElementById("popup-sobre");
 
-            posicionarPopup(aba);
+            }
+            posicionarPopup(aba, popup);
 
             overLayerPopup.style.transition = "all 0.4 ease";
     
@@ -554,19 +560,21 @@ function startListeners() {
     });
     // ABA DE CONFIGURAÇÕES
 
+    fechar_popup.forEach(fechar => {
+        fechar.onclick = function () {
+            overLayerPopup.style.opacity = 0;
+            overLayerPopup.style.visibility = "hidden";
+            console.log(popup.id); 
+    
+            popup.style.opacity = 0;
+            popup.style.visibility = "hidden";
+    
+            abas_config_sobre.forEach(aba => {
+                aba.classList.remove('active');
+            });
+        };
+    });
 
-    fechar_popup.onclick = function () {
-        overLayerPopup.style.opacity = 0;
-        overLayerPopup.style.visibility = "hidden"; 
-
-        popup.style.opacity = 0;
-        popup.style.visibility = "hidden";
-
-        abas_config_sobre.forEach(aba => {
-            aba.classList.remove('active');
-        });
-
-    };
     radios.forEach(radio => {
 
         radio.addEventListener("click", function(){

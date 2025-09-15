@@ -11,10 +11,9 @@
 }
   
 
-  #popup-config{
+.popup{
 
     position: absolute;
-    width: 150px;
 
     top: 0;
     left: 0;
@@ -35,6 +34,11 @@
   
   }
 
+  #popup-sobre{
+    width: 200px;
+
+  }
+
   
 #popup-header {
   display: flex;
@@ -44,7 +48,7 @@
   border-radius: 10px 10px 0 0; /* arredonda só em cima */
 }
 
-#fechar-popup {
+.fechar-popup {
     
   background: red;
   border: none;
@@ -55,7 +59,7 @@
   font-weight: bold;
   transition: 0.2s;
 }
-#fechar-popup:hover {
+.fechar-popup:hover {
   background: darkred;
 }
 
@@ -91,7 +95,7 @@
         padding: 15px;
     }
   
-    #conteudo-popup{
+    .conteudo-popup{
 
         display: flex;
         flex: 1;
@@ -99,11 +103,11 @@
         justify-content: space-around;
         align-items: center;
         gap: 20px; /* espaço entre os elementos */
-        margin-top: 10px;
-        margin-bottom: 10px;
+        padding: 10px;
+
     }
 
-    #conteudo-popup span{
+    .conteudo-popup span{
         font-weight: bold;
         margin-bottom: 5px;
     }
@@ -127,3 +131,39 @@
         font-weight: bold;
         font-size: 14px;
     }
+
+    #explanation-container{
+        text-align: center;
+        background-color: #b1b1b1;
+        border-radius: 5px;
+    }
+    #explanation-container p {
+        font-size: 10px;
+        padding: 4px;
+    }
+    #container-links{
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        width: 100%;
+
+        
+    }
+
+    .lk-container{
+
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        background-color: #b1b1b1;
+        border-radius: 5px;
+        padding: 5px;
+        gap: 5px;
+        
+        box-sizing: border-box; /* inclui padding na largura */
+    }
+
+    .lk-container p {
+        font-size: 14px;
+    }
+    
