@@ -21,7 +21,7 @@
     border-right: none;
     border-bottom-left-radius: 0;
     border-left: var(--espessura-borda) solid #666;
-
+    padding: 0px;
     justify-content: space-between;
 }
 
@@ -32,13 +32,17 @@
 
 #abas-sinais{
     height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    
 
 }
 
 #container-sinais{
-    flex: 0;
     height: 5%;
-
+    display: flex;
+    justify-content: space-around;
 }
 
 
@@ -140,11 +144,12 @@ flex: 1;
 
 
 .botao-sinal{
-    width: 100%;
+    width: 20%;
     height: 100%;
     cursor: pointer;
     font: Helvetica;
     transition: border-color 0.3s ease;
+    
 
 }
 
@@ -265,9 +270,15 @@ flex: 1;
 
 #form-select{
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     gap: 4px;
 }
 
 
-
+#entrada-forma-sinal{
+        -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    text-align: center;
+    cursor: pointer;
+}
