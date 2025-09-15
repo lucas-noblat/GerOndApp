@@ -282,3 +282,9 @@ flex: 1;
     text-align: center;
     cursor: pointer;
 }
+
+.form-label{
+
+    font-size: 16px;
+    color: #333;
+}
