@@ -100,7 +100,8 @@ def osciloscopio(request):
         'fase': sessao_anterior.get('ultima_fase', 0),
         'duty': duty,
         'sinal_ativo': sinal_ativo,
-        'sinais_json': sinais_json
+        'sinais_json': sinais_json,
+        'range_5': range(5)
     }
 
     return render(request, 'home/conteudo.html', contexto)

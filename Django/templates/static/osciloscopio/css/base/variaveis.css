@@ -5,7 +5,7 @@
     --cinza-fundo: #D9D9D9;
     
     --largura-janela: 1600px;
-    --altura-janela: 1200px;
+    --altura-janela: 900px;
     
     --curva-borda: clamp(10px, 4%, 15px);
     --espessura-borda: clamp(1px, 0.5vw, 3px);

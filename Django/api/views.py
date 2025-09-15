@@ -55,7 +55,9 @@ def sendData(request):
       sinal["fase"] = float(dados.get("fase")) if dados.get("fase") is not None else 0.0
       sinal["duty"] = float(dados.get("duty") if "duty" in dados else sinal["duty"])
       sinal["forma_sinal"] = dados.get("forma_sinal") if "forma_sinal" in dados else sinal["forma_sinal"]
-      sinal["operacao"] = dados.get("operacao") or sinal["operacao"]
+      
+      for i, signal in enumerate(sinais_memoria.SINAIS_PARAMETROS):
+         signal["operacao"] = dados.get("operacao")[i]
 
       sinais_response = []
       resultante = None
@@ -75,8 +77,8 @@ def sendData(request):
          if resultante is None:
             resultante = zeros_like(sinalTempo)
                
+        
          resultante = functions.aplicarOperacao(resultante, sinalTempo, s["operacao"])
-
          sinalAtual = {
                'x': vetorX.tolist(),
                'y': sinalTempo.tolist(),

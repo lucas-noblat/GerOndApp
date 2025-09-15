@@ -52,15 +52,12 @@
 
 
 .cont-aba{
-    width: 50%;
+    width: 20%;
     height: 100%;
 
     border-right: 1px solid white;
     border-bottom: 1px solid white;
-  
-    display: flex;
-    justify-content: center;
-    align-items: center;
+
 }
 
 
@@ -211,25 +208,66 @@ flex: 1;
     visibility: visible;
 }
 
-#abas-futuras{
 
-    height: 30%;
 
+
+#entrada-operacao,
+#entrada-operacao-0,
+#entrada-operacao-1,
+#entrada-operacao-2,
+#entrada-operacao-3,
+#entrada-operacao-4 {
+    width: 20%;
+    font-size: 14px;
+    margin-top: 4px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    text-align: center;
+    cursor: pointer;
 }
 
-#abas-futuras>div{
-    width: 25%;
+/* Sinal 1 - Azul */
+#entrada-operacao-0 {
+  color: blue;
+  border: 2px solid blue;
+  background-color: #eef6ff;
+}
+
+/* Sinal 2 - Laranja */
+#entrada-operacao-1 {
+  color: orange;
+  border: 2px solid orange;
+  background-color: #fff5e6;
+}
+
+/* Sinal 3 - Verde */
+#entrada-operacao-2 {
+  color: green;
+  border: 2px solid green;
+  background-color: #e9ffe6;
+}
+
+/* Sinal 4 - Vermelho */
+#entrada-operacao-3 {
+  color: red;
+  border: 2px solid red;
+  background-color: #ffeaea;
+}
+
+/* Sinal 5 - Roxo */
+#entrada-operacao-4 {
+  color: purple;
+  border: 2px solid purple;
+  background-color: #f5e6ff;
 }
 
 
-#entrada-operacao{
-    width: 40px;
-    border: solid 1px green;
-    margin: 0;
+#form-select{
+    display: flex;
+    justify-content: space-between;
+    gap: 4px;
 }
-
-
-
 
 
 

@@ -343,3 +343,5 @@ def aplicarOperacao(s1, s2, operacao):
             return array(s1 / s2)
         case "nenhuma":
             return array(s1)
+        case default:
+            print("Nao existe")

@@ -194,7 +194,7 @@ async function carregarParametrosSinal(sinal){
         document.getElementById("entrada-fase").value = dados['fase'];
         document.getElementById("entrada-offset").value = dados['offset'];
         document.getElementById("entrada-forma-sinal").value = dados['forma_sinal'];
-        document.getElementById("entrada-operacao").value = dados['operacao'];
+        //document.getElementById("entrada-operacao").value = dados['operacao'];
         document.getElementById("entrada-duty").value = dados['duty'];
     
         document.getElementById("entrada-duracao").value = dados['duracao'];
@@ -211,6 +211,16 @@ async function carregarParametrosSinal(sinal){
 function receberParametros(){
 
     const sinal = document.getElementById('numero_sinal').value;
+    const operacoes = [
+        document.getElementById("entrada-operacao-0").value,
+        document.getElementById(`entrada-operacao-1`).value,
+        document.getElementById(`entrada-operacao-2`).value,
+        document.getElementById(`entrada-operacao-3`).value,
+        document.getElementById(`entrada-operacao-4`).value,
+    ];
+
+    console.log(operacoes);
+
     const parametros = {
         id: sinal,
         amplitude: parseFloat(document.getElementById("entrada-amplitude").value),
@@ -219,7 +229,7 @@ function receberParametros(){
         duracao: parseFloat(document.getElementById("entrada-duracao").value),
         fase: parseFloat(document.getElementById("entrada-fase").value) * (Math.PI/180.0),
         offset: parseFloat(document.getElementById("entrada-offset").value),
-        operacao: document.getElementById("entrada-operacao").value,
+        operacao: operacoes,
         duty: parseFloat(document.getElementById("entrada-duty").value) || 0.5,
         forma_sinal: document.getElementById("entrada-forma-sinal").value,
         }
