@@ -372,69 +372,72 @@ function inicializarSinais() {
 
 function atualizarRanges() {
   
-  // Ajustar gráfico de tempo
-  const docTempo = Bokeh.documents[0];
-  const plotTempo = docTempo.get_model_by_name("Tempo");
+    // Ajustar gráfico de tempo
+    const docTempo = Bokeh.documents[0];
+    const plotTempo = docTempo.get_model_by_name("Tempo");
 
-  // Ajustar gráfico de frequência
-  const docFreq = Bokeh.documents[1];
-  const plotFreq = docFreq.get_model_by_name("Frequencia");
+    // Ajustar gráfico de frequência
+    const docFreq = Bokeh.documents[1];
+    const plotFreq = docFreq.get_model_by_name("Frequencia");
 
-  let xs = [], ys = [];
-  let xFreqs = [], yFreqs = [];
+    let xs = [], ys = [];
+    let xFreqs = [], yFreqs = [];
 
-  // Loop em todos os sinais
-  for (let i = 0; i < 6; i++) {
-    const linhaTempo = docTempo.get_model_by_name(`linha${i}`);
-    const linhaFreq = docFreq.get_model_by_name(`linha${i}`);
+    // Loop em todos os sinais
+    for (let i = 0; i < 6; i++) {
+        const linhaTempo = docTempo.get_model_by_name(`linha${i}`);
+        const linhaFreq = docFreq.get_model_by_name(`linha${i}`);
 
-    if (linhaTempo && linhaTempo.visible) {
-      xs = xs.concat(linhaTempo.data_source.data['x']);
-      ys = ys.concat(linhaTempo.data_source.data['y']);
+        if (linhaTempo && linhaTempo.visible) {
+        xs = xs.concat(linhaTempo.data_source.data['x']);
+        ys = ys.concat(linhaTempo.data_source.data['y']);
+        }
+
+        if (linhaFreq && linhaFreq.visible) {
+        xFreqs = xFreqs.concat(linhaFreq.data_source.data['x']);
+        yFreqs = yFreqs.concat(linhaFreq.data_source.data['y']);
+        }
     }
 
-    if (linhaFreq && linhaFreq.visible) {
-      xFreqs = xFreqs.concat(linhaFreq.data_source.data['x']);
-      yFreqs = yFreqs.concat(linhaFreq.data_source.data['y']);
+    // Calcula min/max
+    let max_X = Math.max(...xs), min_X = Math.min(...xs);
+    let max_Y = Math.max(...ys), min_Y = Math.min(...ys);
+    let max_X_frequencia = Math.max(...xFreqs), min_X_frequencia = Math.min(...xFreqs);
+    let max_Y_frequencia = Math.max(...yFreqs), min_Y_frequencia = Math.min(...yFreqs);
+
+    // 🔹 Corrigir caso todos os valores sejam iguais
+    if (max_X === min_X) { max_X += 1; min_X -= 1; }
+    if (max_Y === min_Y) { max_Y += 1; min_Y -= 1; }
+    if (max_X_frequencia === min_X_frequencia) { max_X_frequencia += 1; min_X_frequencia -= 1; }
+    if (max_Y_frequencia === min_Y_frequencia) { max_Y_frequencia += 1; min_Y_frequencia -= 1; }
+
+
+    const xPadding = (max_X - min_X) * 0.1; 
+    const yPadding = (max_Y - min_Y) * 0.1;
+
+    const xPaddingFreq = (max_X_frequencia - min_X_frequencia) * 0.1; 
+    const yPaddingFreq = (max_Y_frequencia - min_Y_frequencia) * 0.1;
+
+    // Atualizar ranges do tempo
+    if (xs.length > 0 && ys.length > 0) {
+        plotTempo.x_range.start = min_X - xPadding;
+        plotTempo.x_range.end = max_X + xPadding;
+        plotTempo.y_range.start = min_Y - yPadding;
+        plotTempo.y_range.end = max_Y + yPadding;
     }
-  }
 
-const max_X = Math.max(...xs);
-const min_X = Math.min(...xs);
-const max_Y = Math.max(...ys);
-const min_Y = Math.min(...ys);
+    // Atualizar ranges da frequência
+    if (xFreqs.length > 0 && yFreqs.length > 0) {
+        plotFreq.x_range.start = min_X_frequencia - xPaddingFreq;
+        plotFreq.x_range.end = max_X_frequencia + xPaddingFreq;
+        plotFreq.y_range.start = min_Y_frequencia - yPaddingFreq;
+        plotFreq.y_range.end = max_Y_frequencia + yPaddingFreq;
+    }
 
-const max_X_frequencia = Math.max(...xFreqs);
-const min_X_frequencia = Math.min(...xFreqs);
-const max_Y_frequencia = Math.max(...yFreqs);
-const min_Y_frequencia = Math.min(...yFreqs);
+        plotTempo.change.emit();
+        plotFreq.change.emit();
 
-const xPadding = (max_X - min_X) * 0.1; 
-const yPadding = (max_Y - min_Y) * 0.1;
-
-const xPaddingFreq = (max_X_frequencia - min_X_frequencia) * 0.1; 
-const yPaddingFreq = (max_Y_frequencia - min_Y_frequencia) * 0.1;
-
-  // Atualizar ranges do tempo
-  if (xs.length > 0 && ys.length > 0) {
-    plotTempo.x_range.start = min_X - xPadding;
-    plotTempo.x_range.end = max_X + xPadding;
-    plotTempo.y_range.start = min_Y - yPadding;
-    plotTempo.y_range.end = max_Y + yPadding;
-  }
-
-  // Atualizar ranges da frequência
-  if (xFreqs.length > 0 && yFreqs.length > 0) {
-    plotFreq.x_range.start = min_X_frequencia - xPaddingFreq;
-    plotFreq.x_range.end = max_X_frequencia + xPaddingFreq;
-    plotFreq.y_range.start = min_Y_frequencia - yPaddingFreq;
-    plotFreq.y_range.end = max_Y_frequencia + yPaddingFreq;
-  }
-
-    plotTempo.change.emit();
-    plotFreq.change.emit();
-
-}
+    }
 
 
 
