@@ -53,6 +53,12 @@ select{
 
 }
 
+/* Labels dos inputs */
+label {
+    font-family: 'Open Sans', sans-serif;
+    text-align: center;
+}
+
 /* RESPONSIVIDADE PARA MOBILE SECTION */
 
 

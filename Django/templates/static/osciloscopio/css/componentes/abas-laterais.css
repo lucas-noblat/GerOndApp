@@ -194,9 +194,29 @@ flex: 1;
     flex-direction: row;
 
     justify-content: space-between;
-    align-items: center;
+
 
 }
+
+#container-entradas{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex:1;
+    flex-wrap: wrap;
+
+}
+
+#container-entradas .form-group{
+        max-width: 40%;
+        height: 33%;
+}
+
+#container-entradas .form-number{
+    height: 30px;
+
+}
+
 
 #par-number-sinal{
 
@@ -268,15 +288,20 @@ flex: 1;
 }
 
 
+.form-number{
+    width: 50px;
+}
+
 #form-select{
     display: flex;
     justify-content: space-around;
     gap: 4px;
+    margin-top: 10px;
 }
 
 
 #entrada-forma-sinal{
-        -webkit-appearance: none;
+    -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
     text-align: center;

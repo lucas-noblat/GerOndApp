@@ -19,7 +19,8 @@
 
     </div>
 
-    <div class = "container-par-entradas">
+    <div id = "container-entradas">
+
         <!-- Amplitude -->
         <div class="form-group" id="grupo-amplitude">
             <label for="entrada-amplitude" class="form-label">Amplitude</label>
@@ -36,9 +37,14 @@
             </div>            
         </div> 
 
-    </div>
+        <!-- PERÍODO  -->
+        <div class="form-group" id="grupo-periodo">
+            <label for="entrada-periodo" class="form-label">Período</label>
+                <div class="form-number">
+                    <input type="number" name="entrada-periodo" id="entrada-periodo" min= 0 max = 1 step = 0.05 value = 0.5>
+                </div>            
+        </div>
 
-    <div class = "container-par-entradas">
         <!-- Fase -->
         <div class="form-group" id="grupo-fase">
             <label for="entrada-fase" class="form-label">Fase(º)</label>
@@ -54,41 +60,18 @@
                 <input type="number" name="entrada-offset" id="entrada-offset" value = 0 required>
             </div>            
         </div>
-    </div>
-
-    <div class = "container-par-entradas">
-
-        
-    </div>
-
-
-    <div class = "container-par-entradas">
 
         <!-- Duty -->
         <div class="form-group" id="grupo-duty" style="display: none;">
             <label for="entrada-duty" class="form-label">Duty</label>
                 <div class="form-number">
-                    <input type="number" name="entrada-duty" id="entrada-duty" min= 0 max = 1 step = 0.05 value = 0.5>
+                    <input type="number" name="entrada-duty" id="entrada-duty" min= 0.001 max = 0.999 step = 0.05 value = 0.5>
                 </div>            
         </div>
 
     </div>
 
 
-    <!-- PERÍODO
-     
-    
-    <div class="container-par-entradas">
-        
-        <div class="form-group" id="grupo-periodo">
-            <label for="entrada-periodo" class="form-label">Período</label>
-                <div class="form-number">
-                    <input type="number" name="entrada-periodo" id="entrada-periodo" min= 0 max = 1 step = 0.05 value = 0.5>
-                </div>            
-        </div>
-    </div>
-    
-    -->
 
 
 </form>
