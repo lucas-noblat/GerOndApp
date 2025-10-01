@@ -11,7 +11,7 @@ env = Env()
 env_path = BASE_DIR / 'dotenvfiles' / '.env'
 Env.read_env(env_path)
 
-ENVIRONMENT = env('ENVIRONMENT', default='production')
+ENVIRONMENT = env('ENVIRONMENT', default='development')
 
 
 # Quick-start development settings - unsuitable for production
