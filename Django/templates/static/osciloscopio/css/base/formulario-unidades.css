@@ -10,7 +10,10 @@
     
 
     flex: 1;
+    border-radius: 5px ;
+    box-sizing: border-box;
 
+    padding: 5px;
    
   }
   

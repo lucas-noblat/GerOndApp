@@ -32,7 +32,12 @@ function iniciarAbas() {
 // ATIVAR AS ABAS
 function ativarAba(sinal) {
 
+    // Atualiza informacoes no front
     carregarParametrosSinal(sinal);
+
+    // Pega a div das entradas para destacar
+
+    const formEntrada = document.getElementById("form-entrada");
 
     // Remove classe active de todas as abas
     document.querySelectorAll('.botao-sinal').forEach(aba => {
@@ -42,7 +47,7 @@ function ativarAba(sinal) {
     
     // Ativa a aba clicada (botão)
     const abaAtiva = document.querySelector(`.botao-sinal[data-sinal="${sinal}"]`);
-    if (abaAtiva) {
+    if (abaAtiva && formEntrada) {
 
         abaAtiva.classList.add('active');        
         const coresAbas = {
@@ -53,8 +58,19 @@ function ativarAba(sinal) {
             5: "2px solid purple"
         }
 
+        const coresFundoAbas = {
+            1: "#E0F2FE",
+            2: "#FFF7ED",
+            3: "#F0FDF4",
+            4: "#FEF2F2",
+            5: "#FAF5FF",
+
+        }
+
         // Define a cor da aba dependendo do sinal, por padrão é azul
         abaAtiva.style.border = coresAbas[sinal] || "2px solid blue";
+        formEntrada.style.border = coresAbas[sinal] || "2px solid blue";
+        formEntrada.style.backgroundColor = coresFundoAbas[sinal] || "#E0F2FE"; 
 
         // Atualiza a URL sem recarregar a página
         const url = new URL(window.location);
@@ -201,6 +217,7 @@ async function carregarParametrosSinal(sinal){
         document.getElementById("entrada-forma-sinal").value = dados['forma_sinal'];
         //document.getElementById("entrada-operacao").value = dados['operacao'];
         document.getElementById("entrada-duty").value = dados['duty'];
+        document.getElementById("entrada-periodo").value = parseFloat(1/dados['frequencia']).toFixed(6);
     
         document.getElementById("entrada-duracao").value = dados['duracao'];
         document.getElementById("entrada-rate").value = dados['rate'];
