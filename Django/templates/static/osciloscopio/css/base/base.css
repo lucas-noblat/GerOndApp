@@ -40,7 +40,8 @@ h3{
 select{
     height: 100%;
     width: 100%;
-    font-size: 18px;       
+    font-size: 18px;
+    border-radius: 5px ;       
 }
 
 .container-titulo{
@@ -94,6 +95,24 @@ a:hover {
 
 
 
+/* RESTAURAR SETINHAS DOS INPUTS NUMBER */
+input[type="number"] {
+    -webkit-appearance: textfield;
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
 
 
 
+/* Setinhas para Webkit (Chrome, Safari, Edge) */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: inner-spin-button;
+    opacity: 1;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    height: 20px;
+    width: 16px;
+    position: relative;
+}

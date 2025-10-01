@@ -274,10 +274,6 @@ flex: 1;
 }
 
 
-.form-number{
-    width: 50px;
-}
-
 #selects-container{
     display: flex;
     flex-direction: column;

@@ -176,7 +176,6 @@ async function sendData(sinal){
 
 async function carregarParametrosSinal(sinal){
     try{
-        console.log(sendData(sinal));
         const dados = await getData(sinal);
         if(dados['forma_sinal'] == "senoidal" || dados['forma_sinal'] == "ruido-branco"){
             document.getElementById("grupo-duty").style.display = "None";
@@ -218,8 +217,6 @@ function receberParametros(){
         document.getElementById(`entrada-operacao-3`).value,
         document.getElementById(`entrada-operacao-4`).value,
     ];
-
-    console.log(operacoes);
 
     const parametros = {
         id: sinal,
@@ -575,7 +572,6 @@ function startListeners() {
         fechar.onclick = function () {
             overLayerPopup.style.opacity = 0;
             overLayerPopup.style.visibility = "hidden";
-            console.log(popup.id); 
     
             popup.style.opacity = 0;
             popup.style.visibility = "hidden";
@@ -643,7 +639,6 @@ function checkOrientation(){
         aplicacao.style.display = 'flex';
     }
 
-    //console.log(`Eh celular: ${ehCelular}\nEh retrato: ${ehRetrato}`);
 
 }
 

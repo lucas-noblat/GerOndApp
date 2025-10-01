@@ -51,13 +51,15 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 50%;
-    width: 50%;
+    height: auto;
+    width: 40px;
     box-shadow: 1px 1px 5px;
+
+    border-radius:5px ;
 
     background-color: white;
     margin: 5px;
-    padding-right: 5px;
+    padding: 5px 8px; /* Padding uniforme */
       }
 
   .form-unit {
@@ -87,8 +89,6 @@
     font-family: 'Wavefont', sans-serif;
     font-size: 18px;
     width: 100%;
-    padding-left: 10px;
-    outline: none;
   }
   
   /* Botões e controles */
