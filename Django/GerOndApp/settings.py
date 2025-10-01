@@ -23,7 +23,7 @@ SECRET_KEY = env('SECRET_KEY', default = 'INSECURE-SECRET-KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True if ENVIRONMENT == 'development' else False
 
-ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[])
+ALLOWED_HOSTS = ['gerondapp.onrender.com']
 
 # Application definition
 
