@@ -305,7 +305,9 @@ flex: 1;
     color: #333;
 }
 
-
+#select-forma-sinal{
+    width: 100px;
+}
 
 button[data-sinal = "1"]{
     color: blue;

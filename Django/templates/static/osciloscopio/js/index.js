@@ -1,3 +1,9 @@
+// BOOLEANOS QUE AJUDARAM A AJUSTAR PERÍODO <--> FREQUENCIA
+
+let atualizandoFrequencia = false;
+let atualizandoPeriodo = false;
+
+
 // CONTROLE DAS ABAS - VERSÃO DEFINITIVA
 function iniciarAbas() {
 
@@ -208,6 +214,7 @@ async function carregarParametrosSinal(sinal){
 // RECEBE OS DADOS DO PARÂMETRO
 
 function receberParametros(){
+    
 
     const sinal = document.getElementById('numero_sinal').value;
     const operacoes = [
@@ -446,6 +453,13 @@ function startListeners() {
     const radios = document.querySelectorAll('input[type="radio"]');
     const sinais = document.querySelectorAll('input[type="checkbox"]');
 
+    //PERIODO <--> FREQUENCIA
+
+    const inputFreq = document.getElementById("entrada-frequencia");
+    const inputPeriod = document.getElementById("entrada-periodo");
+    
+    
+
     // POPUP
     let popup = null;
 
@@ -588,6 +602,38 @@ function startListeners() {
             mudarCorGrafico(radio.value);
         });
     })
+
+    // ATUALIZANDO FREQUENCIA E PERÍODO
+
+inputFreq.addEventListener("input", function(){
+    if(atualizandoPeriodo) return; //SE ATUALIZANDO PERIODO NAO FAZ NADA
+    const f = parseFloat(this.value);
+    if(!isNaN(f) && f > 0.000001){
+        atualizandoFrequencia = true;
+        const p = 1 / f; //periodo = 1/frequencia
+        inputPeriod.value = p.toFixed(6);
+        atualizandoFrequencia = false;
+        
+    }
+
+    setTimeout(atualizarAPI, 50);
+
+});
+
+inputPeriod.addEventListener("input", function(){
+    if(atualizandoFrequencia) return; //SE ATUALIZANDO PERIODO NAO FAZ NADA
+    const p = parseFloat(this.value);
+    if(!isNaN(p) && p > 0.000001){
+        atualizandoPeriodo = true;
+        const f = 1 / p; //periodo = 1/frequencia
+        inputFreq.value = f.toFixed(6);
+        atualizandoPeriodo = false;
+        
+    }
+    setTimeout(atualizarAPI, 50);
+
+});
+
 
     // CHECANDO ORIENTAÇÃO
     
