@@ -111,9 +111,7 @@ flex: 1;
 }
 
 .container-inputs{
-
-    height: 50%;
- 
+    height: auto;
     display: flex;
     flex-direction: column;
     
@@ -160,30 +158,17 @@ flex: 1;
 }
 
 
-#botao-input{
-    width: 60%;
-    height: 10%;
-    font-size: 1.1vw;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-
-    background: #4CAF50;
-    margin-bottom: 10px;
-    margin-top: 10px;
-}
-
 
 
 #form-entrada{
     width: 100%;
-    height: 100%;
+   
 
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-evenly;
+    gap: 20px;
 
 }
 .container-par-entradas{
@@ -204,6 +189,7 @@ flex: 1;
     align-items: center;
     flex:1;
     flex-wrap: wrap;
+    gap: 15px;
 
 }
 
@@ -213,7 +199,7 @@ flex: 1;
 }
 
 #container-entradas .form-number{
-    height: 30px;
+    height: 20px;
 
 }
 
@@ -292,11 +278,19 @@ flex: 1;
     width: 50px;
 }
 
-#form-select{
+#selects-container{
     display: flex;
-    justify-content: space-around;
-    gap: 4px;
-    margin-top: 10px;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 15px;
+}
+
+#five-selects{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 5px;
 }
 
 
@@ -310,6 +304,25 @@ flex: 1;
 
 .form-label{
 
-    font-size: 16px;
+    /*border: 1px solid magenta;*/
+    font-size: 14px;
     color: #333;
+}
+
+
+
+button[data-sinal = "1"]{
+    color: blue;
+}
+button[data-sinal = "2"]{
+    color: orange;
+}
+button[data-sinal = "3"]{
+    color: green;
+}
+button[data-sinal = "4"]{
+    color: red;
+}
+button[data-sinal = "5"]{
+    color: purple;
 }

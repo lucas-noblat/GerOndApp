@@ -491,6 +491,7 @@ function startListeners() {
                 atualizarUnidades();
                 atualizarSteps();
                 atualizarAPI();
+
             } else { // SE FOR O SELECT DA MUDANÇA DE TELA MUDA O TAMANHO DA TELA
 
                 const janela = document.getElementById("janela-principal");
@@ -519,7 +520,14 @@ function startListeners() {
                 
 
             }
-        })
+        });
+        if(select.name == "entrada-operacao") {
+            select.addEventListener("click", function(){
+                let num = Number(this.getAttribute("data-indice")) + 1;
+                ativarAba(num);
+            });    
+        };
+        
     });
 
     // SINAIS VISÍVEIS

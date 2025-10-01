@@ -4,7 +4,6 @@
     <input type="hidden" name = "numero_sinal" id = "numero_sinal" value= 1>
     
     <!-- Forma do sinal -->
-    <div class = "container-par-entradas" id = "par-number-sinal">
         <div class="form-group" id="grupo-forma-sinal">
             <label for="entrada-forma-sinal" class="form-label">Forma do sinal</label>
             <div class="form-select" id = "select-forma-sinal">
@@ -16,8 +15,6 @@
                 </select>        
             </div>            
         </div>
-
-    </div>
 
     <div id = "container-entradas">
 
@@ -67,6 +64,25 @@
                 <div class="form-number">
                     <input type="number" name="entrada-duty" id="entrada-duty" min= 0.001 max = 0.999 step = 0.05 value = 0.5>
                 </div>            
+        </div>
+
+        
+        <!-- Operação -->
+
+        <div id="selects-container">
+            <label for = "form-select" class ="form-label">Operações</label>
+            <div id = "five-selects">
+                {% for i in range_5 %}
+                <select id="entrada-operacao-{{ i }}" name = "entrada-operacao" data-indice = "{{ i }}">
+                <option value="soma" {% if i == 0 %}selected{% endif %}>+</option>
+                <option value="subtracao">-</option>
+                <option value="multiplicacao">*</option>
+                <option value="divisao">/</option>
+                <option value="nenhuma" {% if i != 0 %}selected{% endif %}>N/A</option>
+                </select>
+                {% endfor %}
+            </div>
+
         </div>
 
     </div>
