@@ -21,7 +21,7 @@ ENVIRONMENT = env('ENVIRONMENT', default='development')
 SECRET_KEY = env('SECRET_KEY', default = 'INSECURE-SECRET-KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True if ENVIRONMENT == 'development' else False
+DEBUG = True 
 
 ALLOWED_HOSTS = ['gerondapp.onrender.com']
 
