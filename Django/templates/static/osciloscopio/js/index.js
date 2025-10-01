@@ -473,8 +473,6 @@ function startListeners() {
     const inputFreq = document.getElementById("entrada-frequencia");
     const inputPeriod = document.getElementById("entrada-periodo");
     
-    
-
     // POPUP
     let popup = null;
 
@@ -482,20 +480,6 @@ function startListeners() {
     const overLayerPopup = document.getElementById("blur-popup");
     const fechar_popup = document.querySelectorAll(".fechar-popup");
 
-    function posicionarPopup(aba, popup){
-        const retangulo = aba.getBoundingClientRect();
-
-        const posX = retangulo.right + 10;
-        const posY = retangulo.top;
-
-        popup.style.left = `${posX}px`;
-        popup.style.top = `${posY}px`;
-
-        popup.style.opacity = 1;
-        popup.style.visibility = "visible";
-
-
-    }
 
 
     // TODOS OS INPUTS NUMÉRICOS
@@ -658,6 +642,22 @@ inputPeriod.addEventListener("input", function(){
 
 }
 
+function posicionarPopup(aba, popup){
+
+    const retangulo = aba.getBoundingClientRect();
+
+    const posX = retangulo.right + 10;
+    const posY = retangulo.top;
+
+    popup.style.left = `${posX}px`;
+    popup.style.top = `${posY}px`;
+
+    popup.style.opacity = 1;
+    popup.style.visibility = "visible";
+
+}
+
+
 function mudarCorGrafico(cor){
     const grafTempo = Bokeh.documents[0].get_model_by_name("Tempo");
     const grafFreq = Bokeh.documents[1].get_model_by_name("Frequencia");
@@ -703,12 +703,110 @@ function checkOrientation(){
 
 }
 
+
+function dicasIniciais(){
+
+    // POPUP DICAS
+    const dicaTamanho = document.getElementById("dica-tamanho");
+    const dicaManual = document.getElementById("dica-manual");
+
+    const overlay = document.querySelector(".popup-overlay");
+
+    // ABAS CONFIG/SOBRE
+    
+    const abaConfig = document.getElementById("configuracoes");
+    const abaSobre = document.getElementById("sobre");
+
+    //dicaTamanho.style.display = "flex";
+
+     // Primeira dica (tamanho) - destaca CONFIG
+    overlay.style.display = "flex";
+    posicionarPopup(abaConfig, dicaTamanho);
+    criarDestaqueFlutuante(abaConfig, "#28a745");
+
+
+    // Configurar botão OK da primeira dica
+    document.getElementById("btn-ok-1").onclick = function() {
+        // Remove destaque da configuração
+        removerDestaqueFlutuante()
+        overlay.style.display = "none";
+        // Mostra segunda dica (manual) - destaca SOBRE
+        dicaTamanho.style.display = "none";
+        dicaManual.style.display = "flex";
+        posicionarPopup(abaSobre, dicaManual);
+        criarDestaqueFlutuante(abaSobre, "#28a745");
+
+        
+        overlay.style.display = "flex"
+        // Destacar a aba sobre
+        abaSobre.classList.add('destaque-onboarding');
+    };
+
+    // Configurar botão OK da segunda dica
+    document.getElementById("btn-ok-2").onclick = function() {
+        // Remove destaque e fecha tudo
+        removerDestaqueFlutuante();
+        overlay.style.display = "none";
+        dicaManual.style.display = "none";
+        dicaTamanho.style.display = "block"; // Restaura para próxima vez
+    };
+
+}
+
+
+
+
+// FUNÇÃO PRA CLONAR DIV EM DESTAQUE
+
+
+function criarDestaqueFlutuante(elementoAlvo, cor = "#007bff") {
+    // Remove destaque anterior
+    removerDestaqueFlutuante();
+    
+    // Obtém a posição do elemento alvo
+    const rect = elementoAlvo.getBoundingClientRect();
+    
+    // Cria div flutuante
+    const destaque = document.createElement('div');
+    destaque.innerHTML = elementoAlvo.innerHTML;
+    destaque.className = 'destaque-flutuante';
+    destaque.id = 'destaque-atual';
+    destaque.style.cssText = `
+        position: fixed;
+        z-index: 10002;
+        left: ${rect.left}px;
+        top: ${rect.top}px;
+        width: ${rect.width}px;
+        height: ${rect.height}px;
+        border: 1px solid ${cor};
+        background-color: #C1C1C1;
+        border-radius: 8px;
+        box-shadow: 0 0 20px ${cor}80;
+        pointer-events: none;
+    `;
+    
+    document.body.appendChild(destaque);
+    return destaque;
+}
+
+function removerDestaqueFlutuante() {
+    const destaque = document.getElementById('destaque-atual');
+    if (destaque) {
+        destaque.remove();
+    }
+}
+
+
+
+
 // Inicializa o dom
 
 document.addEventListener('DOMContentLoaded', async function() {
+
+    checkOrientation();
+    dicasIniciais();
     iniciarAbas();
     trocarAbas('tempo');
-    checkOrientation();
     startListeners();
 
     // ESPERA DADOS SEREM TRAZIDOS DO BACKEND PARA ESCONDER E ATUALIZAR GRÁFICO
