@@ -215,10 +215,8 @@ async function carregarParametrosSinal(sinal){
         document.getElementById("entrada-fase").value = dados['fase'];
         document.getElementById("entrada-offset").value = dados['offset'];
         document.getElementById("entrada-forma-sinal").value = dados['forma_sinal'];
-        //document.getElementById("entrada-operacao").value = dados['operacao'];
         document.getElementById("entrada-duty").value = dados['duty'];
         document.getElementById("entrada-periodo").value = parseFloat(1/dados['frequencia']).toFixed(6);
-    
         document.getElementById("entrada-duracao").value = dados['duracao'];
         document.getElementById("entrada-rate").value = dados['rate'];
 
