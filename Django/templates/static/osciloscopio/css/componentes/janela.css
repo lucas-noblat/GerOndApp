@@ -29,3 +29,13 @@
     overflow: hidden;
     
 }
+
+/* Para mobile - com scroll */
+@media (max-width: 768px) {
+    .janela-principal {
+        height: auto;
+        min-height: 100vh;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+}
