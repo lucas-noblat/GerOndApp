@@ -216,7 +216,7 @@ async function carregarParametrosSinal(sinal){
         document.getElementById("entrada-offset").value = dados['offset'];
         document.getElementById("entrada-forma-sinal").value = dados['forma_sinal'];
         document.getElementById("entrada-duty").value = dados['duty'];
-        document.getElementById("entrada-periodo").value = parseFloat(1/dados['frequencia']).toFixed(6);
+        document.getElementById("entrada-periodo").value = parseFloat(1/dados['frequencia']);
         document.getElementById("entrada-duracao").value = dados['duracao'];
         document.getElementById("entrada-rate").value = dados['rate'];
 
@@ -487,7 +487,7 @@ function startListeners() {
         input.addEventListener("input", async function() {
             await atualizarAPI()
             atualizarUnidades();
-            atualizarSteps();
+            //atualizarSteps();
             atualizarRanges();
         })
     });
@@ -499,7 +499,7 @@ function startListeners() {
 
             if(this.id != "select-tamanho"){ //SELECIONA TODOS MENOS O DO TAMANHO DA JANELA DO POPUP
                 atualizarUnidades();
-                atualizarSteps();
+                //atualizarSteps();
                 atualizarAPI();
 
             } else { // SE FOR O SELECT DA MUDANÇA DE TELA MUDA O TAMANHO DA TELA
@@ -610,7 +610,7 @@ inputFreq.addEventListener("input", function(){
     if(!isNaN(f) && f > 0.000001){
         atualizandoFrequencia = true;
         const p = 1 / f; //periodo = 1/frequencia
-        inputPeriod.value = p.toFixed(6);
+        inputPeriod.value = p.toFixed(4);
         atualizandoFrequencia = false;
         
     }
@@ -625,7 +625,7 @@ inputPeriod.addEventListener("input", function(){
     if(!isNaN(p) && p > 0.000001){
         atualizandoPeriodo = true;
         const f = 1 / p; //periodo = 1/frequencia
-        inputFreq.value = f.toFixed(6);
+        inputFreq.value = f.toFixed(4);
         atualizandoPeriodo = false;
         
     }

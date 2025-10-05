@@ -111,6 +111,12 @@ def plotar_sinais_bokeh(
 
 ''' FUNÇÕES MATEMÁTICAS PARA CRIAR OS SINAIS '''
 
+
+# Definindo um pequeno deslocamento para evitar amostrar nas transições
+
+epsilon = 1e-12
+
+
 # Onda Senoidal
 
 def sinal_senoidal(amplitude, frequencia, taxa_amostragem=1000, duracao=1, fase=0, offset=0):
@@ -133,9 +139,9 @@ def sinal_senoidal(amplitude, frequencia, taxa_amostragem=1000, duracao=1, fase=
         raise ValueError("A taxa de amostragem deve ser maior que zero.")
     if duracao <= 0:
         raise ValueError("A duração deve ser maior que zero.")
-
+    
     # Definindo o vetor tempo
-    vetor_tempo = linspace(0, duracao, int(taxa_amostragem * duracao), endpoint=False)
+    vetor_tempo = linspace(0, duracao, int(taxa_amostragem * duracao)) + epsilon
 
     # Sinal gerado
     s = array(amplitude * sin(2 * pi * frequencia * vetor_tempo + fase) + offset)
@@ -167,7 +173,7 @@ def sinal_triangular(amplitude, frequencia, taxa_amostragem = 1000, duracao = 1,
 
     # Gerando o vetor tempo para ser o eixo x
 
-    vetor_tempo = linspace(0, duracao, int(duracao*taxa_amostragem))
+    vetor_tempo = linspace(0, duracao, int(duracao*taxa_amostragem)) + epsilon
     triangular = array(amplitude * sawtooth (2*pi*frequencia*vetor_tempo + fase, duty) + offset)
 
     return vetor_tempo, triangular
@@ -200,7 +206,7 @@ def sinal_quadrado(amplitude, frequencia, taxa_amostragem=1000, duracao=1, fase=
         raise ValueError("O ciclo de trabalho (duty) deve estar entre 0 e 1.")
 
     # Define o vetor de tempo
-    vetor_tempo = linspace(0, duracao, int(taxa_amostragem * duracao), endpoint=False)
+    vetor_tempo = linspace(0, duracao, int(taxa_amostragem * duracao)) + epsilon
 
     # Gera o sinal quadrado usando scipy.signal.square
     sinal_quadrado = array(amplitude * square(2 * pi * frequencia * vetor_tempo + fase, duty=duty) + offset)
@@ -234,7 +240,7 @@ def ruido_branco(amplitude, num_componentes, duracao=1, offset=0, freq_inicial=0
         raise ValueError("A duração deve ser maior que zero.")
 
     # Gera o vetor de tempo
-    vetor_tempo = linspace(0, duracao, num_componentes, endpoint=False)
+    vetor_tempo = linspace(0, duracao, num_componentes) + epsilon
 
     # Gera o ruído branco
     ruido = array(amplitude * random.normal(0, 1, num_componentes) + offset)
