@@ -1,7 +1,7 @@
 # Bibliotecas utilizadas
 
 from scipy.signal import square, sawtooth
-from numpy import linspace, sin, pi, random, abs, fft, array
+from numpy import linspace, sin, pi, random, abs, fft, array, zeros_like, ones_like
 
 
 # Bokeh
@@ -215,7 +215,7 @@ def sinal_quadrado(amplitude, frequencia, taxa_amostragem=1000, duracao=1, fase=
 
 
 # RUÍDO BRANCO
-def ruido_branco(amplitude, num_componentes, duracao=1, offset=0, freq_inicial=0, freq_final=0,):
+def ruido_branco(amplitude, num_componentes, duracao=1, offset=0, freq_inicial=0, freq_final=0):
     """
     Gera um ruído branco com os parâmetros especificados.
 
@@ -333,21 +333,3 @@ def transformada_fourier(vetor_tempo, sinal, retornar_magnitude=True):
     do sinal, deverá desativar o parâmetro 'retornar_magnitude' 
     '''
 
-
-
-#FUNÇÃO PARA GERAR OPERAÇÕES
-
-def aplicarOperacao(s1, s2, operacao):
-    match (operacao):
-        case "soma":
-            return array(s1 + s2)
-        case "subtracao":
-            return array(s1 - s2)
-        case "multiplicacao":
-            return array(s1 * s2)
-        case "divisao":
-            return array(s1 / s2)
-        case "nenhuma":
-            return array(s1)
-        case default:
-            print("Nao existe")

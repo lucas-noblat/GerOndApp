@@ -9,10 +9,9 @@ sys.path.append(str(caminho_avo))
 
 # Agora você pode importar o módulo
 from home import functions  # Importa "modulo_pai.py" que está em "pasta_pai/"
-from numpy import linspace, zeros_like
+from numpy import linspace, zeros_like, array, ones_like
 
 from . import sinais_memoria
-
 
 
 from rest_framework.response import Response
@@ -61,6 +60,8 @@ def sendData(request):
 
       sinais_response = []
       resultante = None
+      soma_sub = None
+      mult_div = None
       vetorX = []
        
       for i, s in enumerate(sinais_memoria.SINAIS_PARAMETROS):    
@@ -75,10 +76,11 @@ def sendData(request):
          # Gerando o dicionário da resultante
 
          if resultante is None:
-            resultante = zeros_like(sinalTempo)
+            soma_sub = zeros_like(sinalTempo)
+            mult_div = ones_like(sinalTempo)
                
         
-         resultante = functions.aplicarOperacao(resultante, sinalTempo, s["operacao"])
+         resultante = aplicarOperacao(resultante, sinalTempo, s["operacao"], soma_sub, mult_div)
          sinalAtual = {
                'x': vetorX.tolist(),
                'y': sinalTempo.tolist(),
@@ -108,3 +110,31 @@ def sendData(request):
       sinais_memoria.SINAIS.append(res)   
 
       return Response(sinais_memoria.SINAIS)
+
+
+
+
+
+#FUNÇÃO PARA GERAR OPERAÇÕES
+
+
+
+def aplicarOperacao(s1, s2, operacao, soma_sub, mult_div):
+    
+   match (operacao):
+      case "soma":
+         soma_sub += s2
+      case "subtracao":
+         soma_sub -= s2
+      case "multiplicacao":
+         mult_div *= s2
+      case "divisao":
+         # evite divisão por zero
+         with numpy.errstate(divide='ignore', invalid='ignore'):
+               mult_div = mult_div / s2
+      case "nenhuma":
+         return array(s1)
+      case default:
+         print("Nao existe")
+
+   return soma_sub * mult_div
