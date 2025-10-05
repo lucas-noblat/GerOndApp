@@ -2,7 +2,10 @@
     width: var(--largura-janela);
     height: var(--altura-janela);
     max-width: 100vw;
+<<<<<<< HEAD
     min-width: 320px;
+=======
+>>>>>>> dev
     max-height: 100vh;
 
     background: var(--cinza-medio);

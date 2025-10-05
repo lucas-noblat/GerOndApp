@@ -137,4 +137,4 @@ def aplicarOperacao(s1, s2, operacao, soma_sub, mult_div):
       case default:
          print("Nao existe")
 
-   return soma_sub * mult_div
+   return array(soma_sub * mult_div)
