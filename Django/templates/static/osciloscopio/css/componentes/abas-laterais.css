@@ -11,7 +11,9 @@
 }
 
 #aba-esquerda{
-    width: 5%;
+display: flex;
+flex-direction: column;
+justify-content: space-between;
 }
 
 #aba-direita{
@@ -104,7 +106,8 @@ flex: 1;
 
 .container-unidades{
 
-    height: 60%;
+    height: auto;
+    max-height: 70%;
     display: flex;
     flex-direction: column;
 
@@ -131,7 +134,8 @@ flex: 1;
 }
 
 #entradas-globais{
-    flex: 1;
+    height: auto;
+    max-height: 20%;
     display: flex;
     flex-direction: column;
 
