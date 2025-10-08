@@ -24,10 +24,39 @@ h1 {
 h2{
     text-align: center;
     margin: 0;
-    font-size: 16px;
-    padding: 10px;
     font: open-;
 
+}
+
+/* PARA CELULARES */
+@media(max-height: 500px) and (orientation: landscape){
+    h2{
+        font-size: 14px;
+        padding: 5px;
+    }
+
+    label{
+        font-size: 12px;
+    }
+
+    select{
+        font-size: 14px;
+    }
+}
+
+@media(min-height:500px){
+    h2{
+        font-size: 16px;
+        padding: 5px;
+    }
+
+    label{
+        font-size: 16px;
+    }
+
+    select{
+        font-size: 16px;
+    }
 }
 
 h3{
@@ -38,9 +67,6 @@ h3{
 }
 
 select{
-    height: 100%;
-    width: 100%;
-    font-size: 16px;
     border-radius: 5px ;       
 }
 

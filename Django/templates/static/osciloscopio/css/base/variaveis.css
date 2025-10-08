@@ -17,7 +17,7 @@
 
 
 /* PARA CELULARES */
-@media(max-width: 768px) and (orientation: landscape){
+@media(max-height: 500px) and (orientation: landscape){
     :root{
         --largura-janela:90vw;
         --altura-janela: 90vh;
@@ -28,7 +28,7 @@
 
 /* DISPOSITIVOS MAIORES */
 
-@media(min-width:768px){
+@media(min-height:500px){
     :root{
         --largura-janela :1600px;
         --altura-janela:900px;
