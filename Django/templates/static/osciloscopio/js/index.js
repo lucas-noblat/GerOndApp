@@ -51,11 +51,11 @@ function ativarAba(sinal) {
 
         abaAtiva.classList.add('active');        
         const coresAbas = {
-            1: "2px solid blue",
-            2: "2px solid orange",
-            3: "2px solid green",
-            4: "2px solid red",
-            5: "2px solid purple"
+            1: "3px solid blue",
+            2: "3px solid orange",
+            3: "3px solid green",
+            4: "3px solid red",
+            5: "3px solid purple"
         }
 
         const coresFundoAbas = {
@@ -68,8 +68,8 @@ function ativarAba(sinal) {
         }
 
         // Define a cor da aba dependendo do sinal, por padrão é azul
-        abaAtiva.style.border = coresAbas[sinal] || "2px solid blue";
-        formEntrada.style.border = coresAbas[sinal] || "2px solid blue";
+        abaAtiva.style.border = coresAbas[sinal] || "3px solid blue";
+        formEntrada.style.border = coresAbas[sinal] || "3px solid blue";
         formEntrada.style.backgroundColor = coresFundoAbas[sinal] || "#E0F2FE"; 
 
         // Atualiza a URL sem recarregar a página
