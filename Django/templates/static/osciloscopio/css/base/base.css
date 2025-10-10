@@ -88,68 +88,10 @@ label {
 
 
 
-
-/* PARA CELULARES */
-
-
-/*
-@media(max-height: 500px) and (orientation: landscape){
-    h2{
-        font-size: 14px;
-        padding: 5px;
-    }
-    
-    label{
-        font-size: 12px;
-    }
-    
-    select{
-        font-size: 14px;
-    }
-    
-    #rotate-warning{
-        display: none;
+        /* RESPONSIVIDADE SECTION */
         
-    }
-    
-    #janela-principal{
-        display:flex;
-    }
-    
-    
-}
-@media(max-height: 500px) and (orientation: portrait){
-    #rotate-warning{
-        display: flex;
+
         
-    }
-    
-    #janela-principal{
-        display:none;
-    }
-    
-}
-
-
-@media(min-height:500px){
-    h2{
-        font-size: 16px;
-        padding: 5px;
-    }
-    
-    label{
-        font-size: 16px;
-    }
-    
-    select{
-        font-size: 16px;
-    }
-}
-*/
-
-
-
-
 /* DISPOSITIVOS MAIORES */
 @media(min-width:768px){
     h2{
