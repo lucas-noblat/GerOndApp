@@ -42,7 +42,33 @@ h2{
     select{
         font-size: 14px;
     }
+
+    /* ESCONDE AVISO DE ROTACAO E MOSTRA A APLICACAO*/
+    #rotate-warning{
+        display: none;
+
+    }
+
+    #janela-principal{
+        display:flex;
+    }
+
+
 }
+/* PARA CELULARES NA VERTICAL EXIBE AVISO PARA VIRAR O DISPOSITIVO */
+
+@media(max-height: 500px) and (orientation: portrait){
+    #rotate-warning{
+        display: flex;
+
+    }
+
+    #janela-principal{
+        display:none;
+    }
+
+}
+
 
 @media(min-height:500px){
     h2{
