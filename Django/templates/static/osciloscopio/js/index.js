@@ -456,7 +456,7 @@ function atualizarRanges() {
         plotTempo.change.emit();
         plotFreq.change.emit();
 
-    }
+}
 
 
 
@@ -604,42 +604,34 @@ function startListeners() {
 
     // ATUALIZANDO FREQUENCIA E PERÍODO
 
-inputFreq.addEventListener("input", function(){
-    if(atualizandoPeriodo) return; //SE ATUALIZANDO PERIODO NAO FAZ NADA
-    const f = parseFloat(this.value);
-    if(!isNaN(f) && f > 0.000001){
-        atualizandoFrequencia = true;
-        const p = 1 / f; //periodo = 1/frequencia
-        inputPeriod.value = p.toFixed(4);
-        atualizandoFrequencia = false;
-        
-    }
+    inputFreq.addEventListener("input", function(){
+        if(atualizandoPeriodo) return; //SE ATUALIZANDO PERIODO NAO FAZ NADA
+        const f = parseFloat(this.value);
+        if(!isNaN(f) && f > 0.000001){
+            atualizandoFrequencia = true;
+            const p = 1 / f; //periodo = 1/frequencia
+            inputPeriod.value = p.toFixed(4);
+            atualizandoFrequencia = false;
+            
+        }
 
-    setTimeout(atualizarAPI, 50);
+        setTimeout(atualizarAPI, 50);
 
-});
+    });
 
-inputPeriod.addEventListener("input", function(){
-    if(atualizandoFrequencia) return; //SE ATUALIZANDO PERIODO NAO FAZ NADA
-    const p = parseFloat(this.value);
-    if(!isNaN(p) && p > 0.000001){
-        atualizandoPeriodo = true;
-        const f = 1 / p; //periodo = 1/frequencia
-        inputFreq.value = f.toFixed(4);
-        atualizandoPeriodo = false;
-        
-    }
-    setTimeout(atualizarAPI, 50);
+    inputPeriod.addEventListener("input", function(){
+        if(atualizandoFrequencia) return; //SE ATUALIZANDO PERIODO NAO FAZ NADA
+        const p = parseFloat(this.value);
+        if(!isNaN(p) && p > 0.000001){
+            atualizandoPeriodo = true;
+            const f = 1 / p; //periodo = 1/frequencia
+            inputFreq.value = f.toFixed(4);
+            atualizandoPeriodo = false;
+            
+        }
+        setTimeout(atualizarAPI, 50);
 
-});
-
-
-    // CHECANDO ORIENTAÇÃO
-    
-    window.addEventListener('resize', checkOrientation);
-    window.addEventListener('orientationchange', checkOrientation);
-
-
+    });
 }
 
 function posicionarPopup(aba, popup){
@@ -682,27 +674,9 @@ function mudarCorGrafico(cor){
 }
 
 
-// FUNÇÃO PARA MUDAR A ORIENTAÇÃO NO MOBILE
-
-function checkOrientation(){
-
-    const ehCelular = window.innerWidth <= 768;
-    const ehRetrato = window.matchMedia("(orientation: portrait)").matches;
-
-    const avisoOrientacao = document.getElementById("rotate-warning");
-    const aplicacao = document.getElementById("janela-principal");
-
-    if(ehCelular && ehRetrato){
-        avisoOrientacao.style.display = 'flex';
-        aplicacao.style.display = 'none';
-    } else {
-        avisoOrientacao.style.display = 'none';
-        aplicacao.style.display = 'flex';
-    }
 
 
-}
-
+// DICAS INICIAIS
 
 function dicasIniciais(){
 
@@ -803,7 +777,6 @@ function removerDestaqueFlutuante() {
 
 document.addEventListener('DOMContentLoaded', async function() {
 
-    checkOrientation();
     dicasIniciais();
     iniciarAbas();
     trocarAbas('tempo');
