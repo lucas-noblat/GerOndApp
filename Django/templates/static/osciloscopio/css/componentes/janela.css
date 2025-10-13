@@ -1,8 +1,4 @@
 #janela-principal {
-    width: var(--largura-janela);
-    height: var(--altura-janela);
-    max-width: 100vw;
-    max-height: 100vh;
 
     background: var(--cinza-medio);
     box-shadow: var(--sombra-interna);
@@ -12,7 +8,10 @@
     z-index: 1;
     overflow: hidden;
     resize: both;
-    position: relative;
+    position: fixed;
+
+
+
 }
 
 #centro-janela {
@@ -26,4 +25,23 @@
     background-color: var(--cinza-medio);
     overflow: hidden;
     
+}
+
+
+@media(max-height:768px){
+    #janela-principal{
+        height: 90dvh;
+        width: 90dvw;
+        max-height: 90dvh;
+        max-width: 90dvw;
+    }   
+}
+
+@media(min-height:768px){
+    #janela-principal{
+        height: 90dvh;
+        width: 90dvw;
+        max-height: 95dvh;
+        max-width: 95dvw;
+    }   
 }

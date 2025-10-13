@@ -116,6 +116,17 @@
         width: 100px;
         align-content: center;
     }
+
+
+
+    /* EM MOBILE NÃO PERMITE ALTERAR TAMANHO DA JANELA-PRINCIPAL PARA MELHOR DESIGN*/
+
+
+    @media (max-height: 768px) {
+        #container-tamanhos-janela{
+            display: none !important;
+        }
+    }
     
     #container-tamanhos-janela{
         width: 100%;

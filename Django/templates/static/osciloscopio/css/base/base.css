@@ -1,4 +1,12 @@
 
+html, body{
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+
 body {
     min-height: 100vh;
     background-color: var(--azul-lioc);
@@ -6,8 +14,7 @@ body {
     justify-content: center;
     align-items: center;
     font-family: Arial, sans-serif;
-    margin: 0;
-    overflow: hidden;
+
     font-family: 'Roboto', sans-serif;
 }
 
@@ -88,9 +95,6 @@ label {
 
 
 
-        /* RESPONSIVIDADE SECTION */
-        
-
         
 /* DISPOSITIVOS MAIORES */
 @media(min-width:768px){
@@ -164,6 +168,7 @@ label {
 
 
 
+
 /* Aviso de rotação ocupa a tela toda */
 #rotate-warning {
   position: fixed;
@@ -225,4 +230,10 @@ input[type="number"]::-webkit-inner-spin-button {
   box-sizing: border-box;
 }
 
+
+button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
