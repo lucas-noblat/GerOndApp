@@ -115,67 +115,35 @@ No contexto do GerOndApp, um *sinal* é uma função de tempo que pode ser senoi
 
 ### 4.4 Cálculo da resultante — dois termos
 
-A resultante no GerOndApp é obtida a partir da combinação de **dois termos vetoriais** que representam contribuições de sinais sob operações diferentes:
+A resultante no GerOndApp é calculada da seguinte maneira:
 
-1. Um **termo aditivo** (soma/subtração)  
-2. Um **termo multiplicativo** (multiplicação/divisão)
+- Há **cinco sinais** disponíveis para configuração.  
+- Internamente, o sistema divide o cálculo da resultante usando **dois termos vetoriais**:
 
-Em cada um dos 5 sinais configurados, dependendo da operação escolhida, ele será incluído em um desses termos:
+  1. **Termo aditivo** — recebe sinais configurados como **soma** ou **subtração**.  
+     - Inicia como um vetor de **zeros**.  
+     - Para cada sinal com operação *soma*, ele é somado ao termo aditivo.  
+     - Para cada sinal com operação *subtração*, ele é subtraído do termo aditivo.  
 
-- Se o sinal foi marcado como **soma** ou **subtração**, ele entra no **termo aditivo**  
-- Se o sinal foi marcado como **multiplicação** ou **divisão**, ele entra no **termo multiplicativo**  
-- Se o sinal foi marcado como **nenhuma**, ele não afeta nenhum dos termos
+  2. **Termo multiplicativo** — recebe sinais configurados como **multiplicação** ou **divisão**.  
+     - Inicia como um vetor de **uns** (1), para que a multiplicação inicial não altere o valor.  
+     - Cada sinal com operação *multiplicação* é multiplicado nesse termo.  
+     - Cada sinal com operação *divisão* divide esse termo.
 
-#### 4.4.1 Construção dos termos
+- Depois de calcular os dois termos, o vetor **resultante** é dado pela multiplicação elemento a elemento:
 
-- O **termo aditivo** é iniciado como um vetor que contém **zeros** em todas as posições (do mesmo tamanho dos vetores de sinal).  
-- O **termo multiplicativo** é iniciado como um vetor de **uns** (1s), de modo que a multiplicação inicial não altere a magnitude.
+  > resultante = termo_aditivo × termo_multiplicativo
 
-Então:
+- Um caso especial: se **nenhum sinal** for marcado como soma ou subtração, o termo aditivo permanece zero para todas as posições.  
+  Nesse caso:
 
-- Para cada sinal \( s_i(t) \) com operação de soma, fazemos:
+  > resultante = 0 × (termo multiplicativo) = **vetor nulo (todos zeros)**
 
-
-  $\[\text{termo\_aditivo}(t) \; += \; s_i(t)\]$
-
-  ou para subtração:  
-  \[
-  \text{termo\_aditivo}(t) \; -= \; s_i(t)
-  \]
-
-- Para cada sinal \( s_j(t) \) com operação de multiplicação, fazemos:
-- 
-  \[
-  \text{termo\_multiplicativo}(t) \; *= \; s_j(t)
-  \]
-   
-  ou para divisão:
-  
-  \[
-  \text{termo\_multiplicativo}(t) \; /= \; s_j(t)
-  \]
-  $$
-
-#### 4.4.2 Cálculo final da resultante
-
-Depois de processar todos os sinais nas duas “correções” (termo aditivo e termo multiplicativo), o vetor **resultante** é simplesmente o produto destes dois termos:
-
-\[
-\text{resultante}(t) = \text{termo\_aditivo}(t) \times \text{termo\_multiplicativo}(t)
-\]
-
-Em especial, se **nenhum sinal** for marcado como soma ou subtração (ou todos estiverem como “nenhuma”), o termo aditivo permanece **zero** para todo \( t \). Isso implica:
-
-\[
-\text{resultante}(t) = 0 \times \text{termo\_multiplicativo}(t) = 0
-\]
-
-Ou seja: se **não há contribuição aditiva**, a resultante será automaticamente o vetor nulo (todos zeros), independente do que estiver no termo multiplicativo.
+Portanto, para obter um resultado visível, **pelo menos um sinal deve estar configurado como soma ou subtração**. Se todos forem “nenhuma” ou apenas multiplicação/divisão, a resultante será zero.
 
 ---
 
 
----
 
 ## 5. Transformada de Fourier e espectro
 
@@ -206,16 +174,15 @@ Você pode interagir diretamente com os gráficos Bokeh embutidos:
 - **Reset**: botão “reset” devolve ao estado original do gráfico.  
 - **Salvar / exportar imagem**: botão de exportação — permite baixar o gráfico em formato de imagem (PNG etc).  
 - **Seleção de sinais**: é possível ocultar ou destacar algumas linhas para analisar melhor.  
-- **Tooltips / cursores**: se habilitados, mostram valores de amplitude/tempo ao passar o mouse (dependendo da implementação).
 
 ---
 
 ## 7. Exemplo passo a passo
 
 1. Selecione **S1**, defina amplitude = 1.0, frequência = 5 Hz, duração = 1 s.  
-2. Envie para gerar o sinal.  
+2. Atualize qualquer parâmetro para gerar o novo sinal.  
 3. Se desejar, ative **S2** e defina amplitude = 0.5, frequência = 10 Hz.  
-4. Escolha operação “soma” entre S1 e S2.  
+4. Escolha operação “soma” em S1 e S2.  
 5. Veja no gráfico de tempo a forma de onda resultante.  
 6. Vá ao gráfico de frequência para ver os picos nas frequências 5 Hz e 10 Hz.  
 7. Use zoom para ampliar um trecho do gráfico e salvar a imagem.
@@ -234,9 +201,6 @@ Você pode interagir diretamente com os gráficos Bokeh embutidos:
 
 ## 9. Perguntas frequentes (FAQ)
 
-**Por que meu sinal alguns vezes “some” no gráfico?**  
- → Ele pode ter amplitude muito baixa ou estar sendo sobreposto por outro sinal dominante.
-
 **Por que o espectro aparece “liso” sem picos definidos?**  
  → Talvez não haja componentes suficientes ou o sinal foi definido com frequências muito próximas.
 
@@ -250,9 +214,9 @@ Você pode interagir diretamente com os gráficos Bokeh embutidos:
 
 ## 10. Contato / versão / histórico
 
-- Versão atual do GerOndApp: v1.0 (ou o número que você definir)  
-- Repositório / código-fonte / link completo  
-- Para dúvidas ou sugestões: e-mail / GitHub / contato  
+- [Versão atual do GerOndApp: v1.0](https://gerondapp.onrender.com)  
+- [Repositório](https://github.com/lucas-noblat/GerOndApp) 
+- Para dúvidas ou sugestões: lucasan@dcc.ufrj.br
 - Histórico de versões (pequenas mudanças):  
   – v1.0: versão inicial com geração de sinais, FFT e interface  
   – v1.1: melhorias no gráfico interativo  
