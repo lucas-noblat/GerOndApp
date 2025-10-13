@@ -310,8 +310,9 @@ justify-content: space-between;
     }
 
     .botao-sinal{
-        font-size: 14px;
+        font-size: 11px;
     }
+
 }
 
 @media(min-height:500px){
