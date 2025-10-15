@@ -28,6 +28,8 @@
 }
 
 
+/* CELULARES */
+
 @media(max-height:768px){
     #janela-principal{
         height: 90dvh;
@@ -43,5 +45,7 @@
         width: 90dvw;
         max-height: 95dvh;
         max-width: 95dvw;
+        min-height: 540px;
+        min-width: 960px;
     }   
 }
