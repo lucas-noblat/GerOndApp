@@ -4,7 +4,6 @@ html, body{
     width: 100dvw;
     margin: 0;
     padding: 0;
-    overflow: scroll;
 }
 
 
@@ -164,10 +163,10 @@ input[type="number"], select {
     text-align: center;
     align-items: center;
 }
+
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
-  margin: 0;
 }
 
 
