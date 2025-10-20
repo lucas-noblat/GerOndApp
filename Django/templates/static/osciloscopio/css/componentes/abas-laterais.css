@@ -296,7 +296,7 @@ justify-content: space-between;
     cursor: pointer;
 }
 
-@media(max-height:500px) and (orientation: landscape){
+@media(max-height:768px) and (orientation: landscape){
     .form-label{
         font-size: 12px;
     }
@@ -310,7 +310,13 @@ justify-content: space-between;
     }
 
     .botao-sinal{
-        font-size: 11px;
+        font-size: 13px;
+        padding: 5px;
+    }
+
+
+    #container-sinais{
+        height: 10%;
     }
 
 }
