@@ -38,6 +38,7 @@ function ativarAba(sinal) {
     // Pega a div das entradas para destacar
 
     const formEntrada = document.getElementById("form-entrada");
+    const containerEntradas = document.getElementById("container-entradas");
 
     // Remove classe active de todas as abas
     document.querySelectorAll('.botao-sinal').forEach(aba => {
@@ -63,14 +64,22 @@ function ativarAba(sinal) {
             2: "#FFF7ED",
             3: "#F0FDF4",
             4: "#FEF2F2",
-            5: "#FAF5FF",
+            5: "#FAF5FF"
+        }
 
+        const coresFundoContainer = {
+            1: "#7fbfff",
+            2: "#ffd299",
+            3: "#66cc66",
+            4: "#ff8080",
+            5: "#b380b3"
         }
 
         // Define a cor da aba dependendo do sinal, por padrão é azul
         abaAtiva.style.border = coresAbas[sinal] || "3px solid blue";
         formEntrada.style.border = coresAbas[sinal] || "3px solid blue";
         formEntrada.style.backgroundColor = coresFundoAbas[sinal] || "#E0F2FE"; 
+        containerEntradas.style.backgroundColor = coresFundoContainer[sinal] || "#7fbfff";
 
         // Atualiza a URL sem recarregar a página
         const url = new URL(window.location);
