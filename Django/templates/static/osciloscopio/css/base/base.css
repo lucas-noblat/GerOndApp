@@ -113,10 +113,14 @@ label {
     #janela-principal{
         display: flex;
     }
+
     #rotate-warning{
         display: none;
     }
 
+    input[type="number"] {
+        font-size: 14px !important;
+    }
 }
 
 
@@ -132,6 +136,9 @@ label {
     }
     #rotate-warning{
         display: none;
+    }
+    input[type="number"] {
+        font-size: 10px !important;
     }
 }
 
@@ -186,7 +193,14 @@ input[type="number"], select {
     font-family: 'Roboto Mono', monospace;
     color: #222;     /* cor do texto */
     text-align: center;
+    align-items: center;
 }
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 
 a {
     color: black;        /* muda a cor do texto */
@@ -197,32 +211,6 @@ a:hover {
     color: blue;           /* muda a cor ao passar o mouse */
     text-decoration: underline; /* opcional, sublinha ao hover */
 }
-
-
-
-/* RESTAURAR SETINHAS DOS INPUTS NUMBER */
-input[type="number"] {
-    -webkit-appearance: textfield;
-    -moz-appearance: textfield;
-    appearance: textfield;
-    font-size: 14px !important;
-}
-
-
-
-/* Setinhas para Webkit (Chrome, Safari, Edge) */
-input[type="number"]::-webkit-outer-spin-button,
-input[type="number"]::-webkit-inner-spin-button {
-    -webkit-appearance: inner-spin-button;
-    opacity: 1;
-    margin: 0;
-    padding: 0;
-    cursor: pointer;
-    height: 20px;
-    width: 16px;
-    position: relative;
-}
-
 
 *,
 *::before,

@@ -30,10 +30,10 @@
 
 @media(max-height:768px){
     #janela-principal{
-        height: 90dvh;
-        width: 90dvw;
-        max-height: 90dvh;
-        max-width: 90dvw;
+        height: 95dvh;
+        width: 95dvw;
+        max-height: 95dvh;
+        max-width: 95dvw;
     }   
 }
 
