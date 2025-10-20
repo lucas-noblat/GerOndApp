@@ -460,6 +460,26 @@ function atualizarRanges() {
 
 
 
+// INCREMENTO / DECREMENTO ATRAVÉS DO BOTÃO
+
+
+async function incrementaInput(input){
+    document.getElementById(`entrada-${input}`).stepUp();
+    if(input == "frequencia") atualizaPeriodo();
+    if(input == "periodo") atualizaFreq();
+    atualizarAPI();
+}
+
+
+async function decrementaInput(input){
+    document.getElementById(`entrada-${input}`).stepDown();
+    if(input == "frequencia") atualizaPeriodo();
+    if(input == "periodo") atualizaFreq();
+    atualizarAPI();
+}
+
+
+
 // FUNÇÃO PARA ATIVAR OS LISTENERS
 
 function startListeners() {
@@ -468,11 +488,6 @@ function startListeners() {
     const radios = document.querySelectorAll('input[type="radio"]');
     const sinais = document.querySelectorAll('input[type="checkbox"]');
 
-    //PERIODO <--> FREQUENCIA
-
-    const inputFreq = document.getElementById("entrada-frequencia");
-    const inputPeriod = document.getElementById("entrada-periodo");
-    
     // POPUP
     let popup = null;
 
@@ -487,7 +502,6 @@ function startListeners() {
         input.addEventListener("input", async function() {
             await atualizarAPI()
             atualizarUnidades();
-            //atualizarSteps();
             atualizarRanges();
         })
     });
@@ -499,7 +513,6 @@ function startListeners() {
 
             if(this.id != "select-tamanho"){ //SELECIONA TODOS MENOS O DO TAMANHO DA JANELA DO POPUP
                 atualizarUnidades();
-                //atualizarSteps();
                 atualizarAPI();
 
             } else { // SE FOR O SELECT DA MUDANÇA DE TELA MUDA O TAMANHO DA TELA
@@ -604,35 +617,50 @@ function startListeners() {
 
     // ATUALIZANDO FREQUENCIA E PERÍODO
 
-    inputFreq.addEventListener("input", function(){
+    inputFrequencia.addEventListener("input", atualizaPeriodo);
+
+    inputPeriodo.addEventListener("input", atualizaFreq);
+}
+
+
+
+// Variáveis globais para ambais as funcs (a de cima e a de baixo)
+
+const inputPeriodo = document.getElementById("entrada-periodo");
+const inputFrequencia = document.getElementById("entrada-frequencia");
+
+
+// FUNCOES PARA ATUALIZAR PERIODO <--> FREQUENCIA CONFORME UM DOS DOIS FOREM ALTERADOS
+function atualizaPeriodo(){
         if(atualizandoPeriodo) return; //SE ATUALIZANDO PERIODO NAO FAZ NADA
-        const f = parseFloat(this.value);
+        const f = parseFloat(inputFrequencia.value);
         if(!isNaN(f) && f > 0.000001){
             atualizandoFrequencia = true;
             const p = 1 / f; //periodo = 1/frequencia
-            inputPeriod.value = p.toFixed(4);
+            inputPeriodo.value = p.toFixed(4);
             atualizandoFrequencia = false;
-            
-        }
-
-        setTimeout(atualizarAPI, 50);
-
-    });
-
-    inputPeriod.addEventListener("input", function(){
-        if(atualizandoFrequencia) return; //SE ATUALIZANDO PERIODO NAO FAZ NADA
-        const p = parseFloat(this.value);
-        if(!isNaN(p) && p > 0.000001){
-            atualizandoPeriodo = true;
-            const f = 1 / p; //periodo = 1/frequencia
-            inputFreq.value = f.toFixed(4);
-            atualizandoPeriodo = false;
-            
         }
         setTimeout(atualizarAPI, 50);
+    }
 
-    });
+
+function atualizaFreq(){
+    if(atualizandoFrequencia) return; //SE ATUALIZANDO PERIODO NAO FAZ NADA
+    const p = parseFloat(inputPeriodo.value);
+    if(!isNaN(p) && p > 0.000001){
+        atualizandoPeriodo = true;
+        const f = 1 / p;    //periodo = 1/frequencia
+        inputFrequencia.value = f.toFixed(4);
+        atualizandoPeriodo = false;
+        
+    }
+    setTimeout(atualizarAPI, 50);
 }
+
+
+
+
+// POSICIONANDO POPUP AO LADO DE ABA CLICADA
 
 function posicionarPopup(aba, popup){
 
@@ -702,7 +730,7 @@ function dicasIniciais(){
     // Configurar botão OK da primeira dica
     document.getElementById("btn-ok-1").onclick = function() {
         // Remove destaque da configuração
-        removerDestaqueFlutuante()
+        removerDestaqueFlutuante();
         overlay.style.display = "none";
         // Mostra segunda dica (manual) - destaca SOBRE
         dicaTamanho.style.display = "none";

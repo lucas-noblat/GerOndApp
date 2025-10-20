@@ -22,7 +22,9 @@
         <div class="form-group" id="grupo-amplitude">
             <label for="entrada-amplitude" class="form-label">Amplitude</label>
             <div class="form-number">
-                <input type="number" name="entrada-amplitude" id="entrada-amplitude" min= 0 value = 1  step = 1.00 required> 
+                <button type="button" class="btn-dec" onclick="decrementaInput('amplitude')">-</button>
+                <input type="number" name="entrada-amplitude" id="entrada-amplitude" min= 0 value = 1  step = 1.00 inputmode="numeric" required> 
+                <button type="button" class="btn-inc"onclick="incrementaInput('amplitude')">+</button>
             </div>            
         </div> 
 
@@ -30,7 +32,9 @@
         <div class="form-group" id="grupo-frequencia">
             <label for="entrada-frequencia" class="form-label">Frequência</label>
             <div class="form-number">
-                <input type="number" name="entrada-frequencia" id="entrada-frequencia" min= 0 value = 1  required data-sinais = '{{sinais_json|safe}}'>
+                <button type="button" class="btn-dec" onclick="decrementaInput('frequencia')">-</button>
+                <input type="number" name="entrada-frequencia" id="entrada-frequencia" min= 0 value = 1  required  inputmode="numeric" data-sinais = '{{sinais_json|safe}}'>
+                <button type="button" class="btn-dec" onclick="incrementaInput('frequencia')">+</button>
             </div>            
         </div> 
 
@@ -38,7 +42,9 @@
         <div class="form-group" id="grupo-periodo">
             <label for="entrada-periodo" class="form-label">Período</label>
                 <div class="form-number">
-                    <input type="number" name="entrada-periodo" id="entrada-periodo" min= 0.000001 value = 1>
+                    <button type="button" class="btn-dec" onclick="decrementaInput('periodo');">-</button>
+                    <input type="number" name="entrada-periodo" id="entrada-periodo" min= 0.000001 step = 0.1 inputmode="numeric" value = 1>
+                    <button type="button" class="btn-dec" onclick="incrementaInput('periodo')">+</button>
                 </div>            
         </div>
 
@@ -46,7 +52,10 @@
         <div class="form-group" id="grupo-fase">
             <label for="entrada-fase" class="form-label">Fase(º)</label>
             <div class="form-number">
-                <input type="number" name="entrada-fase" id="entrada-fase" value = 0 required>
+                <button type="button" class="btn-dec" onclick="decrementaInput('fase');">-</button>
+                <input type="number" name="entrada-fase" id="entrada-fase" value = 0 inputmode="numeric" required>
+                <button type="button" class="btn-dec" onclick="incrementaInput('fase');">+</button>
+           
             </div>            
         </div>
 
@@ -54,16 +63,21 @@
         <div class="form-group" id="grupo-offset">
             <label for="entrada-offset" class="form-label">Offset</label>
             <div class="form-number">
-                <input type="number" name="entrada-offset" id="entrada-offset" value = 0 required>
+                <button type="button" class="btn-dec" onclick="decrementaInput('offset');">-</button>
+                <input type="number" name="entrada-offset" id="entrada-offset" value = 0 inputmode="numeric" required>
+                <button type="button" class="btn-dec" onclick="incrementaInput('offset');">+</button>
+            
             </div>            
         </div>
 
         <!-- Duty -->
         <div class="form-group" id="grupo-duty" style="display: none;">
             <label for="entrada-duty" class="form-label">Duty</label>
-                <div class="form-number">
-                    <input type="number" name="entrada-duty" id="entrada-duty" min= 0.001 max = 0.999 step = 0.05 value = 0.5>
-                </div>            
+            <div class="form-number">
+                <button type="button" class="btn-dec" onclick="decrementaInput('duty');">-</button>
+                <input type="number" name="entrada-duty" id="entrada-duty" min= 0.001 max = 0.999 step = 0.05 inputmode="numeric" value = 0.5>
+                <button type="button" class="btn-dec" onclick="incrementaInput('duty');">+</button>            
+            </div>            
         </div>
 
     </div>
