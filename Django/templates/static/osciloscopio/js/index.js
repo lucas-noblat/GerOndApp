@@ -723,18 +723,33 @@ function dicasIniciais(){
 
     const overlay = document.querySelector(".popup-overlay");
 
-    // ABAS CONFIG/SOBRE
+    // ABAS/DICAS DA VEZ
+    let aba;
+    let dica;
+
+    if(ehMobile()){
+        // ESCONDE POPUP DE REDIMENSIONAMENTO E MOSTRA O DO MANUAL
+
+        dicaTamanho.style.display = "none";
+        dicaManual.style.display = "flex";
+        aba = document.getElementById("sobre");
+        dica = dicaManual;
+
+    }
+
+    else {
+        aba = document.getElementById("configuracoes");
+        dica = dicaTamanho;
+    }
     
-    const abaConfig = document.getElementById("configuracoes");
-    const abaSobre = document.getElementById("sobre");
-
-    //dicaTamanho.style.display = "flex";
-
      // Primeira dica (tamanho) - destaca CONFIG
     overlay.style.display = "flex";
-    posicionarPopup(abaConfig, dicaTamanho);
-    criarDestaqueFlutuante(abaConfig, "#28a745");
 
+    // DEFINE QUAL ABA SERA DESTACADA (EM MOBILE SOMENTE A DO MANUAL POR ENQUANTO)
+
+
+    posicionarPopup(aba, dica);
+    criarDestaqueFlutuante(aba, "#28a745");
 
     // Configurar botão OK da primeira dica
     document.getElementById("btn-ok-1").onclick = function() {
@@ -744,15 +759,14 @@ function dicasIniciais(){
         // Mostra segunda dica (manual) - destaca SOBRE
         dicaTamanho.style.display = "none";
         dicaManual.style.display = "flex";
-        posicionarPopup(abaSobre, dicaManual);
-        criarDestaqueFlutuante(abaSobre, "#28a745");
+        posicionarPopup(document.getElementById("sobre"), dicaManual);
+        criarDestaqueFlutuante(document.getElementById("sobre"), "#28a745");
 
         
         overlay.style.display = "flex"
         // Destacar a aba sobre
         abaSobre.classList.add('destaque-onboarding');
     };
-
     // Configurar botão OK da segunda dica
     document.getElementById("btn-ok-2").onclick = function() {
         // Remove destaque e fecha tudo
@@ -761,7 +775,6 @@ function dicasIniciais(){
         dicaManual.style.display = "none";
         dicaTamanho.style.display = "block"; // Restaura para próxima vez
     };
-
 }
 
 
@@ -808,7 +821,9 @@ function removerDestaqueFlutuante() {
 }
 
 
-
+function ehMobile(){
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
 
 // Inicializa o dom
 
@@ -824,13 +839,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     inicializarSinais();
  
 });
-
-
-
-
-
-
-
 
 
 
