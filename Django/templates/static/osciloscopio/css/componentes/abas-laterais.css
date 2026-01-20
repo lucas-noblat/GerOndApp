@@ -1,5 +1,4 @@
 .aba {
-    width: 10%;
     height: 100%;
     background: var(--cinza-claro);
     border-right: var(--espessura-borda) solid #666;
@@ -73,7 +72,8 @@ justify-content: space-between;
 
 
 
-.container-aba{
+.container-aba, 
+.container-aba-futura{
     width: 50%;
     height: 100%;
     position: relative;
@@ -165,6 +165,7 @@ justify-content: space-between;
     font-weight: bold;
 
 }
+
 
 
 

@@ -522,6 +522,7 @@ function startListeners() {
     const inputs = document.querySelectorAll('input[type="number"]');
     const selects = document.querySelectorAll("select");
     const radios = document.querySelectorAll('input[type="radio"]');
+    const sinais = document.querySelectorAll('input[type="checkbox"]');
 
     // POPUP
     let popup = null;
@@ -871,6 +872,3 @@ document.addEventListener('DOMContentLoaded', async function() {
     inicializarSinais();
  
 });
-
-
-
