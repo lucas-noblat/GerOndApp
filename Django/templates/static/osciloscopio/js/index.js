@@ -467,21 +467,44 @@ function atualizarRanges() {
 
 }
 
-
-
 // INCREMENTO / DECREMENTO ATRAVÉS DO BOTÃO
+ let cursorPosicao = {}
 
+function incrementaInput(input){
+    
+    const entrada = document.getElementById(`entrada-${input}`);
+    if(!entrada) return; //Defesa
+    valor = Number(entrada.value);
 
-async function incrementaInput(input){
-    document.getElementById(`entrada-${input}`).stepUp();
+    const step = Number(document.getElementById("entrada-step").value);
+    entrada.step = step;
+
+    valor += step;
+    if(valor < 0) valor = 0;
+
+    entrada.value = valor;
+
     if(input == "frequencia") atualizaPeriodo();
     if(input == "periodo") atualizaFreq();
+
     atualizarAPI();
 }
 
 
-async function decrementaInput(input){
-    document.getElementById(`entrada-${input}`).stepDown();
+function decrementaInput(input){
+
+    const entrada = document.getElementById(`entrada-${input}`);
+    if(!entrada) return;
+    valor = Number(entrada.value);
+
+    const step = Number(document.getElementById("entrada-step").value);
+    entrada.step = step;
+
+    valor -= step;
+
+    if(valor < 0) valor = 0;
+    entrada.value = valor;
+    
     if(input == "frequencia") atualizaPeriodo();
     if(input == "periodo") atualizaFreq();
     atualizarAPI();
@@ -512,7 +535,7 @@ function startListeners() {
             await atualizarAPI()
             atualizarUnidades();
             atualizarRanges();
-        })
+        })     
     });
     
 
@@ -687,6 +710,11 @@ function posicionarPopup(aba, popup){
 }
 
 
+
+
+
+
+// FUNÇÃO DE MUDAR DE COR (INCOMPLETA)
 function mudarCorGrafico(cor){
     const grafTempo = Bokeh.documents[0].get_model_by_name("Tempo");
     const grafFreq = Bokeh.documents[1].get_model_by_name("Frequencia");
@@ -765,7 +793,7 @@ function dicasIniciais(){
         
         overlay.style.display = "flex"
         // Destacar a aba sobre
-        abaSobre.classList.add('destaque-onboarding');
+        if(abaSobre) abaSobre.classList.add('destaque-onboarding');
     };
     // Configurar botão OK da segunda dica
     document.getElementById("btn-ok-2").onclick = function() {
