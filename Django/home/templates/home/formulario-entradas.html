@@ -5,13 +5,30 @@
     
     <!-- Forma do sinal -->
         <div class="form-group" id="grupo-forma-sinal">
-            <label for="entrada-forma-sinal" class="form-label">Forma do sinal</label>
+            <legend style= "font-size: 16px; font-weight: bold;"class="form-label">Forma do sinal</label>
             <div class="form-select" id = "select-forma-sinal">
                 <select name="entrada-forma-sinal" id="entrada-forma-sinal" value = "senoidal"  >
                     <option value="senoidal" >Senoidal</option>
                     <option value="quadrada"  >Quadrada</option>
                     <option value="triangular" >Triangular</option>
                     <option value="ruido-branco">Ruído Branco</option>
+                </select>        
+            </div>            
+        </div>
+
+        <!-- Step -->
+        <div class="form-group" id="grupo-step">
+            <legend style= "font-size: 14px; font-weight: bold;"class="form-label">Step</label>
+            <div class="form-select" id = "select-step">
+                <select name="entrada-step" id="entrada-step" value = "1" >
+
+                    <option value="1000"  >1000</option>
+                    <option value="100" >100</option>
+                    <option value="10">10</option>
+                    <option value="1" selected>1</option>
+                    <option value="0.1"  >0.1</option>
+                    <option value="0.01" >0.01</option>
+                    <option value="0.001">0.001</option>
                 </select>        
             </div>            
         </div>
@@ -24,7 +41,7 @@
             <div class="form-number">
                 <button type="button" class="btn-dec" onclick="decrementaInput('amplitude')" >-</button>
                 <input type="number" name="entrada-amplitude" id="entrada-amplitude" min= 0 value = 1  step = 1.00 inputmode="numeric" required> 
-                <button type="button" class="btn-inc"onclick="incrementaInput('amplitude')">+</button>
+                <button type="button" class="btn-inc" onmousedown="event.preventDefault()" onclick="incrementaInput('amplitude')">+</button>
             </div>            
         </div> 
 
@@ -85,7 +102,7 @@
         <!-- Operação -->
 
         <div id="selects-container">
-            <label for = "form-select" class ="form-label">Operações</label>
+            <legend class ="form-label">Operações</label>
             <div id = "five-selects">
                 {% for i in range_5 %}
                 <select id="entrada-operacao-{{ i }}" name = "entrada-operacao" data-indice = "{{ i }}">
