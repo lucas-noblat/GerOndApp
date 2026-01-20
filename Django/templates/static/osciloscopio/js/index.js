@@ -1,22 +1,21 @@
-// BOOLEANOS QUE AJUDARAM A AJUSTAR PERÍODO <--> FREQUENCIA
+// BOOLEANOS QUE AJUDARAM A AJUSTAR PERﾃ弘DO <--> FREQUENCIA
 
 let atualizandoFrequencia = false;
 let atualizandoPeriodo = false;
 
 
-// CONTROLE DAS ABAS - VERSÃO DEFINITIVA
+// CONTROLE DAS ABAS - VERSﾃグ DEFINITIVA
 function iniciarAbas() {
-
     // Ativa a aba inicial
     const sinalInicial = document.getElementById('numero_sinal').value;
     ativarAba(sinalInicial);
     
-    // Configura eventos dos botões
+    // Configura eventos dos botﾃｵes
     document.querySelectorAll('.botao-sinal').forEach(btn => {
         btn.addEventListener('click', function() {
             const sinal = this.getAttribute('data-sinal');
             ativarAba(sinal);
-            
+            carregarParametrosSinal(sinal);
 
         });
     });
@@ -46,7 +45,7 @@ function ativarAba(sinal) {
         aba.style.border = "";
     });
     
-    // Ativa a aba clicada (botão)
+    // Ativa a aba clicada (botﾃ｣o)
     const abaAtiva = document.querySelector(`.botao-sinal[data-sinal="${sinal}"]`);
     if (abaAtiva && formEntrada) {
 
@@ -75,13 +74,13 @@ function ativarAba(sinal) {
             5: "#b380b3"
         }
 
-        // Define a cor da aba dependendo do sinal, por padrão é azul
+        // Define a cor da aba dependendo do sinal, por padrﾃ｣o ﾃｩ azul
         abaAtiva.style.border = coresAbas[sinal] || "3px solid blue";
         formEntrada.style.border = coresAbas[sinal] || "3px solid blue";
         formEntrada.style.backgroundColor = coresFundoAbas[sinal] || "#E0F2FE"; 
         containerEntradas.style.backgroundColor = coresFundoContainer[sinal] || "#7fbfff";
 
-        // Atualiza a URL sem recarregar a página
+        // Atualiza a URL sem recarregar a pﾃ｡gina
         const url = new URL(window.location);
         url.searchParams.set('sinal', sinal);
         window.history.pushState({}, '', url);
@@ -123,15 +122,15 @@ function trocarAbas(aba_clicada){
 
 
     const aba_ativa = document.querySelector(`.aba-btn#btn-${aba_clicada}`);
-    aba_ativa ? aba_ativa.classList.add('active') : window.alert('Essa aba não existe');
+    aba_ativa ? aba_ativa.classList.add('active') : window.alert('Essa aba nﾃ｣o existe');
 
     if(aba_clicada !== "ambos"){   
         const grafico_ativo = document.querySelector(`.grafico#grafico_${aba_clicada}`);
     
        
         
-        grafico_ativo ? grafico_ativo.style.display = 'flex' : window.alert('Esse gráfico não existe');
-        grafico_ativo ? grafico_ativo.style.height = '100%' : window.alert("Esse gráfico não existe");
+        grafico_ativo ? grafico_ativo.style.display = 'flex' : window.alert('Esse grﾃ｡fico nﾃ｣o existe');
+        grafico_ativo ? grafico_ativo.style.height = '100%' : window.alert("Esse grﾃ｡fico nﾃ｣o existe");
     } else { // ABA AMBOS
 
 
@@ -157,10 +156,10 @@ function trocarAbas(aba_clicada){
 
 
 
-// Função para receber dados (BACKEND -> FRONTEND)
+// Funﾃｧﾃ｣o para receber dados (BACKEND -> FRONTEND)
 
 
-// Vari�vel para descobrir protocolo e host para usar na api
+// Vari疱el para descobrir protocolo e host para usar na api
 
 const BASE_URL = `${window.location.protocol}//${window.location.host}`;
 
@@ -170,7 +169,7 @@ async function getData(sinal){
             const response = await fetch(`${BASE_URL}/api/getData/?sinal=${sinal}`);
 
             if(!response.ok){
-                throw new Error ("Não foi possível carregar a API");
+                throw new Error ("Nﾃ｣o foi possﾃｭvel carregar a API");
             }
 
             return response.json();
@@ -181,7 +180,7 @@ async function getData(sinal){
 
 }
 
-// Função para enviar dados (FRONTEND -> BACKEND)
+// Funﾃｧﾃ｣o para enviar dados (FRONTEND -> BACKEND)
 
 async function sendData(sinal){
 
@@ -196,7 +195,7 @@ async function sendData(sinal){
             })
 
             if(!response.ok){
-                throw new Error("Não foi possível resgatar api");}
+                throw new Error("Nﾃ｣o foi possﾃｭvel resgatar api");}
 
             return await response.json();
         } catch(error){
@@ -235,7 +234,7 @@ async function carregarParametrosSinal(sinal){
     }
 }
 
-// RECEBE OS DADOS DO PARÂMETRO
+// RECEBE OS DADOS DO PARﾃ�ETRO
 
 function receberParametros(){
     
@@ -274,7 +273,7 @@ function receberUnidades(){
 }
 
 
-// Função assíncrona que irá atualizar os dados
+// Funﾃｧﾃ｣o assﾃｭncrona que irﾃ｡ atualizar os dados
 
 async function atualizarAPI(){
 
@@ -301,7 +300,7 @@ async function atualizarAPI(){
                 source.change.emit();
                 
             }else {
-                console.warn("Não foi possível atualizar o gráfico: dados ou source não definidos.");
+                console.warn("Nﾃ｣o foi possﾃｭvel atualizar o grﾃ｡fico: dados ou source nﾃ｣o definidos.");
             }
             
         }
@@ -313,7 +312,7 @@ async function atualizarAPI(){
 }
 
 
-// FUNÇÃO QUE ATUALIZA UNIDADES
+// FUNﾃ�グ QUE ATUALIZA UNIDADES
 
 function atualizarUnidades(){
 
@@ -331,7 +330,7 @@ function atualizarUnidades(){
 
     }
     else {
-        console.warning("Gráficos não encontrados");
+        console.warning("Grﾃ｡ficos nﾃ｣o encontrados");
     }
 
 
@@ -339,13 +338,13 @@ function atualizarUnidades(){
 
 }
 
-// FUNÇÃO PARA ATUALIZAR OS STES DOS INPUTS
+// FUNﾃ�グ PARA ATUALIZAR OS STES DOS INPUTS
 
 function atualizarSteps(){
 
     document.querySelectorAll('input[type = "number"').forEach(input => {
 
-        // Atualização do step dos inputs (Pedido do Fábio)
+        // Atualizaﾃｧﾃ｣o do step dos inputs (Pedido do Fﾃ｡bio)
 
         if(!isNaN(input.value && input.value.trim() !== '')){
             if(input.value.includes('.') || input.value.includes(','))
@@ -357,11 +356,11 @@ function atualizarSteps(){
         }
         })
 }
-// FUNÇÃO PARA ESCONDER OS SINAIS INICIALMENTE
+// FUNﾃ�グ PARA ESCONDER OS SINAIS INICIALMENTE
 
 function inicializarSinais() {
 
-    // Gráficos
+    // Grﾃ｡ficos
 
     const grafTempo = Bokeh.documents[0].get_model_by_name("Tempo");
     const grafFreq = Bokeh.documents[1].get_model_by_name("Frequencia");
@@ -383,7 +382,7 @@ function inicializarSinais() {
         const linhaFreq = Bokeh.documents[1].get_model_by_name(`linha${i}`);
 
         if (linhaTempo && linhaFreq) {
-            // Apenas o primeiro sinal fica visível
+            // Apenas o primeiro sinal fica visﾃｭvel
             if (i === 0) {
                 linhaTempo.visible = true;
                 linhaFreq.visible = true;
@@ -396,15 +395,15 @@ function inicializarSinais() {
     setTimeout(atualizarRanges, 50);
 }
 
-// FUNÇÃO PARA AJUSTAR A DIMENSÃO DO GRÁFICO CONFORME SINAIS VISÍVEIS
+// FUNﾃ�グ PARA AJUSTAR A DIMENSﾃグ DO GRﾃ：ICO CONFORME SINAIS VISﾃ昂EIS
 
 function atualizarRanges() {
   
-    // Ajustar gráfico de tempo
+    // Ajustar grﾃ｡fico de tempo
     const docTempo = Bokeh.documents[0];
     const plotTempo = docTempo.get_model_by_name("Tempo");
 
-    // Ajustar gráfico de frequência
+    // Ajustar grﾃ｡fico de frequﾃｪncia
     const docFreq = Bokeh.documents[1];
     const plotFreq = docFreq.get_model_by_name("Frequencia");
 
@@ -433,7 +432,7 @@ function atualizarRanges() {
     let max_X_frequencia = Math.max(...xFreqs), min_X_frequencia = Math.min(...xFreqs);
     let max_Y_frequencia = Math.max(...yFreqs), min_Y_frequencia = Math.min(...yFreqs);
 
-    // 🔹 Corrigir caso todos os valores sejam iguais
+    // 隼 Corrigir caso todos os valores sejam iguais
     if (max_X === min_X) { max_X += 1; min_X -= 1; }
     if (max_Y === min_Y) { max_Y += 1; min_Y -= 1; }
     if (max_X_frequencia === min_X_frequencia) { max_X_frequencia += 1; min_X_frequencia -= 1; }
@@ -454,7 +453,7 @@ function atualizarRanges() {
         plotTempo.y_range.end = max_Y + yPadding;
     }
 
-    // Atualizar ranges da frequência
+    // Atualizar ranges da frequﾃｪncia
     if (xFreqs.length > 0 && yFreqs.length > 0) {
         plotFreq.x_range.start = min_X_frequencia - xPaddingFreq;
         plotFreq.x_range.end = max_X_frequencia + xPaddingFreq;
@@ -467,7 +466,7 @@ function atualizarRanges() {
 
 }
 
-// INCREMENTO / DECREMENTO ATRAVÉS DO BOTÃO
+// INCREMENTO / DECREMENTO ATRAVﾃ唄 DO BOTﾃグ
  let cursorPosicao = {}
 
 function incrementaInput(input){
@@ -517,24 +516,24 @@ function decrementaInput(input){
 
 
 
-// FUNÇÃO PARA ATIVAR OS LISTENERS
+// FUNﾃ�グ PARA ATIVAR OS LISTENERS
 
 function startListeners() {
     const inputs = document.querySelectorAll('input[type="number"]');
     const selects = document.querySelectorAll("select");
     const radios = document.querySelectorAll('input[type="radio"]');
-    const sinais = document.querySelectorAll('input[type="checkbox"]');
 
     // POPUP
     let popup = null;
 
     const abas_config_sobre = document.querySelectorAll(".container-aba");
+
     const overLayerPopup = document.getElementById("blur-popup");
     const fechar_popup = document.querySelectorAll(".fechar-popup");
 
 
 
-    // TODOS OS INPUTS NUMÉRICOS
+    // TODOS OS INPUTS NUMﾃ嘘ICOS
     inputs.forEach(input => {
         input.addEventListener("input", async function() {
             await atualizarAPI()
@@ -552,7 +551,7 @@ function startListeners() {
                 atualizarUnidades();
                 atualizarAPI();
 
-            } else { // SE FOR O SELECT DA MUDANÇA DE TELA MUDA O TAMANHO DA TELA
+            } else { // SE FOR O SELECT DA MUDANﾃ② DE TELA MUDA O TAMANHO DA TELA
 
                 const janela = document.getElementById("janela-principal");
                 if(janela) {
@@ -590,7 +589,7 @@ function startListeners() {
         
     });
 
-    // SINAIS VISÍVEIS
+    // SINAIS VISﾃ昂EIS
 
     sinais.forEach((sinal, i) => {
 
@@ -629,7 +628,7 @@ function startListeners() {
     
         });
     });
-    // ABA DE CONFIGURAÇÕES
+    // ABA DE CONFIGURAﾃ�髭S
 
     fechar_popup.forEach(fechar => {
         fechar.onclick = function () {
@@ -652,7 +651,7 @@ function startListeners() {
         });
     })
 
-    // ATUALIZANDO FREQUENCIA E PERÍODO
+    // ATUALIZANDO FREQUENCIA E PERﾃ弘DO
 
     inputFrequencia.addEventListener("input", atualizaPeriodo);
 
@@ -661,7 +660,7 @@ function startListeners() {
 
 
 
-// Variáveis globais para ambais as funcs (a de cima e a de baixo)
+// Variﾃ｡veis globais para ambais as funcs (a de cima e a de baixo)
 
 const inputPeriodo = document.getElementById("entrada-periodo");
 const inputFrequencia = document.getElementById("entrada-frequencia");
@@ -719,7 +718,7 @@ function posicionarPopup(aba, popup){
 
 
 
-// FUNÇÃO DE MUDAR DE COR (INCOMPLETA)
+// FUNﾃ�グ DE MUDAR DE COR (INCOMPLETA)
 function mudarCorGrafico(cor){
     const grafTempo = Bokeh.documents[0].get_model_by_name("Tempo");
     const grafFreq = Bokeh.documents[1].get_model_by_name("Frequencia");
@@ -784,9 +783,9 @@ function dicasIniciais(){
     posicionarPopup(aba, dica);
     criarDestaqueFlutuante(aba, "#28a745");
 
-    // Configurar botão OK da primeira dica
+    // Configurar botﾃ｣o OK da primeira dica
     document.getElementById("btn-ok-1").onclick = function() {
-        // Remove destaque da configuração
+        // Remove destaque da configuraﾃｧﾃ｣o
         removerDestaqueFlutuante();
         overlay.style.display = "none";
         // Mostra segunda dica (manual) - destaca SOBRE
@@ -800,27 +799,27 @@ function dicasIniciais(){
         // Destacar a aba sobre
         if(abaSobre) abaSobre.classList.add('destaque-onboarding');
     };
-    // Configurar botão OK da segunda dica
+    // Configurar botﾃ｣o OK da segunda dica
     document.getElementById("btn-ok-2").onclick = function() {
         // Remove destaque e fecha tudo
         removerDestaqueFlutuante();
         overlay.style.display = "none";
         dicaManual.style.display = "none";
-        dicaTamanho.style.display = "block"; // Restaura para próxima vez
+        dicaTamanho.style.display = "block"; // Restaura para prﾃｳxima vez
     };
 }
 
 
 
 
-// FUNÇÃO PRA CLONAR DIV EM DESTAQUE
+// FUNﾃ�グ PRA CLONAR DIV EM DESTAQUE
 
 
 function criarDestaqueFlutuante(elementoAlvo, cor = "#007bff") {
     // Remove destaque anterior
     removerDestaqueFlutuante();
     
-    // Obtém a posição do elemento alvo
+    // Obtﾃｩm a posiﾃｧﾃ｣o do elemento alvo
     const rect = elementoAlvo.getBoundingClientRect();
     
     // Cria div flutuante
@@ -867,7 +866,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     trocarAbas('tempo');
     startListeners();
 
-    // ESPERA DADOS SEREM TRAZIDOS DO BACKEND PARA ESCONDER E ATUALIZAR GRÁFICO
+    // ESPERA DADOS SEREM TRAZIDOS DO BACKEND PARA ESCONDER E ATUALIZAR GRﾃ：ICO
     await atualizarAPI();
     inicializarSinais();
  
