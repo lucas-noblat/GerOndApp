@@ -474,15 +474,18 @@ function incrementaInput(input){
     
     const entrada = document.getElementById(`entrada-${input}`);
     if(!entrada) return; //Defesa
-    valor = Number(entrada.value);
+    
+    // PARA O STEP
+    
+    //valor = Number(entrada.value);
 
-    const step = Number(document.getElementById("entrada-step").value);
-    entrada.step = step;
+    //const step = Number(document.getElementById("entrada-step").value);
+    //entrada.step = step;
 
-    valor += step;
-    if(valor < 0) valor = 0;
+    //valor += step;
+    //if(valor < 0) valor = 0;
 
-    entrada.value = valor;
+    entrada.stepUp();
 
     if(input == "frequencia") atualizaPeriodo();
     if(input == "periodo") atualizaFreq();
@@ -495,15 +498,17 @@ function decrementaInput(input){
 
     const entrada = document.getElementById(`entrada-${input}`);
     if(!entrada) return;
-    valor = Number(entrada.value);
+    entrada.stepDown();
+    
+    // PARA O STEP
+    //valor = Number(entrada.value);
 
-    const step = Number(document.getElementById("entrada-step").value);
-    entrada.step = step;
-
-    valor -= step;
-
-    if(valor < 0) valor = 0;
-    entrada.value = valor;
+    //const step = Number(document.getElementById("entrada-step").value);
+    //entrada.step = step;
+    //valor -= step;
+    //if(valor < 0) valor = 0;
+    //entrada.value = valor;
+    
     
     if(input == "frequencia") atualizaPeriodo();
     if(input == "periodo") atualizaFreq();
