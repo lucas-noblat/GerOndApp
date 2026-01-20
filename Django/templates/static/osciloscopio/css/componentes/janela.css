@@ -1,14 +1,15 @@
 #janela-principal {
-    width: var(--largura-janela);
-    height: var(--altura-janela);
+
     background: var(--cinza-medio);
     box-shadow: var(--sombra-interna);
     border-radius: var(--curva-borda);
-    display: flex;
     flex-direction: column;
     align-items: center;
     z-index: 1;
     overflow: hidden;
+    resize: both;
+    position: relative;
+
 }
 
 #centro-janela {
@@ -16,8 +17,33 @@
     height: 100%;
 
     display: flex;
+    flex: 1;
     justify-content: flex-start;
     align-items: center; 
     background-color: var(--cinza-medio);
+    overflow: hidden;
     
+}
+
+
+/* CELULARES */
+
+@media(max-height:768px){
+    #janela-principal{
+        height: 95dvh;
+        width: 95dvw;
+        max-height: 95dvh;
+        max-width: 95dvw;
+    }   
+}
+
+@media(min-height:768px){
+    #janela-principal{
+        height: 90dvh;
+        width: 90dvw;
+        max-height: 95dvh;
+        max-width: 95dvw;
+        min-height: 540px;
+        min-width: 960px;
+    }   
 }

@@ -1,7 +1,7 @@
 <form id = "form-unidades" action = " {% url 'osciloscopio' %} " method="post" class="formulario-entrada">
     {% csrf_token %}
     
-    <div class="form-container">
+    <div class="form-container" id = "c1">
       <!-- Amplitude -->
       <div class="form-group">
         <label for="unidade-amplitude" class="form-label">Amplitude</label>

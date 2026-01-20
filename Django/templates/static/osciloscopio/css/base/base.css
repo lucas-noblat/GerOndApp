@@ -1,13 +1,20 @@
 
+html, body{
+    height: 100dvh;
+    width: 100dvw;
+    margin: 0;
+    padding: 0;
+}
+
+
 body {
-    min-height: 100vh;
     background-color: var(--azul-lioc);
     display: flex;
     justify-content: center;
     align-items: center;
     font-family: Arial, sans-serif;
-    margin: 0;
-    
+
+    font-family: 'Roboto', sans-serif;
 }
 
 h1 {
@@ -15,7 +22,7 @@ h1 {
     margin: 0;
     white-space: nowrap;
     text-align: center;
-    font-size: 2vw;
+    font-size: 20px;
     font-family: 'Wavefont', Arial, sans-serif;
     word-wrap: break-word;
 }
@@ -23,9 +30,8 @@ h1 {
 h2{
     text-align: center;
     margin: 0;
-    font-size: 1.5vw;
-    padding: 2px;
-
+    font: open-;
+    
 }
 
 h3{
@@ -36,9 +42,7 @@ h3{
 }
 
 select{
-    height: 100%;
-    width: 100%;
-    font-size: 18px;       
+    border-radius: 5px ;       
 }
 
 .container-titulo{
@@ -50,3 +54,142 @@ select{
     align-items: center;
 
 }
+
+/* Labels dos inputs */
+label {
+    font-family: 'Open Sans', sans-serif;
+    text-align: center;
+}
+
+
+
+
+/* DISPOSITIVOS MAIORES */
+@media(min-width:768px){
+    h2{
+        font-size:18px;
+    }
+
+      label{
+        font-size: 16px;
+    }
+    
+    select{
+        font-size: 16px;
+    }
+
+    #janela-principal{
+        display: flex;
+    }
+
+    #rotate-warning{
+        display: none;
+    }
+
+    input[type="number"] {
+        font-size: 14px !important;
+    }
+}
+
+
+/* RESPONSIVIDADE PARA MOBILE SECTION */
+
+
+@media(max-width:768px){
+    h2{
+        font-size: 16px;
+    }
+    #janela-principal{
+        display: flex;
+    }
+    #rotate-warning{
+        display: none;
+    }
+    input[type="number"] {
+        font-size: 10px !important;
+    }
+}
+
+
+    /* CELULARES NA VERTICAL */
+
+@media(max-width:768px) and (orientation:portrait){
+
+    #janela-principal{
+        display: none
+    }
+
+    #rotate-warning{
+        display: flex;
+    }
+}
+
+
+    /* CELULARES NA HORIZONTAL */
+
+@media(max-width:768px) and (orientation:landscape){
+
+    #janela-principal{
+        display: flex
+    }
+
+    #rotate-warning{
+        display: none;
+    }
+}
+
+
+
+
+
+
+
+/* Aviso de rotação ocupa a tela toda */
+#rotate-warning {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+  color: #fff;
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+input[type="number"], select {
+    font-family: 'Roboto Mono', monospace;
+    color: #222;     /* cor do texto */
+    text-align: center;
+    align-items: center;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
+
+a {
+    color: black;        /* muda a cor do texto */
+    text-decoration: none; /* remove o sublinhado */
+}
+
+a:hover {
+    color: blue;           /* muda a cor ao passar o mouse */
+    text-decoration: underline; /* opcional, sublinha ao hover */
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+
+button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+

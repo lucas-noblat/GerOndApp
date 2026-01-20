@@ -1,44 +1,256 @@
-.popup {
 
+#blur-popup{
+    width: 100dvw; 
+    height: 100dvh; 
+    display: flex; 
+    position: absolute; 
+    background-color: black; 
+    opacity: 0; 
+    visibility: hidden; 
+    z-index: 100; 
+}
+  
+
+.popup{
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+  
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    
+    
+    background-color: #888888;
+    border-radius: 10px;
+
+    opacity: 0;
+    visibility: hidden;
+  
+    z-index: 101;
+  
+  }
+  
+#popup-header {
+  display: flex;
+  justify-content: flex-end; /* botão vai pra direita */
+  width: 100%;
+  background-color: #666; /* opcional, estilo barra */
+  border-radius: 10px 10px 0 0; /* arredonda só em cima */
+}
+
+.fechar-popup {
+    
+  background: red;
+  border: none;
+  color: white;
+  margin: 5px 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: 0.2s;
+}
+.fechar-popup:hover {
+  background: darkred;
+}
+
+    #container-checkboxes-cor{
+        position: relative;
+        display: flex;
+        justify-content: space-evenly;
+        width: 100%;
+        margin-top: 10px
+    }
+    #checkbox-preto{
+
+        border: 1px solid black;
+    }
+    #checkbox-preto:checked{
+        background-color: #000;
+    }
+    #checkbox-branco{
+        border: 1px solid #ffffff;
+    }
+    #checkbox-branco:checked{
+        background-color: #ffffff;
+    }
+
+    .cor-btn{
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        width: 30px;
+        height: 30px;
+        border: 2px solid #000;
+        border-radius: 50%;
+        padding: 15px;
+    }
+  
+    .conteudo-popup{
+
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+
+    }
+
+    .conteudo-popup span{
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    #select-tamanho{
+        width: 100px;
+        align-content: center;
+    }
+
+
+
+    /* EM MOBILE NÃO PERMITE ALTERAR TAMANHO DA JANELA-PRINCIPAL PARA MELHOR DESIGN*/
+
+
+    @media (max-height: 768px) {
+        #container-tamanhos-janela{
+            display: none !important;
+        }
+        .conteudo-popup{
+            gap: 10px; /* espaço entre os elementos */
+            padding: 5px;
+        }
+        
+        #popup-sobre{
+            width: 200px;
+        }
+
+            
+        #container-tamanhos-janela label,
+        #conteudo-popup label{
+            font-size: 12px;
+        }
+
+    }
+
+    @media (min-height: 768px){
+        .conteudo-popup{
+            gap: 20px; /* espaço entre os elementos */
+            padding: 10px;
+        }
+        
+        #popup-sobre{
+            width: 200px;
+        }
+    }
+
+    /* EM DISPOSITIVOS MAIORES*/
+    
+    #container-tamanhos-janela{
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+    }
+
+    
+    #container-tamanhos-janela label,
+    #conteudo-popup label{
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    #explanation-container{
+        text-align: center;
+        background-color: #b1b1b1;
+        border-radius: 5px;
+    }
+    #explanation-container p {
+        font-size: 10px;
+        padding: 4px;
+    }
+    #container-links{
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        width: 100%;
+
+        
+    }
+
+    .lk-container{
+
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        background-color: #b1b1b1;
+        border-radius: 5px;
+        padding: 5px;
+        gap: 5px;
+        
+        box-sizing: border-box; /* inclui padding na largura */
+    }
+
+    .lk-container p {
+        font-size: 14px;
+    }
+    
+
+.popup-overlay {
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0,0,0,0.7);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.popup-container {
+    top: 0;
+    left: 0;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 300px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    border: 1px solid black;
+    z-index: 102;
+}
+
+.destaque-flutuante {
+    position: fixed !important;
+    z-index: 10002 !important;
+    pointer-events: none !important;
+    border: 3px solid #007bff !important;
+    background-color: #C1C1C1 !important;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 123, 255, 0.5) !important;
+    transition: all 0.3s ease;
     display: flex;
     justify-content: center;
     align-items: center;
-    opacity: 0; /* Inicia invisível */
-    visibility: hidden; /* Remove do fluxo de interação */
-    transition: opacity 0.3s, visibility 0.3s;
-    z-index: 1000;
-  }
-  
-  .popup.aberto {
-    opacity: 1;
-    visibility: visible;
-  }
-  
-  .popup-conteudo {
-    background: white;
-    padding: 20px;
-    border-radius: 5px;
-    max-width: 500px;
-    position: relative;
-  }
-  
-  .fechar {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 20px;
-    cursor: pointer;
+}
+
+.popup-btn {
+    background: #007bff;
+    width: 100px;
+    color: white;
     border: none;
-    background: none;
-  }
-  
-
-
-
-  
-
+    padding: 10px 25px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 15px;
+    font-size: 16px;
+}

@@ -6,44 +6,140 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Osciloscópio{% endblock %}</title>
     <link rel="stylesheet" href="{% static '/osciloscopio/css/main.css' %}?v={% now 'U' %}">
+
+    <!-- FONTES -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Roboto+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+
 </head>
 <body>
 
-        <!-- BLUR DO POPUP -->
-
-        <div id = "blur-popup">
+    <!-- Popup 1 - Redimensionamento -->
+    <div id="popup-redimensionamento" class="popup-overlay" style="display: none;">
+        <div class="popup-container" id = "dica-tamanho">
+            <h3>💡 Dica Importante</h3>
+            <p>Você pode redimensionar a janela na aba de configurações 
+                
+                e arrastando no canto inferior direito para melhor visualização!</p>
+            <button id="btn-ok-1" class="popup-btn">OK</button>
         </div>
-        <div id = "popup-config">
-            <button id = "fechar-popup">X</button>
-            <label for="cor">Cor do gráfico<label>
+   
+
+        <!-- Popup 2 - Manual -->
+        <div class="popup-container" id = "dica-manual" style="display: none;">
+            <h3>📖 Manual do Usuário</h3>
+            <p>Confira o manual completo na aba "Sobre"!</p>
+            <button id="btn-ok-2" class="popup-btn">OK</button>
+        </div>
+    </div>
+
+    <!-- BLUR DO POPUP -->
+    <div id = "blur-popup">
+    </div>
+
+    <!-- POPUP CONFIG -->
+    <div id = "popup-config" class = "popup">
+        <div id="popup-header">
+            <button class = "fechar-popup">X</button>
+        </div>
+        <div class="conteudo-popup">
+            <div id = "container-tamanhos-janela">
+                <label for="select-tamanho">Tamanho da janela</label>
+                <select name="tamanhos-janela" id="select-tamanho">
+                    <option value="pequeno">960x540</option>
+                    <option value="medio">1280x720</option>
+                    <option value="grande" selected>1600x900</option>
+                    <option value="enorme">1920x1080</option>
+                </select>
+            </div>
+            <legend>Cor do gráfico<label>
             <div id="container-checkboxes-cor">
                 <input type="radio" name="cor" id="checkbox-preto" class="cor-btn" value = "black">
                 <input type="radio" name="cor" id="checkbox-branco" class = "cor-btn" value = "white">
             </div>
-            <div id = "container-tamanho-fonte">
 
-            </div>
-            </div>
-        <!-- janela-cabeçalho -->
-        <div id ="janela-principal">
-            {% include 'home/barra-superior.html' %}  <!-- Importa o cabeçalho -->
-        
-            <!-- Centro da janela-->
-            <div id = "centro-janela">
-                {% include 'home/aba-esquerda.html' %}
-                {% include 'home/aba-central.html' %}
-                {% include 'home/aba-direita.html' %}
-                {% block content %}{% endblock %} <!-- Área de conteúdo das páginas -->
-            </div>
 
-           
-            
         </div>
- 
-        <svg id="ondinha" viewBox="0 0 2160 335" fill="none">
-            <path d="M740.835 217.171C463.634 -38.7146 0 3.02575 0 3.02575V527.5H2160V310.633C2160 310.633 1852.36 66.9971 1489.82 66.9971C1127.29 66.9971 1018.04 473.056 740.835 217.171Z" fill="#D9D9D9" fill-opacity="0.5"/>
-        </svg>
-  
+        
+    </div>
+    <!-- POPUP SOBRE-->
+
+    <div id = "popup-sobre" class = "popup">
+        <div id="popup-header">
+            <button class = "fechar-popup">X</button>
+        </div>
+        <div class="conteudo-popup">
+            <div id="explanation-container">
+                <p>O GerOndApp é uma aplicação web em Python para geração, manipulação e visualização de sinais, como senoidais, triangulares,  quadrados e ruído branco.</p>
+            </div>
+            <div id = "container-links">
+                <a href="https://drive.google.com/file/d/1i1oMjQyxQzSbt8xbE_VLuVRc_WWJHnTy/view?usp=sharing"  target="_blank" rel="noopener noreferrer">                        
+                    <div class = "lk-container">
+                        <p>Manual do usuário</p>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 23 21" fill="none">
+                        <path d="M11.5 20.4136C10.7 19.7802 9.83333 19.2886 8.9 18.9386C7.96667 18.5886 7 18.4136 6 18.4136C5.3 18.4136 4.6125 18.5052 3.9375 18.6886C3.2625 18.8719 2.61667 19.1302 2 19.4636C1.65 19.6469 1.3125 19.6386 0.9875 19.4386C0.6625 19.2386 0.5 18.9469 0.5 18.5636V6.51357C0.5 6.33024 0.545833 6.15524 0.6375 5.98857C0.729167 5.82191 0.866667 5.69691 1.05 5.61357C1.81667 5.21357 2.61667 4.91357 3.45 4.71357C4.28333 4.51357 5.13333 4.41357 6 4.41357C6.96667 4.41357 7.9125 4.53857 8.8375 4.78857C9.7625 5.03857 10.65 5.41357 11.5 5.91357V18.0136C12.35 17.4802 13.2417 17.0802 14.175 16.8136C15.1083 16.5469 16.05 16.4136 17 16.4136C17.6 16.4136 18.1875 16.4636 18.7625 16.5636C19.3375 16.6636 19.9167 16.8136 20.5 17.0136V5.01357C20.75 5.09691 20.9958 5.18441 21.2375 5.27607C21.4792 5.36774 21.7167 5.48024 21.95 5.61357C22.1333 5.69691 22.2708 5.82191 22.3625 5.98857C22.4542 6.15524 22.5 6.33024 22.5 6.51357V18.5636C22.5 18.9469 22.3375 19.2386 22.0125 19.4386C21.6875 19.6386 21.35 19.6469 21 19.4636C20.3833 19.1302 19.7375 18.8719 19.0625 18.6886C18.3875 18.5052 17.7 18.4136 17 18.4136C16 18.4136 15.0333 18.5886 14.1 18.9386C13.1667 19.2886 12.3 19.7802 11.5 20.4136ZM13.5 15.4136V5.91357L18.5 0.913574V10.9136L13.5 15.4136ZM9.5 17.0386V7.13857C8.95 6.90524 8.37917 6.72607 7.7875 6.60107C7.19583 6.47607 6.6 6.41357 6 6.41357C5.38333 6.41357 4.78333 6.47191 4.2 6.58857C3.61667 6.70524 3.05 6.88024 2.5 7.11357V17.0386C3.08333 16.8219 3.6625 16.6636 4.2375 16.5636C4.8125 16.4636 5.4 16.4136 6 16.4136C6.6 16.4136 7.1875 16.4636 7.7625 16.5636C8.3375 16.6636 8.91667 16.8219 9.5 17.0386Z" fill="#1C1B1F"/>
+                        </svg>
+                    </div>
+                </a>
+                <a href="https://res.cloudinary.com/dtcbj3iou/image/upload/v1768910775/Fluxograma_GerOndApp_tdhtmr.svg"  target="_blank" rel="noopener noreferrer">
+                    <div class = "lk-container">
+                        <p>Fluxograma</p>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" fill="none">
+                        <mask id="mask0_525_1757" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="25" height="25">
+                            <rect x="0.5" y="0.413574" width="24" height="24" fill="#D9D9D9"/>
+                        </mask>
+                        <g mask="url(#mask0_525_1757)">
+                            <path d="M15.5 20.4136V18.4136H11.5V13.4136H9.5V15.4136H2.5V9.41357H9.5V11.4136H11.5V6.41357H15.5V4.41357H22.5V10.4136H15.5V8.41357H13.5V16.4136H15.5V14.4136H22.5V20.4136H15.5ZM17.5 18.4136H20.5V16.4136H17.5V18.4136ZM4.5 13.4136H7.5V11.4136H4.5V13.4136ZM17.5 8.41357H20.5V6.41357H17.5V8.41357Z" fill="#1C1B1F"/>
+                        </g>
+                        </svg>
+                    </div>
+                </a>
+                <div class = "lk-container">
+                    <p>Colaboradores</p>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
+                    <mask id="mask0_525_1762" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="25">
+                        <rect y="0.413574" width="24" height="24" fill="#D9D9D9"/>
+                    </mask>
+                    <g mask="url(#mask0_525_1762)">
+                        <mask id="mask1_525_1762" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="-1" y="0" width="25" height="25">
+                        <rect x="-0.242188" y="0.359863" width="24" height="24" fill="#D9D9D9"/>
+                        </mask>
+                        <g mask="url(#mask1_525_1762)">
+                        <path d="M0.757812 20.3599V16.3599C0.757812 15.7932 0.953646 15.3182 1.34531 14.9349C1.73698 14.5515 2.20781 14.3599 2.75781 14.3599H6.03281C6.36615 14.3599 6.68281 14.4432 6.98281 14.6099C7.28281 14.7765 7.52448 15.0015 7.70781 15.2849C8.19115 15.9349 8.78698 16.4432 9.49531 16.8099C10.2036 17.1765 10.9578 17.3599 11.7578 17.3599C12.5745 17.3599 13.337 17.1765 14.0453 16.8099C14.7536 16.4432 15.3411 15.9349 15.8078 15.2849C16.0245 15.0015 16.2786 14.7765 16.5703 14.6099C16.862 14.4432 17.1661 14.3599 17.4828 14.3599H20.7578C21.3245 14.3599 21.7995 14.5515 22.1828 14.9349C22.5661 15.3182 22.7578 15.7932 22.7578 16.3599V20.3599H15.7578V18.0849C15.1745 18.5015 14.5453 18.8182 13.8703 19.0349C13.1953 19.2515 12.4911 19.3599 11.7578 19.3599C11.0411 19.3599 10.3411 19.2474 9.65781 19.0224C8.97448 18.7974 8.34115 18.4765 7.75781 18.0599V20.3599H0.757812ZM11.7578 16.3599C11.1245 16.3599 10.5245 16.214 9.95781 15.9224C9.39115 15.6307 8.91615 15.2265 8.53281 14.7099C8.24948 14.2932 7.89531 13.964 7.47031 13.7224C7.04531 13.4807 6.58281 13.3599 6.08281 13.3599C6.44948 12.7432 7.22448 12.2557 8.40781 11.8974C9.59115 11.539 10.7078 11.3599 11.7578 11.3599C12.8078 11.3599 13.9245 11.539 15.1078 11.8974C16.2911 12.2557 17.0661 12.7432 17.4328 13.3599C16.9495 13.3599 16.4911 13.4807 16.0578 13.7224C15.6245 13.964 15.2661 14.2932 14.9828 14.7099C14.6161 15.2432 14.1495 15.6515 13.5828 15.9349C13.0161 16.2182 12.4078 16.3599 11.7578 16.3599ZM3.75781 13.3599C2.92448 13.3599 2.21615 13.0682 1.63281 12.4849C1.04948 11.9015 0.757812 11.1932 0.757812 10.3599C0.757812 9.50986 1.04948 8.79736 1.63281 8.22236C2.21615 7.64736 2.92448 7.35986 3.75781 7.35986C4.60781 7.35986 5.32031 7.64736 5.89531 8.22236C6.47031 8.79736 6.75781 9.50986 6.75781 10.3599C6.75781 11.1932 6.47031 11.9015 5.89531 12.4849C5.32031 13.0682 4.60781 13.3599 3.75781 13.3599ZM19.7578 13.3599C18.9245 13.3599 18.2161 13.0682 17.6328 12.4849C17.0495 11.9015 16.7578 11.1932 16.7578 10.3599C16.7578 9.50986 17.0495 8.79736 17.6328 8.22236C18.2161 7.64736 18.9245 7.35986 19.7578 7.35986C20.6078 7.35986 21.3203 7.64736 21.8953 8.22236C22.4703 8.79736 22.7578 9.50986 22.7578 10.3599C22.7578 11.1932 22.4703 11.9015 21.8953 12.4849C21.3203 13.0682 20.6078 13.3599 19.7578 13.3599ZM11.7578 10.3599C10.9245 10.3599 10.2161 10.0682 9.63281 9.48486C9.04948 8.90153 8.75781 8.1932 8.75781 7.35986C8.75781 6.50986 9.04948 5.79736 9.63281 5.22236C10.2161 4.64736 10.9245 4.35986 11.7578 4.35986C12.6078 4.35986 13.3203 4.64736 13.8953 5.22236C14.4703 5.79736 14.7578 6.50986 14.7578 7.35986C14.7578 8.1932 14.4703 8.90153 13.8953 9.48486C13.3203 10.0682 12.6078 10.3599 11.7578 10.3599Z" fill="#1C1B1F"/>
+                        </g>
+                    </g>
+                    </svg>
+                </div>
+
+            </div>
+        </div>
+        
+    </div>
+
+    <!-- AVISO DE ROTAÇÃO PARA MOBILE -->
+
+        <div id="rotate-warning" style="align-items:center; justify-content:center; height:100vh; text-align:center; background:#000; color:#fff;">
+        <p> Gire o celular para o modo horizontal para usar o GerOndApp.</p>
+        </div>
+
+
+    <!-- janela-cabeçalho -->
+    <div id ="janela-principal">
+        {% include 'home/barra-superior.html' %}  <!-- Importa o cabeçalho -->
+    
+        <!-- Centro da janela-->
+        <div id = "centro-janela">
+            {% include 'home/aba-esquerda.html' %}
+            {% include 'home/aba-central.html' %}
+            {% include 'home/aba-direita.html' %}
+            {% block content %}{% endblock %} <!-- Área de conteúdo das páginas -->
+        </div>
+    </div>
+
+    <svg id="ondinha" viewBox="0 0 2160 335" fill="none">
+        <path d="M740.835 217.171C463.634 -38.7146 0 3.02575 0 3.02575V527.5H2160V310.633C2160 310.633 1852.36 66.9971 1489.82 66.9971C1127.29 66.9971 1018.04 473.056 740.835 217.171Z" fill="#D9D9D9" fill-opacity="0.5"/>
+    </svg>
+
 </body>
 
 <script type="text/javascript" src="https://cdn.bokeh.org/bokeh/release/bokeh-3.7.2.min.js"></script>

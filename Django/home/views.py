@@ -68,7 +68,7 @@ def osciloscopio(request):
 
     # Gera plots
     plot = fc.plotar_sinais_bokeh(cor_grafico='black')[0]
-    plot_freq = fc.plotar_sinais_bokeh(cor_grafico="white", x_label = "Frequência", y_label = "Magnitude", is_spectrum= True)[0]
+    plot_freq = fc.plotar_sinais_bokeh(cor_grafico="white", x_label = "Frequência(Hz)", y_label = "Magnitude(m)", is_spectrum= True)[0]
     curdoc().add_root(plot)
     curdoc().add_root(plot_freq)
 
@@ -100,7 +100,8 @@ def osciloscopio(request):
         'fase': sessao_anterior.get('ultima_fase', 0),
         'duty': duty,
         'sinal_ativo': sinal_ativo,
-        'sinais_json': sinais_json
+        'sinais_json': sinais_json,
+        'range_5': range(5)
     }
 
     return render(request, 'home/conteudo.html', contexto)

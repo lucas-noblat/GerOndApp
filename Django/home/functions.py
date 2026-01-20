@@ -1,7 +1,7 @@
 # Bibliotecas utilizadas
 
 from scipy.signal import square, sawtooth
-from numpy import linspace, sin, pi, random, abs, fft, array
+from numpy import linspace, sin, pi, random, abs, fft, array, zeros_like, ones_like
 
 
 # Bokeh
@@ -30,7 +30,7 @@ import warnings
 
 def plotar_sinais_bokeh(
                         x_label="Tempo (s)", 
-                        y_label="Amplitude",
+                        y_label="Amplitude (m)",
                         alpha=1, 
                         cor_grafico="white",
                         tamanho_fonte=16,
@@ -44,10 +44,15 @@ def plotar_sinais_bokeh(
         name = "Frequencia" if is_spectrum else "Tempo",
         x_axis_label=x_label,
         y_axis_label=y_label,
+        x_range = (0, 1),
+        y_range = (-1,1),
+
         sizing_mode="stretch_both",
         tools="pan,box_zoom,wheel_zoom,reset,save"
     )
     p.toolbar.active_drag = p.tools[0]
+
+
 
     # Cores
     cores = Category10[6]
@@ -71,8 +76,8 @@ def plotar_sinais_bokeh(
             sources.append(source)
 
         
-        p.line('x', 'y', source=source, line_width=2, legend_label=legenda,
-               line_color=corLinha, line_alpha=alpha)
+        p.line('x', 'y', source=source, line_width=2,
+               line_color=corLinha, line_alpha=alpha, name=f'linha{i}' if i != 6 else 'linha_resultante')
         
 
     # Fontes
@@ -114,6 +119,12 @@ def plotar_sinais_bokeh(
 
 ''' FUNÇÕES MATEMÁTICAS PARA CRIAR OS SINAIS '''
 
+
+# Definindo um pequeno deslocamento para evitar amostrar nas transições
+
+epsilon = 1e-12
+
+
 # Onda Senoidal
 
 def sinal_senoidal(amplitude, frequencia, taxa_amostragem=1000, duracao=1, fase=0, offset=0):
@@ -136,9 +147,9 @@ def sinal_senoidal(amplitude, frequencia, taxa_amostragem=1000, duracao=1, fase=
         raise ValueError("A taxa de amostragem deve ser maior que zero.")
     if duracao <= 0:
         raise ValueError("A duração deve ser maior que zero.")
-
+    
     # Definindo o vetor tempo
-    vetor_tempo = linspace(0, duracao, int(taxa_amostragem * duracao), endpoint=False)
+    vetor_tempo = linspace(0, duracao, int(taxa_amostragem * duracao)) + epsilon
 
     # Sinal gerado
     s = array(amplitude * sin(2 * pi * frequencia * vetor_tempo + fase) + offset)
@@ -170,7 +181,7 @@ def sinal_triangular(amplitude, frequencia, taxa_amostragem = 1000, duracao = 1,
 
     # Gerando o vetor tempo para ser o eixo x
 
-    vetor_tempo = linspace(0, duracao, int(duracao*taxa_amostragem))
+    vetor_tempo = linspace(0, duracao, int(duracao*taxa_amostragem)) + epsilon
     triangular = array(amplitude * sawtooth (2*pi*frequencia*vetor_tempo + fase, duty) + offset)
 
     return vetor_tempo, triangular
@@ -203,7 +214,7 @@ def sinal_quadrado(amplitude, frequencia, taxa_amostragem=1000, duracao=1, fase=
         raise ValueError("O ciclo de trabalho (duty) deve estar entre 0 e 1.")
 
     # Define o vetor de tempo
-    vetor_tempo = linspace(0, duracao, int(taxa_amostragem * duracao), endpoint=False)
+    vetor_tempo = linspace(0, duracao, int(taxa_amostragem * duracao)) + epsilon
 
     # Gera o sinal quadrado usando scipy.signal.square
     sinal_quadrado = array(amplitude * square(2 * pi * frequencia * vetor_tempo + fase, duty=duty) + offset)
@@ -212,7 +223,7 @@ def sinal_quadrado(amplitude, frequencia, taxa_amostragem=1000, duracao=1, fase=
 
 
 # RUÍDO BRANCO
-def ruido_branco(amplitude, num_componentes, duracao=1, offset=0, freq_inicial=0, freq_final=0,):
+def ruido_branco(amplitude, num_componentes, duracao=1, offset=0, freq_inicial=0, freq_final=0):
     """
     Gera um ruído branco com os parâmetros especificados.
 
@@ -237,7 +248,7 @@ def ruido_branco(amplitude, num_componentes, duracao=1, offset=0, freq_inicial=0
         raise ValueError("A duração deve ser maior que zero.")
 
     # Gera o vetor de tempo
-    vetor_tempo = linspace(0, duracao, num_componentes, endpoint=False)
+    vetor_tempo = linspace(0, duracao, num_componentes) + epsilon
 
     # Gera o ruído branco
     ruido = array(amplitude * random.normal(0, 1, num_componentes) + offset)
@@ -330,19 +341,3 @@ def transformada_fourier(vetor_tempo, sinal, retornar_magnitude=True):
     do sinal, deverá desativar o parâmetro 'retornar_magnitude' 
     '''
 
-
-
-#FUNÇÃO PARA GERAR OPERAÇÕES
-
-def aplicarOperacao(s1, s2, operacao):
-    match (operacao):
-        case "soma":
-            return array(s1 + s2)
-        case "subtracao":
-            return array(s1 - s2)
-        case "multiplicacao":
-            return array(s1 * s2)
-        case "divisao":
-            return array(s1 / s2)
-        case "nenhuma":
-            return array(s1)

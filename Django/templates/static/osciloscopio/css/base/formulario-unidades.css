@@ -1,23 +1,27 @@
 
   
   .formulario-entrada {
-    max-width: 600px;
     
+    height: 100%;
     display: flex;
     flex-direction: column;
 
     align-items: center;
-    
-
-    flex: 1;
-
+    border-radius: 5px ;
+    padding: 5px;
    
   }
+
+  #form-unidades{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+
+  }
   
-  .form-container {
-   
-    flex: 1;
-    
+  #c1{
+    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
@@ -28,7 +32,7 @@
   
   .form-group {
     width: 100%;
-
+    height: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -38,33 +42,55 @@
 
 
   }
+
   
   .form-label {
     text-align: center;
     color: black;
-    font-size: 1.1vw;
   }
   
   .form-input-group,
   .form-number {
-
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    justify-content: center;
-    height: 50%;
-    width: 50%;
+    justify-content: space-evenly;
+    width: 90%;
     box-shadow: 1px 1px 5px;
 
-    background-color: white;
-    margin: 5px;
-    padding-right: 5px;
-      }
+    border-radius:5px ;
 
-  .form-unit {
-    color: black;
-    font-size: 1vw;
+    background-color: white;
+
   }
+
+
+  @media(max-height:768px) {
+
+    #form-entrada .form-number{
+      width: 100%;
+      margin: 2px;
+      padding: 2px 4px; /* Padding uniforme */
+    }
+
+    #entradas-globais{
+      padding: 5px;
+    }
+
+  }
+
+  @media(min-height:768px) {
+
+    .form-number{
+      margin: 5px;
+      padding: 5px 8px; /* Padding uniforme */
+    }
+
+      #entradas-globais{
+        padding: 10px;
+    }
+  }
+
 
  .form-select{
 
@@ -73,8 +99,6 @@
   align-items: center;
   justify-content: center;
   position: relative;
-  height: 50%;
-  width: 60%;
 
   padding: 5px;
 
@@ -86,42 +110,6 @@
     border: none;
     background: transparent;
     font-family: 'Wavefont', sans-serif;
-    font-size: 18px;
     width: 100%;
-    padding-left: 10px;
-    outline: none;
   }
   
-  /* Botões e controles */
-  .form-dropdown-toggle {
-    background: #D9D9D9;
-    border: none;
-    width: 24px;
-    height: 24px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-left: 10px;
-  }
-
-  .form-submit {
-    background: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    font-size: 1.1vw;
-    cursor: pointer;
-    border-radius: 4px;
-    display: block;
-    margin-bottom: 10px;
-  }
-
-
-
-  /* Responsividade */
-  @media (max-width: 600px) {
-    .form-group {
-      width: 100%;
-    }
-  }
