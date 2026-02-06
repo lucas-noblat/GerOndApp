@@ -10,6 +10,9 @@
     resize: both;
     position: relative;
 
+    min-width: 960px;
+    min-height: 540px;
+
 }
 
 #centro-janela {

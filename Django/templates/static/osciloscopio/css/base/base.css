@@ -126,7 +126,7 @@ label {
 /* RESPONSIVIDADE PARA MOBILE SECTION */
 
 
-@media(max-width:768px){
+@media(max-width:768px) and (orientation: landscape){
     h2{
         font-size: 16px;
     }
@@ -138,6 +138,9 @@ label {
     }
     input[type="number"] {
         font-size: 10px !important;
+    }
+    #aba-esquerda{
+        display: none;
     }
 }
 

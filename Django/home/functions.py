@@ -33,7 +33,7 @@ def plotar_sinais_bokeh(
                         y_label="Amplitude (m)",
                         alpha=1, 
                         cor_grafico="white",
-                        tamanho_fonte=14,
+                        tamanho_fonte=16,
                         is_spectrum = False):
     """
     Plota até 6 sinais em um único gráfico usando a biblioteca Bokeh com ColumnDataSource.
@@ -65,6 +65,7 @@ def plotar_sinais_bokeh(
     for i in range(6):
 
         # Cria um ColumnDataSource para esse sinal
+        legenda = f'Sinal {i+1}' if i < 5 else 'Resultante'
         corLinha = cores[i] if i < 5 else 'magenta'
 
         if(is_spectrum):
@@ -78,15 +79,15 @@ def plotar_sinais_bokeh(
         p.line('x', 'y', source=source, line_width=2,
                line_color=corLinha, line_alpha=alpha, name=f'linha{i}' if i != 6 else 'linha_resultante')
         
-    
-    # Fontes
+
+# Fontes
     font_size = str(tamanho_fonte) + 'pt'
     p.xaxis.major_label_text_font_size = font_size
     p.yaxis.major_label_text_font_size = font_size
     p.xaxis.axis_label_text_font_size = font_size
     p.yaxis.axis_label_text_font_size = font_size
 
-    # Cor de fundo e borda
+# Cor de fundo e borda
     p.background_fill_color = cor_grafico
     p.border_fill_color = cor_grafico
 
@@ -97,13 +98,12 @@ def plotar_sinais_bokeh(
     else:
         cor = "black"
 
+
+# Definindo eixos
     p.xaxis.axis_label_text_color = cor
     p.yaxis.axis_label_text_color = cor
     p.xaxis.major_label_text_color = cor
     p.yaxis.major_label_text_color = cor
-    
-    # Adiciona a figura ao objeto correspondente a sessão bokeh nesse momento
-
     
 
     # Retorna a figura e os sources para uso externo
