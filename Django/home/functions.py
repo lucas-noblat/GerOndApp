@@ -80,14 +80,14 @@ def plotar_sinais_bokeh(
                line_color=corLinha, line_alpha=alpha, name=f'linha{i}' if i != 6 else 'linha_resultante')
         
 
-    # Fontes
+# Fontes
     font_size = str(tamanho_fonte) + 'pt'
     p.xaxis.major_label_text_font_size = font_size
     p.yaxis.major_label_text_font_size = font_size
     p.xaxis.axis_label_text_font_size = font_size
     p.yaxis.axis_label_text_font_size = font_size
 
-    # Cor de fundo e borda
+# Cor de fundo e borda
     p.background_fill_color = cor_grafico
     p.border_fill_color = cor_grafico
 
@@ -98,20 +98,12 @@ def plotar_sinais_bokeh(
     else:
         cor = "black"
 
+
+# Definindo eixos
     p.xaxis.axis_label_text_color = cor
     p.yaxis.axis_label_text_color = cor
-    p.legend.background_fill_color = cor_grafico
-    p.legend.label_text_color = cor
     p.xaxis.major_label_text_color = cor
     p.yaxis.major_label_text_color = cor
-    
-
-    # Legenda
-    p.legend.location = "top_left"
-    p.legend.click_policy = "hide"
-
-    # Adiciona a figura ao objeto correspondente a sessão bokeh nesse momento
-
     
 
     # Retorna a figura e os sources para uso externo

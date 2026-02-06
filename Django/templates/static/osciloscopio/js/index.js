@@ -798,7 +798,7 @@ function dicasIniciais(){
         
         overlay.style.display = "flex"
         // Destacar a aba sobre
-        if(abaSobre) abaSobre.classList.add('destaque-onboarding');
+        //if(abaSobre) abaSobre.classList.add('destaque-onboarding');
     };
     // Configurar botﾃ｣o OK da segunda dica
     document.getElementById("btn-ok-2").onclick = function() {

@@ -115,9 +115,11 @@
 
 
     @media (max-height: 768px) {
+        /*
         #container-tamanhos-janela{
             display: none !important;
         }
+        */
         .conteudo-popup{
             gap: 10px; /* espaço entre os elementos */
             padding: 5px;
