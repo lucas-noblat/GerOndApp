@@ -57,6 +57,11 @@
   background: darkred;
 }
 
+#popup-sobre{
+    width: 200px;
+}
+
+
 #rotate-warning{display: none;}
 
     #container-checkboxes-cor{
@@ -100,6 +105,8 @@
         justify-content: space-around;
         align-items: center;
 
+        gap: 20px; /* espaço entre os elementos */
+        padding: 10px;
     }
 
     .conteudo-popup span{
