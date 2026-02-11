@@ -1,7 +1,7 @@
 
 html, body{
-    height: 100dvh;
-    width: 100dvw;
+    height: 100%;
+    width: 100%;
     margin: 0;
     padding: 0;
 }
@@ -91,91 +91,6 @@ label {
     font-family: 'Open Sans', sans-serif;
     text-align: center;
 }
-
-
-
-        
-/* DISPOSITIVOS MAIORES */
-@media(min-width:768px){
-    h2{
-        font-size:18px;
-    }
-
-      label{
-        font-size: 16px;
-    }
-    
-    select{
-        font-size: 16px;
-    }
-
-    #janela-principal{
-        display: flex;
-    }
-
-    #rotate-warning{
-        display: none;
-    }
-
-    input[type="number"] {
-        font-size: 14px !important;
-    }
-}
-
-
-/* RESPONSIVIDADE PARA MOBILE SECTION */
-
-
-@media(max-width:768px) and (orientation: landscape){
-    h2{
-        font-size: 16px;
-    }
-    #janela-principal{
-        display: flex;
-    }
-    #rotate-warning{
-        display: none;
-    }
-    input[type="number"] {
-        font-size: 10px !important;
-    }
-    #aba-esquerda{
-        display: none;
-    }
-}
-
-
-    /* CELULARES NA VERTICAL */
-
-@media(max-width:768px) and (orientation:portrait){
-
-    #janela-principal{
-        display: none
-    }
-
-    #rotate-warning{
-        display: flex;
-    }
-}
-
-
-    /* CELULARES NA HORIZONTAL */
-
-@media(max-width:768px) and (orientation:landscape){
-
-    #janela-principal{
-        display: flex
-    }
-
-    #rotate-warning{
-        display: none;
-    }
-}
-
-
-
-
-
 
 
 /* Aviso de rotação ocupa a tela toda */

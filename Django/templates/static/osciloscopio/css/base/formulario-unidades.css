@@ -52,7 +52,7 @@
   .form-input-group,
   .form-number {
     display: flex;
-    flex-direction: row;
+    flex-direction: roww;
     align-items: center;
     justify-content: space-evenly;
     width: 90%;
@@ -63,35 +63,14 @@
     background-color: white;
 
   }
-
-
-  @media(max-height:768px) {
-
-    #form-entrada .form-number{
-      width: 100%;
-      margin: 2px;
-      padding: 2px 4px; /* Padding uniforme */
-    }
-
-    #entradas-globais{
-      padding: 5px;
-    }
-
+  .form-number{
+    margin: 5px;
+      padding: 5px 8px; 
   }
-
-  @media(min-height:768px) {
-
-    .form-number{
-      margin: 5px;
-      padding: 5px 8px; /* Padding uniforme */
-    }
-
-      #entradas-globais{
-        padding: 10px;
-    }
+  #entradas-globais{
+    padding: 10px;
   }
-
-
+  
  .form-select{
 
   display: flex;

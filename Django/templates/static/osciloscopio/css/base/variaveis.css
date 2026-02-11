@@ -14,23 +14,3 @@
     
     --transicao-padrao: all 0.3s ease;
 }
-
-
-/* PARA CELULARES */
-@media(max-height: 500px) and (orientation: landscape){
-    :root{
-        --largura-janela:90vw;
-        --altura-janela: 90vh;
-    }
-}
-
-
-
-/* DISPOSITIVOS MAIORES */
-
-@media(min-height:500px){
-    :root{
-        --largura-janela :1600px;
-        --altura-janela:900px;
-    }
-}

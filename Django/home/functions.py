@@ -83,7 +83,6 @@ def plotar_sinais_bokeh(
 # Fontes
     font_size = str(tamanho_fonte) + 'pt'
     p.xaxis.major_label_text_font_size = font_size
-    p.yaxis.major_label_text_font_size = font_size
     p.xaxis.axis_label_text_font_size = font_size
     p.yaxis.axis_label_text_font_size = font_size
 
