@@ -57,10 +57,13 @@
   background: darkred;
 }
 
+#rotate-warning{display: none;}
+
     #container-checkboxes-cor{
         position: relative;
         display: flex;
-        justify-content: space-evenly;
+        justify-content: center;
+        align-items: center;
         width: 100%;
         margin-top: 10px
     }
@@ -111,42 +114,6 @@
 
 
 
-    /* EM MOBILE NÃO PERMITE ALTERAR TAMANHO DA JANELA-PRINCIPAL PARA MELHOR DESIGN*/
-
-
-    @media (max-height: 768px) {
-        /*
-        #container-tamanhos-janela{
-            display: none !important;
-        }
-        */
-        .conteudo-popup{
-            gap: 10px; /* espaço entre os elementos */
-            padding: 5px;
-        }
-        
-        #popup-sobre{
-            width: 200px;
-        }
-
-            
-        #container-tamanhos-janela label,
-        #conteudo-popup label{
-            font-size: 12px;
-        }
-
-    }
-
-    @media (min-height: 768px){
-        .conteudo-popup{
-            gap: 20px; /* espaço entre os elementos */
-            padding: 10px;
-        }
-        
-        #popup-sobre{
-            width: 200px;
-        }
-    }
 
     /* EM DISPOSITIVOS MAIORES*/
     
