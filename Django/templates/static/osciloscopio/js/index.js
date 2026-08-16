@@ -2,6 +2,16 @@
 
 let atualizandoFrequencia = false;
 let atualizandoPeriodo = false;
+let timerAtualizacao = null;
+
+function solicitarAtualizacao(){
+
+    clearTimeout(timerAtualizacao);
+
+    timerAtualizacao = setTimeout(() => {
+        atualizarAPI();
+    }, 250)
+}
 
 
 // CONTROLE DAS ABAS - VERSﾃグ DEFINITIVA
@@ -474,24 +484,12 @@ function incrementaInput(input){
     const entrada = document.getElementById(`entrada-${input}`);
     if(!entrada) return; //Defesa
 
-    // STEP
-
-    /*
-    valor = Number(entrada.value);
-    
-    const step = Number(document.getElementById("entrada-step").value);
-    entrada.step = step;
-    
-    valor += step;
-    if(valor < 0) valor = 0;
-    */
-
     entrada.stepUp();
 
     if(input == "frequencia") atualizaPeriodo();
     if(input == "periodo") atualizaFreq();
 
-    atualizarAPI();
+    solicitarAtualizacao();
 }
 
 
@@ -500,20 +498,11 @@ function decrementaInput(input){
     const entrada = document.getElementById(`entrada-${input}`);
     if(!entrada) return;
     entrada.stepDown();
-    
-    // PARA O STEP
-    //valor = Number(entrada.value);
 
-    //const step = Number(document.getElementById("entrada-step").value);
-    //entrada.step = step;
-    //valor -= step;
-    //if(valor < 0) valor = 0;
-    //entrada.value = valor;
-    
     
     if(input == "frequencia") atualizaPeriodo();
     if(input == "periodo") atualizaFreq();
-    atualizarAPI();
+    solicitarAtualizacao();
 }
 
 
@@ -537,13 +526,22 @@ function startListeners() {
 
 
     // TODOS OS INPUTS NUMﾃ嘘ICOS
-    inputs.forEach(input => {
+   /* 
+   inputs.forEach(input => {
         input.addEventListener("input", async function() {
             await atualizarAPI()
             atualizarUnidades();
             atualizarRanges();
         })     
     });
+    */
+
+    inputs.forEach(input => {
+        input.addEventListener("input", function() {
+            solicitarAtualizacao();
+            atualizarUnidades();
+    });
+});
     
 
     // TODOS OS INPUT DO TIPO SELECT
@@ -679,8 +677,8 @@ function atualizaPeriodo(){
             inputPeriodo.value = p.toFixed(4);
             atualizandoFrequencia = false;
         }
-        setTimeout(atualizarAPI, 50);
     }
+
 
 
 function atualizaFreq(){
@@ -693,7 +691,6 @@ function atualizaFreq(){
         atualizandoPeriodo = false;
         
     }
-    setTimeout(atualizarAPI, 50);
 }
 
 
