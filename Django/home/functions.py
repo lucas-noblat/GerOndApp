@@ -1,7 +1,7 @@
 # Bibliotecas utilizadas
 
 from scipy.signal import square, sawtooth
-from numpy import linspace, sin, pi, random, abs, fft, array, zeros_like, ones_like
+from numpy import linspace, sin, pi, random, abs, fft
 
 
 # Bokeh
@@ -126,7 +126,7 @@ epsilon = 1e-12
 
 # Onda Senoidal
 
-def sinal_senoidal(amplitude, frequencia, taxa_amostragem=1000, duracao=1, fase=0, offset=0):
+def sinal_senoidal(vetor_tempo, amplitude, frequencia, taxa_amostragem=1000, duracao=1, fase=0, offset=0):
     """
     Gera um sinal senoidal.
 
@@ -148,17 +148,17 @@ def sinal_senoidal(amplitude, frequencia, taxa_amostragem=1000, duracao=1, fase=
         raise ValueError("A duração deve ser maior que zero.")
     
     # Definindo o vetor tempo
-    vetor_tempo = linspace(0, duracao, int(taxa_amostragem * duracao)) + epsilon
+    #vetor_tempo = linspace(0, duracao, int(taxa_amostragem * duracao)) + epsilon
 
     # Sinal gerado
-    s = array(amplitude * sin(2 * pi * frequencia * vetor_tempo + fase) + offset)
+    s = amplitude * sin(2 * pi * frequencia * vetor_tempo + fase) + offset
 
     # Retornando
-    return vetor_tempo, s
+    return s
 
 
 # ONDA TRIANGULAR
-def sinal_triangular(amplitude, frequencia, taxa_amostragem = 1000, duracao = 1, fase = 0, offset = 0, duty=0):
+def sinal_triangular(vetor_tempo, amplitude, frequencia, taxa_amostragem = 1000, duracao = 1, fase = 0, offset = 0, duty=0):
     
     """
     Gera um sinal triangular.
@@ -177,17 +177,13 @@ def sinal_triangular(amplitude, frequencia, taxa_amostragem = 1000, duracao = 1,
     : Sinal triangular gerado.
     """
 
+    triangular = amplitude * sawtooth (2*pi*frequencia*vetor_tempo + fase, duty) + offset
 
-    # Gerando o vetor tempo para ser o eixo x
-
-    vetor_tempo = linspace(0, duracao, int(duracao*taxa_amostragem)) + epsilon
-    triangular = array(amplitude * sawtooth (2*pi*frequencia*vetor_tempo + fase, duty) + offset)
-
-    return vetor_tempo, triangular
+    return triangular
 
 
 # ONDA QUADRADA 
-def sinal_quadrado(amplitude, frequencia, taxa_amostragem=1000, duracao=1, fase=0, offset=0, duty=0.5):
+def sinal_quadrado(vetor_tempo, amplitude, frequencia, taxa_amostragem=1000, duracao=1, fase=0, offset=0, duty=0.5):
     """
     Gera um sinal quadrado usando a função square do scipy.signal.
 
@@ -212,13 +208,11 @@ def sinal_quadrado(amplitude, frequencia, taxa_amostragem=1000, duracao=1, fase=
     if duty <= 0 or duty >= 1:
         raise ValueError("O ciclo de trabalho (duty) deve estar entre 0 e 1.")
 
-    # Define o vetor de tempo
-    vetor_tempo = linspace(0, duracao, int(taxa_amostragem * duracao)) + epsilon
 
     # Gera o sinal quadrado usando scipy.signal.square
-    sinal_quadrado = array(amplitude * square(2 * pi * frequencia * vetor_tempo + fase, duty=duty) + offset)
+    sinal_quadrado = amplitude * square(2 * pi * frequencia * vetor_tempo + fase, duty=duty) + offset
 
-    return vetor_tempo, sinal_quadrado
+    return sinal_quadrado
 
 
 # RUÍDO BRANCO
@@ -245,31 +239,39 @@ def ruido_branco(amplitude, num_componentes, duracao=1, offset=0, freq_inicial=0
         raise ValueError("O número de componentes deve ser maior que zero.")
     if duracao <= 0:
         raise ValueError("A duração deve ser maior que zero.")
-
-    # Gera o vetor de tempo
-    vetor_tempo = linspace(0, duracao, num_componentes) + epsilon
-
+    
     # Gera o ruído branco
-    ruido = array(amplitude * random.normal(0, 1, num_componentes) + offset)
+    ruido = amplitude * random.normal(0, 1, num_componentes) + offset
 
-    return vetor_tempo, ruido
+    return ruido
 
+def gerar_vetor_tempo(rate, duracao):
+    n_amostras = int(rate * duracao)
 
-def gerar_sinal(parametros):
+    return linspace(
+        0,
+        duracao,
+        n_amostras
+    ) + epsilon
+    
+
+def gerar_sinal(parametros, vetor_tempo):
 
 
         # Gerando o sinal conforme o tipo inserido
 
         match parametros['forma_sinal']:
             case "senoidal": 
-                vetor_tempo, sinal = sinal_senoidal(amplitude=parametros['amplitude'], 
-                                                    frequencia=parametros['frequencia'], 
-                                                    duracao=parametros['duracao'],
-                                                    offset=parametros['offset'],
-                                                    fase=parametros['fase'],
-                                                    taxa_amostragem=parametros['rate'])
+                sinal = sinal_senoidal(
+                    vetor_tempo,
+                    amplitude=parametros['amplitude'], 
+                    frequencia=parametros['frequencia'], 
+                    duracao=parametros['duracao'],
+                    offset=parametros['offset'],
+                    fase=parametros['fase'],
+                    taxa_amostragem=parametros['rate'])
             case "quadrada":
-                vetor_tempo, sinal = sinal_quadrado(amplitude=parametros['amplitude'], 
+                 sinal = sinal_quadrado(vetor_tempo, amplitude=parametros['amplitude'], 
                                                     frequencia=parametros['frequencia'], 
                                                     duracao=parametros['duracao'], 
                                                     fase=parametros['fase'],
@@ -278,7 +280,7 @@ def gerar_sinal(parametros):
                                                     taxa_amostragem=parametros['rate'])
                                                     
             case "triangular":
-                vetor_tempo, sinal = sinal_triangular(amplitude=parametros['amplitude'], 
+                sinal = sinal_triangular(vetor_tempo, amplitude=parametros['amplitude'], 
                                                       frequencia=parametros['frequencia'], 
                                                       duracao=parametros['duracao'], 
                                                       fase=parametros['fase'], 
@@ -287,11 +289,11 @@ def gerar_sinal(parametros):
                                                       duty = parametros['duty'])
             case "ruido-branco":
                 num_componentes = int(parametros['rate'] * parametros['duracao'])
-                vetor_tempo, sinal = ruido_branco(amplitude=parametros['amplitude'], 
+                sinal = ruido_branco(amplitude=parametros['amplitude'], 
                                                   num_componentes=num_componentes , 
                                                   duracao=parametros['duracao'], 
                                                   offset=parametros['offset'])
-        return vetor_tempo, array(sinal)
+        return sinal
 
 
 # TRANSFORMADA DE FOURIER

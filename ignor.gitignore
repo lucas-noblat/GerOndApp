@@ -110,3 +110,8 @@ __pycache__/
 # Ambiente virtual
 venv/
 .env/
+
+!.env-example
+!.env-example.*
+!*.env-example
+!*.env-example.*
