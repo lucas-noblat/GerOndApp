@@ -44,8 +44,8 @@ def plotar_sinais_bokeh(
         name = "Frequencia" if is_spectrum else "Tempo",
         x_axis_label=x_label,
         y_axis_label=y_label,
-        x_range = (0, 1),
-        y_range = (-1,1),
+        #x_range = (0, 1),
+        #y_range = (-1,1),
 
         sizing_mode="stretch_both",
         tools="pan,box_zoom,wheel_zoom,reset,save"
@@ -103,7 +103,15 @@ def plotar_sinais_bokeh(
     p.yaxis.axis_label_text_color = cor
     p.xaxis.major_label_text_color = cor
     p.yaxis.major_label_text_color = cor
-    
+
+# Definindo propriedades dos ranges
+
+    p.x_range.only_visible = True
+    p.y_range.only_visible = True
+
+# Padding
+    p.x_range.range_padding = 0.1
+    p.y_range.range_padding = 0.1
 
     # Retorna a figura e os sources para uso externo
     return p, sourcesFreq if is_spectrum else sources

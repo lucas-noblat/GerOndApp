@@ -25,8 +25,6 @@ function iniciarAbas() {
         btn.addEventListener('click', function() {
             const sinal = this.getAttribute('data-sinal');
             ativarAba(sinal);
-            carregarParametrosSinal(sinal);
-
         });
     });
     
@@ -158,9 +156,6 @@ function trocarAbas(aba_clicada){
             }
         });
     }
-
-    setTimeout(atualizarRanges, 50);
-
 }
 
 
@@ -285,8 +280,18 @@ function receberUnidades(){
 
 // Funﾃｧﾃ｣o assﾃｭncrona que irﾃ｡ atualizar os dados
 
+let contadorAPI = 0;
+
 async function atualizarAPI(){
 
+    contadorAPI++;
+
+    console.log(
+        `atualizarAPI chamada #${contadorAPI}`,
+        new Date().toISOString()
+    );
+
+    console.trace();
     const sinal =document.getElementById('numero_sinal').value || "1";
 
 
@@ -314,7 +319,6 @@ async function atualizarAPI(){
             }
             
         }
-        atualizarRanges();
     } catch(error){
         console.error(error);
     }
@@ -371,20 +375,6 @@ function atualizarSteps(){
 function inicializarSinais() {
 
     // Grﾃ｡ficos
-
-    const grafTempo = Bokeh.documents[0].get_model_by_name("Tempo");
-    const grafFreq = Bokeh.documents[1].get_model_by_name("Frequencia");
-
-    // SINCRONIZAR A FERRAMENTA RESET COM NOSSA ATUALIZARRANGES()
-
-    grafTempo.on_event("reset", function(){
-        setTimeout(atualizarRanges, 50);
-    });
-    grafFreq.on_event("reset", function(){
-        setTimeout(atualizarRanges, 50);
-    });
-
-
     // LOOP PARA ESCONDER SINAIS NO FRONT
 
     for (let i = 0; i < 6; i++) {
@@ -402,79 +392,8 @@ function inicializarSinais() {
             }
         }
     }
-    setTimeout(atualizarRanges, 50);
 }
 
-// FUNﾃ�グ PARA AJUSTAR A DIMENSﾃグ DO GRﾃ：ICO CONFORME SINAIS VISﾃ昂EIS
-
-function atualizarRanges() {
-  
-    // Ajustar grﾃ｡fico de tempo
-    const docTempo = Bokeh.documents[0];
-    const plotTempo = docTempo.get_model_by_name("Tempo");
-
-    // Ajustar grﾃ｡fico de frequﾃｪncia
-    const docFreq = Bokeh.documents[1];
-    const plotFreq = docFreq.get_model_by_name("Frequencia");
-
-    let xs = [], ys = [];
-    let xFreqs = [], yFreqs = [];
-
-    // Loop em todos os sinais
-    for (let i = 0; i < 6; i++) {
-        const linhaTempo = docTempo.get_model_by_name(`linha${i}`);
-        const linhaFreq = docFreq.get_model_by_name(`linha${i}`);
-
-        if (linhaTempo && linhaTempo.visible) {
-        xs = xs.concat(linhaTempo.data_source.data['x']);
-        ys = ys.concat(linhaTempo.data_source.data['y']);
-        }
-
-        if (linhaFreq && linhaFreq.visible) {
-        xFreqs = xFreqs.concat(linhaFreq.data_source.data['x']);
-        yFreqs = yFreqs.concat(linhaFreq.data_source.data['y']);
-        }
-    }
-
-    // Calcula min/max
-    let max_X = Math.max(...xs), min_X = Math.min(...xs);
-    let max_Y = Math.max(...ys), min_Y = Math.min(...ys);
-    let max_X_frequencia = Math.max(...xFreqs), min_X_frequencia = Math.min(...xFreqs);
-    let max_Y_frequencia = Math.max(...yFreqs), min_Y_frequencia = Math.min(...yFreqs);
-
-    // 隼 Corrigir caso todos os valores sejam iguais
-    if (max_X === min_X) { max_X += 1; min_X -= 1; }
-    if (max_Y === min_Y) { max_Y += 1; min_Y -= 1; }
-    if (max_X_frequencia === min_X_frequencia) { max_X_frequencia += 1; min_X_frequencia -= 1; }
-    if (max_Y_frequencia === min_Y_frequencia) { max_Y_frequencia += 1; min_Y_frequencia -= 1; }
-
-
-    const xPadding = (max_X - min_X) * 0.1; 
-    const yPadding = (max_Y - min_Y) * 0.1;
-
-    const xPaddingFreq = (max_X_frequencia - min_X_frequencia) * 0.1; 
-    const yPaddingFreq = (max_Y_frequencia - min_Y_frequencia) * 0.1;
-
-    // Atualizar ranges do tempo
-    if (xs.length > 0 && ys.length > 0) {
-        plotTempo.x_range.start = min_X - xPadding;
-        plotTempo.x_range.end = max_X + xPadding;
-        plotTempo.y_range.start = min_Y - yPadding;
-        plotTempo.y_range.end = max_Y + yPadding;
-    }
-
-    // Atualizar ranges da frequﾃｪncia
-    if (xFreqs.length > 0 && yFreqs.length > 0) {
-        plotFreq.x_range.start = min_X_frequencia - xPaddingFreq;
-        plotFreq.x_range.end = max_X_frequencia + xPaddingFreq;
-        plotFreq.y_range.start = min_Y_frequencia - yPaddingFreq;
-        plotFreq.y_range.end = max_Y_frequencia + yPaddingFreq;
-    }
-
-        plotTempo.change.emit();
-        plotFreq.change.emit();
-
-}
 
 // INCREMENTO / DECREMENTO ATRAVﾃ唄 DO BOTﾃグ
  let cursorPosicao = {}
@@ -525,16 +444,8 @@ function startListeners() {
 
 
 
-    // TODOS OS INPUTS NUMﾃ嘘ICOS
-   /* 
-   inputs.forEach(input => {
-        input.addEventListener("input", async function() {
-            await atualizarAPI()
-            atualizarUnidades();
-            atualizarRanges();
-        })     
-    });
-    */
+    // TODOS OS INPUTS SOLICITAM ATUALIZAÇÃO DA APIA
+
 
     inputs.forEach(input => {
         input.addEventListener("input", function() {
@@ -604,7 +515,6 @@ function startListeners() {
                 const ativo = this.checked;
                 linhaTempo.visible = ativo;
                 linhaFreq.visible = ativo;
-                setTimeout(atualizarRanges, 50);
             }
         })
     })
