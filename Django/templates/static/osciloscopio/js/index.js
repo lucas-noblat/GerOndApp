@@ -190,19 +190,48 @@ async function getData(sinal){
 async function sendData(sinal){
 
         const parametros = receberParametros();
+        const duracao = document.getElementById("entrada-duracao").value;
+        const rate = document.getElementById("entrada-rate").value;
+
 
 
         try{
-            const response = await fetch(`${BASE_URL}/api/sendData/?sinal=${sinal}`, {
-                method: 'POST',
-                headers: { 'Content-Type' : 'application/json'},
-                body: JSON.stringify(parametros)
-            })
+
+            const inicioTotal = performance.now();
+
+            const inicioFetch = performance.now();
+
+            const response = await fetch(
+                `${BASE_URL}/api/sendData/?sinal=${sinal}`, 
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type' : 'application/json'},
+                    body: JSON.stringify(parametros)
+                 });
+
+            const fimHeaders = performance.now();
+
 
             if(!response.ok){
-                throw new Error("Nﾃ｣o foi possﾃｭvel resgatar api");}
+                throw new Error("Nﾃ｣o foi possﾃｭvel resgatar api");
+            };
 
-            return await response.json();
+            const inicioJSON = performance.now();
+
+            const dados = await response.json();
+
+            const fimJSON = performance.now();
+
+            const fimTotal = performance.now();
+                
+            console.log(
+                `\n====== BENCHMARK FRONTEND -- ${duracao}s X ${rate}Hz ======\n` +
+                `Até headers: ${(fimHeaders - inicioFetch).toFixed(2)} ms\n` +
+                `Body + JSON parse: ${(fimJSON - inicioJSON).toFixed(2)} ms\n` +
+                `TOTAL sendData: ${(fimTotal - inicioTotal).toFixed(2)} ms\n`
+            );
+            
+            return dados;
         } catch(error){
             throw error;
         }
@@ -280,20 +309,12 @@ function receberUnidades(){
 
 // Funﾃｧﾃ｣o assﾃｭncrona que irﾃ｡ atualizar os dados
 
-let contadorAPI = 0;
 
 async function atualizarAPI(){
 
-    contadorAPI++;
+    const inicioTotal = performance.now();
 
-    console.log(
-        `atualizarAPI chamada #${contadorAPI}`,
-        new Date().toISOString()
-    );
-
-    console.trace();
     const sinal =document.getElementById('numero_sinal').value || "1";
-
 
     try{
 
@@ -301,16 +322,28 @@ async function atualizarAPI(){
 
         const resultadoSendData = await sendData(sinal);
 
+        const inicioBokeh = performance.now();
+
+        const x = resultadoSendData.x;
+        const xFreq = resultadoSendData.xFreq;
+
+        const series = [
+            ...resultadoSendData.sinais,
+            resultadoSendData.resultante
+        ];
+
         for(let i = 0; i < 6; i++){
             const source = Bokeh.documents[0].get_model_by_name(`databaseInternoBokeh${i}`);
             const sourceFreq = Bokeh.documents[1].get_model_by_name(`dbf${i}`);
                                     
             if(source && resultadoSendData && sourceFreq){                   
-                source.data.x = resultadoSendData[i].x;
-                source.data.y = resultadoSendData[i].y;
+                source.data = {
+                    x: x,
+                    y: series[i].y
+                };
                 sourceFreq.data = {
-                    x: resultadoSendData[i]['xFreq'],
-                    y: resultadoSendData[i]['yFreq']
+                    x: xFreq,
+                    y: series[i].yFreq
                 }
                 source.change.emit();
                 
@@ -319,9 +352,24 @@ async function atualizarAPI(){
             }
             
         }
+
+        const fimBokeh = performance.now();
+
+        const fimTotal = performance.now();
+        
+        console.log(
+            `Bokeh: ${(fimBokeh - inicioBokeh).toFixed(2)} ms`
+        );
+
+        console.log(
+            `TOTAL atualizarAPI: ${(fimTotal - inicioTotal).toFixed(2)} ms`
+        );
+
     } catch(error){
         console.error(error);
     }
+
+ 
 
 }
 

@@ -9,7 +9,7 @@ sys.path.append(str(caminho_avo))
 
 # Agora você pode importar o módulo
 from home import functions  # Importa "modulo_pai.py" que está em "pasta_pai/"
-from numpy import linspace, zeros_like, array, ones_like
+from numpy import zeros_like, ones_like, fft
 
 from . import sinais_memoria
 
@@ -45,22 +45,36 @@ def sendData(request):
       tempo_geracao = 0
       tempo_fft = 0
       tempo_tolist = 0
+      tempo_tolist_eixos = 0
       tempo_resultante = 0
       tempo_resultante_fft = 0
       tempo_tolist_resultante = 0
       tempo_inicializacao_resultante = 0
 
+   # Importando os dados vindo do front
       dados = json.loads(request.body)
-      rate_atual = int(dados["rate"])
-      duracao_atual = int(dados["duracao"])
 
-      # Gerando um único vetor tempo por request que será utilizado por todos os sinais ativos
+   # Pegando rate e duracao para podermos fazer o benchmarking, e usar em cada iteração do loop de construção dos sinais
+      rate_atual = float(dados["rate"])
+   # Defesa do rate
+      if rate_atual <= 0:
+         return Response(
+            {"erro": "A taxa de amostragem deve ser maior que zero."},
+            status=400
+      )
+      duracao_atual = float(dados["duracao"])
+
+   # Para o vetor X no domínio da frequência
+      delta_t = 1/rate_atual 
+
+   # Gerando um único vetor X no domínio do tempo e da frequência por request que será utilizado por todos os sinais ativos
       vetorX = functions.gerar_vetor_tempo(rate_atual, duracao_atual)
-   
-      # Extrai o ID do sinal e converte para int
+      vetorX_freq = functions.gerar_vetor_frequencia(len(vetorX), rate_atual)
+
+   # Extrai o ID do sinal e converte para int
       sinal_id = int(dados.get("id"))
 
-      # Localiza o dicionário do sinal correspondente
+   # Localiza o dicionário do sinal correspondente
       sinal = next((s for s in sinais_memoria.SINAIS_PARAMETROS if s["id"] == sinal_id), None)
 
       if not sinal:
@@ -85,13 +99,14 @@ def sendData(request):
       for i, s in enumerate(sinais_memoria.SINAIS_PARAMETROS):    
          s["rate"] = rate_atual
          s["duracao"] = duracao_atual
+         
          # Gera novo sinal com os parâmetros atualizados
          inicio = perf_counter()
          vetorY = functions.gerar_sinal(s, vetorX)
          tempo_geracao += perf_counter() - inicio
 
          inicio = perf_counter()
-         frequencia, magnitude = functions.transformada_fourier(vetorX, vetorY)
+         magnitude = functions.transformada_fourier(vetorY)
          tempo_fft += perf_counter() - inicio
 
  
@@ -113,9 +128,7 @@ def sendData(request):
 
          
          sinalAtual = {
-               'x': vetorX.tolist(),
                'y': vetorY.tolist(),
-               'xFreq': frequencia.tolist(),
                'yFreq': magnitude.tolist(),
          }
 
@@ -125,14 +138,12 @@ def sendData(request):
 
       if resultante is not None:
          inicio = perf_counter()
-         frequenciaRes, magnitudeRes = functions.transformada_fourier(vetorX, resultante)
+         magnitudeRes = functions.transformada_fourier(resultante)
          tempo_resultante_fft += perf_counter() - inicio
 
          inicio = perf_counter()
          res = {
-            'x': vetorX.tolist(),
             'y': resultante.tolist(),
-            'xFreq': frequenciaRes.tolist(),
             'yFreq': magnitudeRes.tolist(),
          }
 
@@ -140,7 +151,22 @@ def sendData(request):
       else:
          #NENHUM SINAL ATIVO, RESULTANTE VAZIA
          res = {
-            'x': [], 'y': [], 'xFreq': [], 'yFreq': []}
+            'y': [],
+            'yFreq': []}
+
+      inicio = perf_counter()
+
+      x_response = vetorX.tolist()
+      x_freq_response = vetorX_freq.tolist()
+
+      tempo_tolist_eixos += perf_counter() - inicio
+
+      response_data = {
+         'x': x_response,
+         'xFreq': x_freq_response,
+         'sinais': sinais_response,
+         'resultante': res
+      }
 
       tempo_total = perf_counter() - inicio_total
 
@@ -153,17 +179,13 @@ def sendData(request):
          f"Calculo resultante:         {tempo_resultante * 1000:.3f} ms \n"
          f"FFT:                        {tempo_fft * 1000:.3f} ms\n"
          f"FFT Resultante:             {tempo_resultante_fft * 1000:.3f} ms \n"
-         f"tolist:                     {tempo_tolist * 1000:.3f} ms\n"
+         f"tolist sinais:              {tempo_tolist * 1000:.3f} ms\n"
          f"tolist resultante:          {tempo_tolist_resultante* 1000:.3f} ms\n"
+         f"tolist eixos:               {tempo_tolist_eixos* 1000:.3f} ms\n"
          f"TOTAL view:                 {tempo_total * 1000:.3f} ms\n"
       )         
-      sinais_memoria.SINAIS = sinais_response
 
-      # Adicionando a resultante ao JSON 
-      sinais_memoria.SINAIS.append(res)   
-
-      temp_serializacao = perf_counter()
-      return Response(sinais_memoria.SINAIS)
+      return Response(response_data)
 
 
 

@@ -5,5 +5,3 @@ SINAIS_PARAMETROS = [
     {"id": 4, "amplitude": 1, "frequencia": 4, "fase": 0, "offset": 0, "duracao": 1, "rate": 1000, "duty": 0.5, "forma_sinal": "ruido-branco", "operacao":"nenhuma","ativo": False},
     {"id": 5, "amplitude": 1, "frequencia": 4, "fase": 0, "offset": 0, "duracao": 1, "rate": 1000, "duty": 0.5, "forma_sinal": "triangular", "operacao":"nenhuma","ativo": False},
 ]
-
-SINAIS = []

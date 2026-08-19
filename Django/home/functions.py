@@ -1,7 +1,7 @@
 # Bibliotecas utilizadas
 
 from scipy.signal import square, sawtooth
-from numpy import linspace, sin, pi, random, abs, fft
+from numpy import sin, pi, random, abs, fft, arange
 
 
 # Bokeh
@@ -20,13 +20,6 @@ taxaAmostragem = 1000 #Hz/s
 
 '''- Matplotlib(Apenas para criação de notebooks)'''
 
-
-# FUNÇÃO PARA PLOTAR 1 SÉRIE EM GRÁFICO
-
-from bokeh.plotting import figure
-from bokeh.models import ColumnDataSource
-from bokeh.palettes import Category10
-import warnings
 
 def plotar_sinais_bokeh(
                         x_label="Tempo (s)", 
@@ -119,11 +112,6 @@ def plotar_sinais_bokeh(
 ''' FUNÇÕES MATEMÁTICAS PARA CRIAR OS SINAIS '''
 
 
-# Definindo um pequeno deslocamento para evitar amostrar nas transições
-
-epsilon = 1e-12
-
-
 # Onda Senoidal
 
 def sinal_senoidal(vetor_tempo, amplitude, frequencia, taxa_amostragem=1000, duracao=1, fase=0, offset=0):
@@ -147,9 +135,6 @@ def sinal_senoidal(vetor_tempo, amplitude, frequencia, taxa_amostragem=1000, dur
     if duracao <= 0:
         raise ValueError("A duração deve ser maior que zero.")
     
-    # Definindo o vetor tempo
-    #vetor_tempo = linspace(0, duracao, int(taxa_amostragem * duracao)) + epsilon
-
     # Sinal gerado
     s = amplitude * sin(2 * pi * frequencia * vetor_tempo + fase) + offset
 
@@ -248,12 +233,13 @@ def ruido_branco(amplitude, num_componentes, duracao=1, offset=0, freq_inicial=0
 def gerar_vetor_tempo(rate, duracao):
     n_amostras = int(rate * duracao)
 
-    return linspace(
-        0,
-        duracao,
-        n_amostras
-    ) + epsilon
-    
+    return arange(n_amostras) / rate
+
+def gerar_vetor_frequencia(num_amostras, rate):
+    return fft.rfftfreq(
+        num_amostras,
+        d=1 / rate
+    )
 
 def gerar_sinal(parametros, vetor_tempo):
 
@@ -298,7 +284,7 @@ def gerar_sinal(parametros, vetor_tempo):
 
 # TRANSFORMADA DE FOURIER
 
-def transformada_fourier(vetor_tempo, sinal, retornar_magnitude=True):
+def transformada_fourier(sinal, retornar_magnitude=True):
     """
     Transforma um sinal do domínio do tempo para o domínio da frequência.
 
@@ -315,24 +301,19 @@ def transformada_fourier(vetor_tempo, sinal, retornar_magnitude=True):
     # Descobrindo a quantidade de amostras do sinal
     num_amostras = len(sinal)
 
-    # Descobrindo o intervalo de amostragem para ser utilizado
-    delta_t = vetor_tempo[1] - vetor_tempo[0]
-
     # Aplicando a transformada de fourier no sinal de entrada
-    fft_sinal = fft.fft(sinal)
-
-    # Definindo o vetor de frequências
-    freqs = fft.fftfreq(num_amostras, d=delta_t)
-
-    # Utilizando uma mascara para filtrar os valores positivos da frequência (pois os negativos não importam para nós)
-    mascara = freqs >= 0
-    freqs_positivas = freqs[mascara]
-    fft_sinal_positivo = fft_sinal[mascara]
+    fft_sinal = fft.rfft(sinal)
 
     if retornar_magnitude:
-        return freqs_positivas, abs(fft_sinal_positivo)
-    else:
-        return freqs_positivas, fft_sinal_positivo
+        magnitude = abs(fft_sinal) / num_amostras
+
+        if num_amostras % 2 == 0:
+            magnitude[1:-1] *= 2
+        else:
+            magnitude[1:] *= 2
+        return magnitude
+    
+    return  fft_sinal
     
     '''
     Pegamos apenas os valores positivos de frequência pois os negativos são apenas um artefato que surge devido a natureza complexa da 
