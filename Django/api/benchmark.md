@@ -59,7 +59,7 @@ A metodologia utilizada pode ser resumida pelo ciclo:
 Profiling → identificação do gargalo → otimização → benchmark →
 comparação → novo profiling.
 
-# Benchmark do backend (ETAPA 2A)
+## Benchmark do backend (ETAPA 2)
 
 ## BASELINE etapa 0 (2A)
 
@@ -402,7 +402,7 @@ $$
 
 Portanto, Nyquist está relacionado ao **eixo de frequências** do espectro.
 
-## Normalização
+### Normalização
 
 A normalização determina como interpretar a **magnitude dos coeficientes da FFT**.
 
@@ -616,3 +616,88 @@ volume de dados serializados, transferidos, interpretados e renderizados.
 Apesar do ganho modesto de desempenho, a alteração eliminou cálculos
 redundantes e tornou explícita a existência de um único domínio de
 frequências compartilhado entre todos os sinais.
+
+## Etapa 3 - Downsampling (VISUALIZAÇÃO EFICIENTE NO FRONTEND)
+
+O intuito dessa etapa é manter todo o sinal no backend e enviar apenas pontos importantes para representação do sinal no frontend, reduzindo efetivamente o custo para enviar dados ao front
+
+A principal regra desta etapa é:
+
+```
+Os dados originais não serão reduzidos. Apenas a representação destinada ao gráfico será reduzida.
+```
+
+### 3.1 - O que é downsampling?
+
+Downsampling consiste em **representar uma sequência utilizando uma quantidade menor de amostras.**
+
+É medido uma nova amostra a cada $N$ pontos da amostragem original, esse $N$ representa o fator de redução da amostra.
+
+- Se tivermos 441000 amostras a um fator de 100:
+
+$$441000 \div{100} = 4410 \text{ pontos}$$
+
+- Isso representa uma redução aproximada de:
+$$90\%$$
+
+Mas é importante destacar que o **downsampling não deve alterar o sinal original**
+
+## Etapa 3A — Downsampling da representação temporal
+
+Após a redução das redundâncias do payload, foi identificado que o
+frontend continuava recebendo todas as amostras temporais dos sinais,
+mesmo quando a resolução física do gráfico era muito inferior à quantidade
+de pontos transmitidos.
+
+Foi introduzido um limite de pontos destinados exclusivamente à
+visualização.
+
+Os sinais originais continuam sendo gerados e processados com resolução
+completa. As FFTs e operações da resultante também continuam utilizando
+os arrays originais.
+
+Somente após os cálculos é criada uma representação reduzida para envio ao
+frontend.
+
+A estratégia inicial utiliza um stride dinâmico:
+
+`passo = max(1, N // MAX_PONTOS_VISUALIZACAO)`
+
+Sinais menores que o limite permanecem inalterados, enquanto sinais
+maiores têm apenas sua representação visual reduzida.
+
+### Resultados
+
+Para 44.100 amostras, a quantidade de pontos temporais enviados caiu para
+aproximadamente 5.513, redução de 87,5%.
+
+Para 441.000 amostras, foram enviados aproximadamente 5.012 pontos,
+redução de 98,86% na representação temporal.
+
+No cenário de 441.000 amostras:
+
+- o payload caiu aproximadamente de 85,36 MB para 32,56 MB;
+- o tempo até os headers caiu aproximadamente 48%;
+- o tempo de body + parsing caiu aproximadamente 58%;
+- o tempo síncrono de atualização do Bokeh caiu aproximadamente 83%;
+- a latência total mediana caiu aproximadamente de 6,95 s para 3,07 s.
+
+O backend apresentou ganho menor, aproximadamente 12% no tempo total da
+view, pois geração e FFT continuam sendo realizadas com resolução
+completa.
+
+Os resultados confirmam que uma parcela dominante da latência percebida
+era causada pela transferência e renderização de uma quantidade de pontos
+muito superior à resolução necessária para visualização.
+
+### Limitação
+
+O downsampling atual utiliza seleção por stride e pode deixar de preservar
+picos ou eventos curtos entre as amostras selecionadas.
+
+Por esse motivo, a implementação da Etapa 3A deve ser considerada uma
+baseline de desempenho.
+
+Uma estratégia posterior deverá preservar melhor extremos e características
+visuais importantes, utilizando técnicas como agregação min/max por janela
+ou níveis de detalhe adaptativos ao zoom.

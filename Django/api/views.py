@@ -20,6 +20,7 @@ from time import perf_counter
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
+MAX_PONTOS_VISUALIZACAO = 5000
 
 @api_view(['GET'])
 
@@ -70,6 +71,9 @@ def sendData(request):
    # Gerando um único vetor X no domínio do tempo e da frequência por request que será utilizado por todos os sinais ativos
       vetorX = functions.gerar_vetor_tempo(rate_atual, duracao_atual)
       vetorX_freq = functions.gerar_vetor_frequencia(len(vetorX), rate_atual)
+
+   # TENTATIVA DE DOWNSAMPLING
+      passo = max(1, len(vetorX) // MAX_PONTOS_VISUALIZACAO)
 
    # Extrai o ID do sinal e converte para int
       sinal_id = int(dados.get("id"))
@@ -126,9 +130,12 @@ def sendData(request):
          tempo_resultante += perf_counter() - inicio
          inicio = perf_counter()
 
-         
+         # TENTATIVA IMPLEMENTAÇÃO DOWNSAMPLING
+
+
+         y_visual = vetorY[::passo]
          sinalAtual = {
-               'y': vetorY.tolist(),
+               'y': y_visual.tolist(),
                'yFreq': magnitude.tolist(),
          }
 
@@ -141,9 +148,10 @@ def sendData(request):
          magnitudeRes = functions.transformada_fourier(resultante)
          tempo_resultante_fft += perf_counter() - inicio
 
+         resVisual = resultante[::passo]
          inicio = perf_counter()
          res = {
-            'y': resultante.tolist(),
+            'y': resVisual.tolist(),
             'yFreq': magnitudeRes.tolist(),
          }
 
@@ -156,7 +164,10 @@ def sendData(request):
 
       inicio = perf_counter()
 
-      x_response = vetorX.tolist()
+    
+
+      x_visual = vetorX[::passo]  #DOWNSAMPLING
+      x_response = x_visual.tolist()
       x_freq_response = vetorX_freq.tolist()
 
       tempo_tolist_eixos += perf_counter() - inicio
@@ -172,7 +183,11 @@ def sendData(request):
 
       print(
          "\n"
-         f"Rate: {rate_atual} X duracao: {duracao_atual} \t nº amostras = {rate_atual * duracao_atual}"
+         f"Rate: {rate_atual} X duracao: {duracao_atual}" 
+         "\n\n"
+         f"Pontos originais:           {len(vetorX)}\n"
+         f"Pontos enviados ao front:   {len(x_visual)}\n"
+         f"Redução visual: {(100 * (1 - len(x_visual) / len(vetorX))):.2f}%"
          "\n\n"
          f"Geração:                    {tempo_geracao * 1000:.3f} ms\n"
          f"Inicialização resultante:   {tempo_inicializacao_resultante * 1000:.3f} ms \n"
