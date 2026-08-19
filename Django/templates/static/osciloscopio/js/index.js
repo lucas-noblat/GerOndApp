@@ -338,7 +338,7 @@ async function atualizarAPI(){
                                     
             if(source && resultadoSendData && sourceFreq){                   
                 source.data = {
-                    x: x,
+                    x: series[i].x,
                     y: series[i].y
                 };
                 sourceFreq.data = {

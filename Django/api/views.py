@@ -51,6 +51,7 @@ def sendData(request):
       tempo_resultante_fft = 0
       tempo_tolist_resultante = 0
       tempo_inicializacao_resultante = 0
+      tempo_downsampling = 0
 
    # Importando os dados vindo do front
       dados = json.loads(request.body)
@@ -65,15 +66,11 @@ def sendData(request):
       )
       duracao_atual = float(dados["duracao"])
 
-   # Para o vetor X no domínio da frequência
-      delta_t = 1/rate_atual 
-
    # Gerando um único vetor X no domínio do tempo e da frequência por request que será utilizado por todos os sinais ativos
       vetorX = functions.gerar_vetor_tempo(rate_atual, duracao_atual)
       vetorX_freq = functions.gerar_vetor_frequencia(len(vetorX), rate_atual)
 
    # TENTATIVA DE DOWNSAMPLING
-      passo = max(1, len(vetorX) // MAX_PONTOS_VISUALIZACAO)
 
    # Extrai o ID do sinal e converte para int
       sinal_id = int(dados.get("id"))
@@ -128,13 +125,15 @@ def sendData(request):
 
          resultante = aplicarOperacao(resultante, vetorY, s["operacao"], soma_sub, mult_div)
          tempo_resultante += perf_counter() - inicio
-         inicio = perf_counter()
 
          # TENTATIVA IMPLEMENTAÇÃO DOWNSAMPLING
+         inicio = perf_counter()         
+         x_visual, y_visual = functions.reduzir_sinal_min_max(vetorX, vetorY, MAX_PONTOS_VISUALIZACAO)
+         tempo_downsampling += perf_counter() - inicio
 
-
-         y_visual = vetorY[::passo]
+         inicio = perf_counter()
          sinalAtual = {
+               'x': x_visual.tolist(),
                'y': y_visual.tolist(),
                'yFreq': magnitude.tolist(),
          }
@@ -148,10 +147,15 @@ def sendData(request):
          magnitudeRes = functions.transformada_fourier(resultante)
          tempo_resultante_fft += perf_counter() - inicio
 
-         resVisual = resultante[::passo]
+
+         inicio = perf_counter()         
+         resVisualX, resVisualY = functions.reduzir_sinal_min_max(vetorX, resultante, MAX_PONTOS_VISUALIZACAO)
+         tempo_downsampling += perf_counter() - inicio
+
          inicio = perf_counter()
          res = {
-            'y': resVisual.tolist(),
+            'x': resVisualX.tolist(),
+            'y': resVisualY.tolist(),
             'yFreq': magnitudeRes.tolist(),
          }
 
@@ -159,21 +163,17 @@ def sendData(request):
       else:
          #NENHUM SINAL ATIVO, RESULTANTE VAZIA
          res = {
+            'x': [],
             'y': [],
             'yFreq': []}
 
       inicio = perf_counter()
 
-    
-
-      x_visual = vetorX[::passo]  #DOWNSAMPLING
-      x_response = x_visual.tolist()
       x_freq_response = vetorX_freq.tolist()
 
       tempo_tolist_eixos += perf_counter() - inicio
 
       response_data = {
-         'x': x_response,
          'xFreq': x_freq_response,
          'sinais': sinais_response,
          'resultante': res
@@ -192,6 +192,7 @@ def sendData(request):
          f"Geração:                    {tempo_geracao * 1000:.3f} ms\n"
          f"Inicialização resultante:   {tempo_inicializacao_resultante * 1000:.3f} ms \n"
          f"Calculo resultante:         {tempo_resultante * 1000:.3f} ms \n"
+         f"Downsampling:               {tempo_downsampling * 1000:.3f} ms \n"
          f"FFT:                        {tempo_fft * 1000:.3f} ms\n"
          f"FFT Resultante:             {tempo_resultante_fft * 1000:.3f} ms \n"
          f"tolist sinais:              {tempo_tolist * 1000:.3f} ms\n"

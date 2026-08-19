@@ -701,3 +701,26 @@ baseline de desempenho.
 Uma estratégia posterior deverá preservar melhor extremos e características
 visuais importantes, utilizando técnicas como agregação min/max por janela
 ou níveis de detalhe adaptativos ao zoom.
+
+
+### Resultado da Etapa 3B
+
+A estratégia de downsampling temporal por stride foi substituída por uma
+representação baseada nos valores mínimo e máximo de cada janela.
+
+Cada sinal passou a possuir seu próprio eixo temporal reduzido, permitindo
+preservar corretamente as posições dos extremos.
+
+A implementação foi vetorizada com NumPy, utilizando reshape, argmin e
+argmax por eixo, evitando loops Python sobre as janelas.
+
+Nos testes com 441.000 amostras, o custo mediano do downsampling foi de
+aproximadamente 2,16 ms, representando uma parcela muito pequena do tempo
+total da view.
+
+O backend permaneceu próximo de 100 ms no cenário pesado, enquanto a
+latência frontend típica permaneceu próxima de 1 segundo no computador
+de maior desempenho utilizado nos testes.
+
+A mudança trouxe maior fidelidade visual sem sacrificar de forma
+significativa os ganhos de performance obtidos na Etapa 3A.

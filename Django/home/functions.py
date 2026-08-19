@@ -1,7 +1,7 @@
 # Bibliotecas utilizadas
 
 from scipy.signal import square, sawtooth
-from numpy import sin, pi, random, abs, fft, arange
+from numpy import sin, pi, random, abs, fft, arange, argmin, argmax, minimum, maximum, empty, concatenate
 
 
 # Bokeh
@@ -240,6 +240,78 @@ def gerar_vetor_frequencia(num_amostras, rate):
         num_amostras,
         d=1 / rate
     )
+
+def reduzir_sinal_min_max(vetorX, vetorY, max_pontos):
+    n = len(vetorY)
+
+    if n<= max_pontos:
+        return vetorX, vetorY
+    numJanelas = max_pontos // 2
+    tamanhoJanela = n // numJanelas
+
+    n_util = tamanhoJanela * numJanelas
+
+    y_blocos = vetorY[:n_util].reshape(
+        numJanelas,
+        tamanhoJanela
+    )
+
+    indices_min = argmin(y_blocos, axis = 1)
+    indices_max = argmax(y_blocos, axis =1)
+
+    inicios = arange(numJanelas) * tamanhoJanela
+
+    indices_min_abs = inicios + indices_min
+    indices_max_abs = inicios + indices_max
+
+    primeiro = minimum(
+        indices_min_abs,
+        indices_max_abs
+    )
+
+    segundo = maximum(
+        indices_min_abs,
+        indices_max_abs
+    )
+
+    indices_saida = empty(numJanelas * 2, dtype=int)
+
+    indices_saida[0::2] = primeiro
+    indices_saida[1::2] = segundo
+
+    resto_inicio = n_util
+
+    if resto_inicio < n:
+        resto_y = vetorY[resto_inicio:]
+        resto_x = vetorX[resto_inicio:]
+
+        idx_min = argmin(resto_y)
+        idx_max = argmax(resto_y)
+
+        idx_min_abs = resto_inicio + idx_min
+        idx_max_abs = resto_inicio + idx_max
+
+        if idx_min_abs < idx_max_abs:
+            indices_saida = concatenate(
+                (
+                    indices_saida,
+                    [idx_min_abs, idx_max_abs]
+                )
+            )
+        else:
+            indices_saida = concatenate(
+                (
+                    indices_saida,
+                    [idx_max_abs, idx_min_abs]
+                )
+            )
+
+
+    x_reduzido = vetorX[indices_saida]
+    y_reduzido = vetorY[indices_saida]
+    return x_reduzido, y_reduzido  
+
+        
 
 def gerar_sinal(parametros, vetor_tempo):
 
