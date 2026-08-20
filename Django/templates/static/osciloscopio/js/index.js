@@ -324,8 +324,6 @@ async function atualizarAPI(){
 
         const inicioBokeh = performance.now();
 
-        const x = resultadoSendData.x;
-        const xFreq = resultadoSendData.xFreq;
 
         const series = [
             ...resultadoSendData.sinais,
@@ -342,7 +340,7 @@ async function atualizarAPI(){
                     y: series[i].y
                 };
                 sourceFreq.data = {
-                    x: xFreq,
+                    x: series[i].xFreq,
                     y: series[i].yFreq
                 }
                 source.change.emit();

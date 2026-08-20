@@ -52,6 +52,7 @@ def sendData(request):
       tempo_tolist_resultante = 0
       tempo_inicializacao_resultante = 0
       tempo_downsampling = 0
+      tempo_downsampling_freq = 0
 
    # Importando os dados vindo do front
       dados = json.loads(request.body)
@@ -132,10 +133,15 @@ def sendData(request):
          tempo_downsampling += perf_counter() - inicio
 
          inicio = perf_counter()
+         x_freq_visual, y_freq_visual = functions.reduzir_freq_max(vetorX_freq, magnitude, MAX_PONTOS_VISUALIZACAO)
+         tempo_downsampling_freq += perf_counter() - inicio
+      
+         inicio = perf_counter()
          sinalAtual = {
                'x': x_visual.tolist(),
                'y': y_visual.tolist(),
-               'yFreq': magnitude.tolist(),
+               'xFreq': x_freq_visual.tolist(),
+               'yFreq': y_freq_visual.tolist(),
          }
 
          tempo_tolist += perf_counter() - inicio
@@ -152,11 +158,20 @@ def sendData(request):
          resVisualX, resVisualY = functions.reduzir_sinal_min_max(vetorX, resultante, MAX_PONTOS_VISUALIZACAO)
          tempo_downsampling += perf_counter() - inicio
 
+
+         inicio = perf_counter()         
+
+         resVisualXFreq, resVisualYFreq = functions.reduzir_freq_max(vetorX_freq, magnitudeRes, MAX_PONTOS_VISUALIZACAO)
+
+         tempo_downsampling_freq += perf_counter() - inicio
+
+
          inicio = perf_counter()
          res = {
             'x': resVisualX.tolist(),
             'y': resVisualY.tolist(),
-            'yFreq': magnitudeRes.tolist(),
+            'xFreq': resVisualXFreq.tolist(),
+            'yFreq': resVisualYFreq.tolist(),
          }
 
          tempo_tolist_resultante += perf_counter() - inicio
@@ -165,16 +180,11 @@ def sendData(request):
          res = {
             'x': [],
             'y': [],
+            'xFreq': [],
             'yFreq': []}
 
-      inicio = perf_counter()
-
-      x_freq_response = vetorX_freq.tolist()
-
-      tempo_tolist_eixos += perf_counter() - inicio
 
       response_data = {
-         'xFreq': x_freq_response,
          'sinais': sinais_response,
          'resultante': res
       }
@@ -189,18 +199,21 @@ def sendData(request):
          f"Pontos enviados ao front:   {len(x_visual)}\n"
          f"Redução visual: {(100 * (1 - len(x_visual) / len(vetorX))):.2f}%"
          "\n\n"
+         f"Pontos FFT originais:       {len(vetorX_freq)}\n"
+         f"Pontos FFT enviados:        {len(x_freq_visual)}\n"
+         f"Redução FFT:                {(100 * (1 - len(x_freq_visual) / len(vetorX_freq))):.2f}%\n\n\n"
          f"Geração:                    {tempo_geracao * 1000:.3f} ms\n"
          f"Inicialização resultante:   {tempo_inicializacao_resultante * 1000:.3f} ms \n"
          f"Calculo resultante:         {tempo_resultante * 1000:.3f} ms \n"
          f"Downsampling:               {tempo_downsampling * 1000:.3f} ms \n"
+         f"Downsampling freq:          {tempo_downsampling_freq * 1000:.3f} ms\n"
          f"FFT:                        {tempo_fft * 1000:.3f} ms\n"
          f"FFT Resultante:             {tempo_resultante_fft * 1000:.3f} ms \n"
          f"tolist sinais:              {tempo_tolist * 1000:.3f} ms\n"
          f"tolist resultante:          {tempo_tolist_resultante* 1000:.3f} ms\n"
          f"tolist eixos:               {tempo_tolist_eixos* 1000:.3f} ms\n"
          f"TOTAL view:                 {tempo_total * 1000:.3f} ms\n"
-      )         
-
+      )
       return Response(response_data)
 
 

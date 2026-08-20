@@ -240,6 +240,101 @@ def gerar_vetor_frequencia(num_amostras, rate):
         num_amostras,
         d=1 / rate
     )
+def reduzir_freq_max(xFreq, magnitude, max_pontos):
+    n = len(magnitude)
+    if n<= max_pontos:
+        return xFreq, magnitude
+    n_janelas = max_pontos
+    tam_janela = n // n_janelas
+
+    n_util = tam_janela * n_janelas
+
+    mag_blocos = magnitude[:n_util].reshape(n_janelas, tam_janela)
+
+    indices_max = argmax(mag_blocos, axis = 1)
+
+    inicios = arange(n_janelas) * tam_janela
+
+    indices_max_abs = inicios + indices_max
+
+    xFreqReduzido = xFreq[indices_max_abs]
+    magnitudeReduzida = magnitude[indices_max_abs]
+
+    return xFreqReduzido, magnitudeReduzida
+
+def reduzir_sinal_min_max(vetorX, vetorY, max_pontos):
+    n = len(vetorY)
+
+    if n<= max_pontos:
+        return vetorX, vetorY
+    numJanelas = max_pontos // 2
+    tamanhoJanela = n // numJanelas
+
+    n_util = tamanhoJanela * numJanelas
+
+    y_blocos = vetorY[:n_util].reshape(
+        numJanelas,
+        tamanhoJanela
+    )
+
+    indices_min = argmin(y_blocos, axis = 1)
+    indices_max = argmax(y_blocos, axis =1)
+
+    inicios = arange(numJanelas) * tamanhoJanela
+
+    indices_min_abs = inicios + indices_min
+    indices_max_abs = inicios + indices_max
+
+    primeiro = minimum(
+        indices_min_abs,
+        indices_max_abs
+    )
+
+    segundo = maximum(
+        indices_min_abs,
+        indices_max_abs
+    )
+
+    indices_saida = empty(numJanelas * 2, dtype=int)
+
+    indices_saida[0::2] = primeiro
+    indices_saida[1::2] = segundo
+
+    resto_inicio = n_util
+
+    print(f"A aberração ocorre em: {vetorX[resto_inicio]}")
+
+    if resto_inicio < n:
+        resto_y = vetorY[resto_inicio:]
+        resto_x = vetorX[resto_inicio:]
+
+        idx_min = argmin(resto_y)
+        idx_max = argmax(resto_y)
+
+        idx_min_abs = resto_inicio + idx_min
+        idx_max_abs = resto_inicio + idx_max
+
+        if idx_min_abs < idx_max_abs:
+            indices_saida = concatenate(
+                (
+                    indices_saida,
+                    [idx_min_abs, idx_max_abs]
+                )
+            )
+        else:
+            indices_saida = concatenate(
+                (
+                    indices_saida,
+                    [idx_max_abs, idx_min_abs]
+                )
+            )
+
+
+    x_reduzido = vetorX[indices_saida]
+    y_reduzido = vetorY[indices_saida]
+    return x_reduzido, y_reduzido  
+
+        
 
 def reduzir_sinal_min_max(vetorX, vetorY, max_pontos):
     n = len(vetorY)
@@ -387,6 +482,7 @@ def transformada_fourier(sinal, retornar_magnitude=True):
     
     return  fft_sinal
     
+
     '''
     Pegamos apenas os valores positivos de frequência pois os negativos são apenas um artefato que surge devido a natureza complexa da 
     transformada. No mundo real não faz sentido falar sobre uma onda que possui frequência negativa.

@@ -703,6 +703,10 @@ visuais importantes, utilizando técnicas como agregação min/max por janela
 ou níveis de detalhe adaptativos ao zoom.
 
 
+## Etapa 3B - Utilizando máximos e mínimos de janelas para realizar o downsampling
+
+Nessa etapa queremos diminuir as incongruências observadas por um stride bruto. Pois o que está acontecendo e alguns casos é o fenômeno de **aliasing** em uns sinais, estamos perdendo muitas informações  inportantes
+
 ### Resultado da Etapa 3B
 
 A estratégia de downsampling temporal por stride foi substituída por uma
@@ -723,4 +727,130 @@ latência frontend típica permaneceu próxima de 1 segundo no computador
 de maior desempenho utilizado nos testes.
 
 A mudança trouxe maior fidelidade visual sem sacrificar de forma
-significativa os ganhos de performance obtidos na Etapa 3A.
+significativa os ganhos de performance obtidos na Etapa 3A.814.218 ms
+
+## Etapa 3C - Downsampling no espectro de frequência
+
+No domínio temporal, fazia sentido nós usarmos máximos e mínimos para redesenhar um sinal com menor resolução mas mantendo o visual. Porém no domínio da frequência, a preocupação é uma só:
+
+```
+No domínio do tempo, preservar mínimo e máximo por janela faz sentido visualmente.
+No domínio da frequência, o mais importante é não perder picos espectrais.
+```
+
+Após a redução temporal das Etapas 3A e 3B, o maior volume restante no
+payload passou a estar associado ao domínio da frequência.
+
+Para um sinal com:
+
+- taxa de amostragem: 44100 Hz;
+- duração: 10 s;
+- número de amostras: 441000;
+
+a `rfft()` produz aproximadamente:
+
+220501 bins de frequência
+
+para cada sinal.
+
+Como existem cinco sinais e uma resultante, o frontend recebe mais de um
+milhão de valores de magnitude espectral, além do eixo de frequências.
+
+Entretanto, um gráfico com poucos milhares de pixels não consegue
+representar individualmente centenas de milhares de bins.
+
+A Etapa 3C tem como objetivo criar uma representação espectral reduzida
+destinada exclusivamente à visualização.
+
+A FFT original continuará sendo calculada com resolução completa.
+
+Somente a representação enviada ao frontend será reduzida.
+
+Para isso utilizaremos a abordagem de máximo por janela, pois queremos preservar os picos de frequência de cada sinal
+
+## Etapa 3C — Downsampling da representação espectral
+
+Após as Etapas 3A e 3B, a representação temporal já estava limitada a
+aproximadamente 5.000 pontos por sinal.
+
+Entretanto, o domínio da frequência continuava sendo transmitido em
+resolução completa.
+
+Para um sinal de 44.100 Hz com duração de 10 segundos:
+
+- amostras temporais: 441.000;
+- bins produzidos pela rFFT: 220.501.
+
+Foi implementado um downsampling espectral vetorizado.
+
+O espectro é dividido em janelas e, para cada janela, é selecionado o
+índice correspondente à maior magnitude através de `argmax`.
+
+O mesmo índice é utilizado para recuperar a frequência correspondente,
+preservando o par:
+
+frequência <-> magnitude
+
+A FFT continua sendo calculada utilizando todas as amostras originais.
+A redução ocorre exclusivamente na representação destinada ao frontend.
+
+### Redução
+
+No cenário de 44.100 Hz × 10 s:
+
+| Domínio | Original | Enviado | Redução |
+|---|---:|---:|---:|
+| Tempo | 441.000 | ~5.002 | 98,87% |
+| Frequência | 220.501 | 5.000 | 97,73% |
+
+### Benchmark backend
+
+Para 44.100 Hz × 10 s:
+
+| Métrica | Média | Mediana |
+|---|---:|---:|
+| Geração | 49,562 ms | 50,714 ms |
+| Cálculo resultante | 0,531 ms | 0,492 ms |
+| Downsampling temporal | 2,200 ms | 2,066 ms |
+| Downsampling espectral | 1,083 ms | 1,096 ms |
+| FFT | 26,645 ms | 26,134 ms |
+| FFT resultante | 5,118 ms | 4,770 ms |
+| TOTAL view | 91,286 ms | 92,309 ms |
+
+O custo adicional do downsampling espectral ficou próximo de 1 ms,
+demonstrando que a implementação vetorizada possui custo muito baixo em
+relação à economia obtida posteriormente na serialização e visualização.
+
+### Benchmark frontend
+
+Para 44.100 Hz × 10 s:
+
+| Métrica | Média | Mediana |
+|---|---:|---:|
+| Até headers | 169,00 ms | 170,50 ms |
+| Body + JSON parse | 30,88 ms | 29,00 ms |
+| TOTAL sendData | 199,88 ms | 203,00 ms |
+| Bokeh | 18,25 ms | 15,50 ms |
+| TOTAL atualizarAPI | 218,50 ms | 217,50 ms |
+
+Em comparação com a Etapa 3B, cuja latência típica estava próxima de
+955 ms, a Etapa 3C reduziu a latência end-to-end para aproximadamente
+218 ms, redução próxima de 77%.
+
+O payload do cenário pesado caiu de aproximadamente 33 MB para 4,5 MB,
+representando redução próxima de 86%.
+
+A redução do volume espectral teve impacto particularmente grande na
+serialização, parsing do JSON e atualização do Bokeh.
+
+### Pendências matemáticas
+
+A implementação atual ainda não trata explicitamente:
+
+- o bin DC (0 Hz);
+- os bins restantes quando o número total de bins não é divisível pelo
+  número de janelas.
+
+Essas correções têm como objetivo principal aumentar a fidelidade
+matemática da representação e não devem produzir ganho relevante de
+performance.
