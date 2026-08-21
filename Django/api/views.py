@@ -20,7 +20,7 @@ from time import perf_counter
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
-MAX_PONTOS_VISUALIZACAO = 5000
+MAX_PONTOS_VISUALIZACAO = 10000
 
 @api_view(['GET'])
 
@@ -197,7 +197,7 @@ def sendData(request):
          "\n\n"
          f"Pontos originais:           {len(vetorX)}\n"
          f"Pontos enviados ao front:   {len(x_visual)}\n"
-         f"Redução visual: {(100 * (1 - len(x_visual) / len(vetorX))):.2f}%"
+         f"Redução visual:             {(100 * (1 - len(x_visual) / len(vetorX))):.2f}%"
          "\n\n"
          f"Pontos FFT originais:       {len(vetorX_freq)}\n"
          f"Pontos FFT enviados:        {len(x_freq_visual)}\n"

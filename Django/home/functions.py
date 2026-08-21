@@ -1,7 +1,7 @@
 # Bibliotecas utilizadas
 
 from scipy.signal import square, sawtooth
-from numpy import sin, pi, random, abs, fft, arange, argmin, argmax, minimum, maximum, empty, concatenate
+from numpy import sin, pi, random, abs, fft, arange, insert, append, argmin, argmax, minimum, maximum, empty, concatenate
 
 
 # Bokeh
@@ -241,25 +241,85 @@ def gerar_vetor_frequencia(num_amostras, rate):
         d=1 / rate
     )
 def reduzir_freq_max(xFreq, magnitude, max_pontos):
-    n = len(magnitude)
-    if n<= max_pontos:
+
+    tam_vetor_original = len(magnitude)
+    #   Não faz nada se o tamanho for menor que o máximo escolhido,
+    # assim evitamos perder resolução em sinais considerados pequenos 
+    if tam_vetor_original <= max_pontos:
         return xFreq, magnitude
-    n_janelas = max_pontos
+
+    # Medindo número de janelas e o tamanho de cada uma delas
+    x_freq_dc = xFreq[0]
+    magnitude_dc = magnitude[0]
+
+    n_janelas = max_pontos - 1 #POR CAUSA DO DC ACIMA!
+
+    xFreq_sem_dc = xFreq[1:]
+    magnitude_sem_dc = magnitude[1:]
+
+    
+    n = len(magnitude_sem_dc)
     tam_janela = n // n_janelas
+
+    # Nós vamos pegar as amóstras do vetor original aqui |
+    #                                                    V
 
     n_util = tam_janela * n_janelas
 
-    mag_blocos = magnitude[:n_util].reshape(n_janelas, tam_janela)
+    # Dividindo o vetor original e criando uma matriz (n_janela)X(tam_janela)
+    # com o numpy
+    
+    mag_blocos = magnitude_sem_dc[:n_util].reshape(n_janelas, tam_janela)
 
+    # Descobrindo índices dos picos de maior magnitude em cada bloco
     indices_max = argmax(mag_blocos, axis = 1)
+
+    #    Vetor que contem os indices do início de
+    # cada janela no vetor original
 
     inicios = arange(n_janelas) * tam_janela
 
+    # Indices no vetor original!
     indices_max_abs = inicios + indices_max
 
-    xFreqReduzido = xFreq[indices_max_abs]
-    magnitudeReduzida = magnitude[indices_max_abs]
+    # Tratando as sobras! Isso acontece se o nº de pontos
+    # não for divisível pelo nºde janelas
 
+    if n_util < n:
+        indices_max_sobra = n_util + argmax(magnitude_sem_dc[n_util:])
+        indices_max_abs = append(indices_max_abs, indices_max_sobra)
+        print("\n\n"
+            f"Pontos FFT original: {n}\n"
+            f"Último ponto analisado: {n_util}\n"
+ 
+        )
+
+        print(
+            f"Índice máximo local da sobra: "
+            f"{argmax(magnitude_sem_dc[n_util:])}\n"
+        )
+        print(
+            f"Índice máximo absoluto da sobra: "
+            f"{indices_max_sobra}"
+            "\n\n"
+        )
+
+    # Ele pega e soma o indice de maior valor da janela de sbora
+    # com o índice onde começa a sobra, dessa forma só o pico de maior intensidade da sobra será considerado
+
+    xFreqReduzido = xFreq_sem_dc[indices_max_abs]
+    magnitudeReduzida = magnitude_sem_dc[indices_max_abs]
+
+    # Adicionando o dc
+
+    xFreqReduzido = insert(xFreqReduzido, 0, x_freq_dc)
+    magnitudeReduzida = insert(magnitudeReduzida, 0, magnitude_dc)
+
+    print(
+        f"x_freq_dc:         {xFreqReduzido[0]}\n"
+        f"magnitude_dc:         {magnitudeReduzida[0]}\n"
+                        
+    )
     return xFreqReduzido, magnitudeReduzida
 
 def reduzir_sinal_min_max(vetorX, vetorY, max_pontos):

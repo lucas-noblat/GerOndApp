@@ -854,3 +854,638 @@ A implementação atual ainda não trata explicitamente:
 Essas correções têm como objetivo principal aumentar a fidelidade
 matemática da representação e não devem produzir ganho relevante de
 performance.
+
+### Resolvendo as pendências --- Finalização do downsampling no domínio da frequência
+
+#### Objetivo
+
+A Etapa 3C teve como objetivo reduzir a quantidade de pontos enviados ao
+frontend no domínio da frequência sem perder os picos relevantes do
+espectro.
+
+Diferentemente do domínio do tempo, no qual foi utilizado o método
+mínimo/máximo por janela, no espectro de frequência interessa
+principalmente preservar o maior valor de magnitude existente em cada
+região. Por isso foi criada a função `reduzir_freq_max()`.
+
+A implementação divide o vetor de magnitudes em janelas e utiliza
+`argmax(..., axis=1)` para localizar, de forma vetorizada com NumPy, o
+índice do maior pico de cada janela. Os índices locais são convertidos
+para índices absolutos do vetor original e usados para recuperar tanto a
+frequência quanto sua magnitude correspondente.
+
+------------------------------------------------------------------------
+
+#### Tratamento da sobra da última janela
+
+A divisão do espectro em janelas nem sempre utiliza exatamente todos os
+pontos disponíveis.
+
+O número de pontos processáveis pelas janelas completas é calculado por:
+
+``` python
+n_util = tam_janela * n_janelas
+```
+
+Quando:
+
+``` python
+n_util < n
+```
+
+existem amostras restantes no final do vetor. Ignorar essa região
+significaria descartar uma parte do espectro e poderia eliminar um pico
+relevante localizado justamente nas frequências finais.
+
+Por isso, a sobra passou a ser analisada separadamente:
+
+``` python
+indices_max_sobra = n_util + argmax(magnitude_sem_dc[n_util:])
+indices_max_abs = append(indices_max_abs, indices_max_sobra)
+```
+
+O `argmax()` encontra o maior valor dentro da região restante. Como esse
+índice é local à sobra, soma-se `n_util` para obter sua posição absoluta
+no vetor reduzido sem DC.
+
+Assim, mesmo quando o tamanho do vetor não é divisível exatamente pelo
+número de janelas, a região final do espectro continua representada.
+
+##### Consequência visual
+
+A sobra pode produzir uma ligação visual mais evidente no final do
+gráfico, pois apenas o maior ponto dessa região é preservado e o Bokeh
+conecta os pontos sucessivos com uma linha.
+
+Esse comportamento é uma consequência da representação reduzida e não
+caracteriza, por si só, erro no cálculo da FFT. Nesta etapa foi
+priorizada a preservação da informação espectral relevante, sem
+introduzir tratamento exclusivamente cosmético para essa ligação.
+
+------------------------------------------------------------------------
+
+#### Preservação explícita do componente DC
+
+O primeiro elemento do espectro corresponde à frequência de `0 Hz`, isto
+é, ao componente DC.
+
+Como esse ponto possui significado matemático específico, ele não deve
+competir com outras frequências dentro de uma janela de downsampling.
+Caso fosse tratado como um ponto comum, um DC de grande magnitude
+poderia fazer com que outro pico da primeira janela fosse descartado.
+
+Por isso, o DC passou a ser separado antes da redução:
+
+``` python
+x_freq_dc = xFreq[0]
+magnitude_dc = magnitude[0]
+
+xFreq_sem_dc = xFreq[1:]
+magnitude_sem_dc = magnitude[1:]
+```
+
+Como um ponto da capacidade máxima de saída passa a ser reservado ao DC:
+
+``` python
+n_janelas = max_pontos - 1
+```
+
+O downsampling é então realizado apenas sobre os vetores sem o
+componente DC. Ao final, o DC é reinserido na primeira posição:
+
+``` python
+xFreqReduzido = insert(xFreqReduzido, 0, x_freq_dc)
+magnitudeReduzida = insert(magnitudeReduzida, 0, magnitude_dc)
+```
+
+Dessa maneira, o componente de `0 Hz` é sempre preservado
+explicitamente.
+
+------------------------------------------------------------------------
+
+#### Correção de inconsistência de índices após a remoção do DC
+
+Durante a implementação do tratamento do DC foi identificado um erro
+importante.
+
+Após criar:
+
+``` python
+magnitude_sem_dc = magnitude[1:]
+```
+
+a matriz de blocos ainda estava sendo construída a partir do vetor
+original:
+
+``` python
+mag_blocos = magnitude[:n_util].reshape(n_janelas, tam_janela)
+```
+
+Entretanto, os índices encontrados posteriormente eram aplicados sobre
+`magnitude_sem_dc`.
+
+Isso criava um deslocamento de uma posição entre o vetor usado pelo
+`argmax()` e o vetor utilizado para recuperar as magnitudes e
+frequências. Como consequência, em um teste com uma senoide pura de
+`1 Hz`, o pico principal podia desaparecer do espectro reduzido.
+
+A implementação correta passou a utilizar o mesmo vetor sem DC durante
+todo o processo:
+
+``` python
+mag_blocos = magnitude_sem_dc[:n_util].reshape(
+    n_janelas,
+    tam_janela
+)
+```
+
+O tratamento da sobra também foi mantido sobre `magnitude_sem_dc`,
+garantindo consistência entre os índices calculados e os dados
+recuperados.
+
+Após essa correção, o pico esperado da senoide voltou a aparecer
+corretamente em sua frequência correspondente.
+
+------------------------------------------------------------------------
+
+#### Validação matemática
+
+Um dos testes utilizados foi uma senoide aproximadamente nas seguintes
+condições:
+
+``` text
+Forma:       Senoidal
+Amplitude:   1
+Frequência:  1 Hz
+Fase:        0°
+Offset:      0
+Duração:     1 s
+Rate:        41000 Hz
+```
+
+Com `41000` amostras em `1 s`, a resolução em frequência é:
+
+``` text
+Δf = rate / N
+Δf = 41000 / 41000
+Δf = 1 Hz
+```
+
+Portanto, era esperado que o espectro apresentasse seu pico principal
+exatamente em `1 Hz`.
+
+Após a correção da inconsistência de índices, esse comportamento foi
+recuperado.
+
+O limite superior do espectro aparece próximo de `20500 Hz`, o que
+também está de acordo com a frequência de Nyquist:
+
+``` text
+f_Nyquist = rate / 2
+f_Nyquist = 41000 / 2
+f_Nyquist = 20500 Hz
+```
+
+Esses testes ajudaram a confirmar a coerência matemática da
+implementação.
+
+------------------------------------------------------------------------
+
+#### Resíduos numéricos próximos de zero
+
+Mesmo para uma senoide matematicamente pura, a FFT pode apresentar
+magnitudes extremamente pequenas em frequências que teoricamente
+deveriam possuir magnitude zero, por exemplo valores da ordem de:
+
+``` text
+10^-16
+10^-17
+10^-18
+```
+
+Esses valores são resíduos decorrentes da representação numérica em
+ponto flutuante e não representam componentes espectrais fisicamente
+significativos.
+
+Foi decidido não aplicar um limiar artificial para zerá-los.
+
+Essa escolha mantém o resultado numérico produzido pelo cálculo e evita
+adicionar uma etapa puramente cosmética ao processamento. Para os
+objetivos atuais do GerOndApp, esses valores podem ser considerados
+praticamente zero.
+
+------------------------------------------------------------------------
+
+## Estado final da Etapa 3C
+
+Ao final da etapa, o downsampling do espectro passou a possuir:
+
+-   preservação do maior pico de cada janela;
+-   processamento vetorizado utilizando NumPy;
+-   tratamento da região restante quando o vetor não é perfeitamente
+    divisível;
+-   preservação explícita do componente DC;
+-   consistência entre os índices calculados e os vetores sem DC;
+-   preservação dos pares frequência/magnitude correspondentes;
+-   manutenção dos resíduos naturais de ponto flutuante sem tratamento
+    cosmético.
+
+Com isso, a **Etapa 3C pode ser considerada concluída**.
+
+------------------------------------------------------------------------
+
+## Sobre a necessidade de um novo benchmark
+
+As alterações finais da Etapa 3C foram predominantemente de **corretude
+matemática**, especialmente:
+
+1.  inclusão da sobra da última janela;
+2.  separação e reinserção do componente DC;
+3.  correção da referência de `magnitude` para `magnitude_sem_dc`.
+
+Essas mudanças não alteram a arquitetura de desempenho estabelecida
+anteriormente. O processamento continua baseado em operações vetorizadas
+do NumPy, e as operações adicionais envolvem apenas uma pequena região
+de sobra, a preservação de um único ponto DC e ajustes de indexação.
+
+Por esse motivo, **não é necessário repetir toda a bateria formal de
+benchmarks da Fase 3 apenas para validar essas correções**. Os
+benchmarks anteriores continuam representativos da mudança de desempenho
+obtida pelo downsampling.
+
+Um teste de desempenho adicional poderia ser executado futuramente como
+validação final ou regressão antes do deploy, mas não é necessário
+tratá-lo como um novo marco de otimização.
+
+O principal critério de conclusão desta parte foi a corretude do
+espectro após a redução.
+
+------------------------------------------------------------------------
+
+## Resultado geral da Fase 3
+
+Com a conclusão da Etapa 3C, o GerOndApp passa a manter os vetores
+completos no backend para os cálculos necessários, enquanto envia ao
+frontend representações reduzidas apropriadas para visualização.
+
+No domínio do tempo:
+
+``` text
+vetor completo
+      ↓
+janelas
+      ↓
+mínimo + máximo
+      ↓
+representação visual reduzida
+```
+
+No domínio da frequência:
+
+``` text
+FFT completa
+      ↓
+preservação do DC
+      ↓
+janelas
+      ↓
+maior magnitude
+      ↓
+tratamento da sobra
+      ↓
+representação espectral reduzida
+```
+
+Essa separação permite que o backend continue trabalhando com a
+resolução necessária para os cálculos enquanto o frontend recebe somente
+a quantidade de dados necessária para uma representação visual útil.
+
+Além de melhorar o comportamento da aplicação com sinais de alta taxa de
+amostragem e longa duração, essa arquitetura prepara o GerOndApp para
+uma próxima etapa importante: trabalhar com sinais externos e sinais
+reais, como arquivos WAV, sem exigir que todas as amostras sejam
+transferidas e renderizadas diretamente pelo navegador.
+
+
+## Observação adicional --- Influência do hardware nos benchmarks
+
+Durante os testes de desempenho do GerOndApp, a mesma versão da
+aplicação foi executada em dois computadores com capacidades de
+processamento bastante diferentes. Essa comparação foi útil para separar
+ganhos obtidos pela arquitetura do software daqueles decorrentes apenas
+de hardware mais potente.
+
+### Cenário analisado
+
+O principal cenário utilizado para comparação foi:
+
+-   Taxa de amostragem: `44.100 Hz`
+-   Duração: `10 s`
+-   Amostras temporais: `441.000`
+-   Pontos temporais enviados ao frontend: `~5.000`
+-   Bins da FFT original: `220.501`
+-   Pontos espectrais enviados ao frontend: `~5.000`
+
+Ou seja, a lógica executada foi a mesma nos dois computadores. A
+diferença observada veio essencialmente da capacidade de processamento
+de cada máquina.
+
+### Comparação do backend
+
+No computador de maior desempenho utilizado na faculdade, o backend
+apresentou aproximadamente:
+
+|  Métrica             |   PC da faculdade
+| -------------------- |-----------------
+| TOTAL view           |         \~92 ms
+| Geração dos sinais   |          \~51 ms
+| FFT dos sinais       |          \~26 ms
+| FFT da resultante    |           \~5 ms
+
+No computador pessoal utilizado como ambiente de desenvolvimento mais
+limitado:
+
+|Métrica                |PC pessoal
+|  -------------------- |------------
+|  TOTAL view           |     \~476 ms
+|  Geração dos sinais   |     \~296 ms
+|  FFT dos sinais       |     \~122 ms
+|  FFT da resultante    |     \~25 ms
+
+Dessa forma, para o cenário de `44.100 Hz × 10 s`, o backend do
+computador pessoal apresentou tempo aproximadamente:
+
+`476 / 92 ≈ 5,2 vezes maior`
+
+Isso mostra que, após as otimizações de redução de dados, o desempenho
+do backend passou a depender muito mais diretamente da capacidade de CPU
+para geração dos sinais e execução das FFTs.
+
+### Comparação end-to-end
+
+Também foi medida a latência percebida pelo usuário, incluindo backend,
+serialização, transferência, parsing do JSON e atualização dos gráficos
+Bokeh.
+
+No computador da faculdade:
+
+  |Métrica                  |  Valor típico
+  |------------------------ |--------------
+  |Backend                  |       \~92 ms
+  |Até receber os headers   |      \~170 ms
+  |TOTAL sendData           |      \~203 ms
+  |Bokeh                    |     \~15,5 ms
+  |TOTAL atualizarAPI       |      \~218 ms
+
+No computador pessoal:
+
+  |Métrica                  |  Valor típico
+  |------------------------ |--------------
+  |Backend                  |      \~476 ms
+  |Até receber os headers   |      \~602 ms
+  |TOTAL sendData           |      \~619 ms
+  |Bokeh                    |       \~29 ms
+  |TOTAL atualizarAPI       |      \~648 ms
+
+Portanto, enquanto o backend foi aproximadamente `5,2×` mais lento no
+computador pessoal, a experiência completa percebida pelo usuário foi
+aproximadamente:
+
+`648 / 218 ≈ 3× mais lenta`
+
+Isso ocorre porque nem todas as etapas dependem igualmente da CPU. O
+cálculo numérico apresenta grande diferença entre as máquinas, enquanto
+etapas como parsing do JSON, gerenciamento da resposta HTTP e
+atualização do Bokeh ficaram relativamente próximas após a redução do
+payload.
+
+### Interpretação
+
+Essa comparação revelou uma mudança importante no perfil de desempenho
+do GerOndApp.
+
+Antes das otimizações, grande parte da latência era causada por
+desperdícios arquiteturais, como:
+
+-   múltiplas requisições para uma única alteração;
+-   envio repetido de eixos idênticos;
+-   serialização de arrays completos;
+-   envio de centenas de milhares de pontos ao navegador;
+-   atualização do Bokeh com resolução muito superior à necessária para
+    visualização.
+
+Após as Etapas 3A, 3B e 3C, esses gargalos foram fortemente reduzidos.
+
+No cenário atual, o pipeline se aproxima de:
+
+``` text
+Gerar os sinais completos
+        ↓
+Executar FFTs completas
+        ↓
+Calcular a resultante
+        ↓
+Reduzir apenas a representação visual
+        ↓
+Serializar poucos milhares de pontos
+        ↓
+Enviar ao frontend
+        ↓
+Atualizar o Bokeh
+```
+
+Dessa forma, o custo principal voltou a estar associado a operações
+matemáticas legítimas, principalmente:
+
+-   geração dos sinais;
+-   cálculo das FFTs dos sinais;
+-   cálculo da resultante;
+-   FFT da resultante.
+
+Isso é um resultado positivo, pois indica que uma parcela considerável
+do overhead evitável da aplicação já foi removida. O tempo de
+processamento agora está muito mais relacionado ao trabalho matemático
+que o GerOndApp realmente precisa executar.
+
+### Papel dos dois computadores nos testes
+
+Os dois ambientes passaram a cumprir papéis complementares durante o
+desenvolvimento.
+
+O computador de maior desempenho, utilizado na faculdade, funciona como
+uma referência do potencial da arquitetura quando executada em hardware
+mais potente.
+
+Já o computador pessoal, significativamente mais limitado em capacidade
+de processamento, funciona como uma espécie de cenário de estresse ou
+"pior caso" para os testes de desempenho.
+
+Isso permite avaliar duas perguntas diferentes:
+
+> "Qual desempenho o GerOndApp consegue atingir em uma máquina mais
+> potente?"
+
+e:
+
+> "A aplicação continua responsiva quando executada em hardware mais
+> limitado?"
+
+No cenário de `44.100 Hz × 10 s`, correspondente a `441.000` amostras
+temporais, foram observados aproximadamente:
+
+  Ambiente             Backend   Tempo total percebido
+  ----------------- ---------- -----------------------
+  PC da faculdade      \~92 ms                \~218 ms
+  PC pessoal          \~476 ms                \~648 ms
+
+Portanto, o backend chegou a apresentar uma diferença de
+aproximadamente:
+
+`476 / 92 ≈ 5,2×`
+
+entre as duas máquinas.
+
+Entretanto, mesmo no computador mais limitado, todo o ciclo de
+atualização da aplicação permaneceu abaixo de aproximadamente `0,7 s`
+nesse cenário.
+
+Isso é especialmente relevante porque o teste envolve não apenas a
+geração de `441.000` amostras, mas também o processamento dos cinco
+sinais, cálculo da resultante, execução das FFTs, downsampling e
+preparação dos dados que serão enviados ao navegador.
+
+### O hardware passou a evidenciar os gargalos matemáticos
+
+A diferença entre os computadores também ajuda a identificar quais
+partes da aplicação são mais sensíveis ao hardware.
+
+No computador pessoal, para `44.100 Hz × 10 s`, os maiores custos
+observados foram aproximadamente:
+
+``` text
+Geração dos sinais:      ~296 ms
+FFT dos sinais:          ~122 ms
+FFT da resultante:        ~25 ms
+Downsampling temporal:    ~10 ms
+Downsampling espectral:   ~3,5 ms
+```
+
+Isso mostra que o downsampling introduzido nas Etapas 3B e 3C possui um
+custo relativamente pequeno quando comparado ao processamento matemático
+completo.
+
+Em outras palavras, gastar alguns milissegundos reduzindo os dados antes
+de enviá-los ao frontend proporciona uma economia muito maior
+posteriormente, principalmente na serialização, transferência, parsing
+do JSON e atualização dos gráficos.
+
+### Impacto das Etapas 3B e 3C
+
+A estratégia adotada passou a separar duas necessidades diferentes:
+
+1.  **Precisão matemática**
+2.  **Resolução necessária para visualização**
+
+Os sinais continuam sendo gerados e processados em sua resolução
+original no backend.
+
+Por exemplo:
+
+``` text
+Rate = 44.100 Hz
+Duração = 10 s
+
+441.000 amostras
+        ↓
+Processamento matemático completo
+        ↓
+Resultante
+        ↓
+FFT completa
+```
+
+Somente depois desses cálculos ocorre a redução destinada à
+visualização:
+
+``` text
+DOMÍNIO DO TEMPO
+
+441.000 pontos
+        ↓
+Downsampling Min/Max
+        ↓
+~5.000 pontos
+
+
+DOMÍNIO DA FREQUÊNCIA
+
+220.501 bins
+        ↓
+Downsampling por máximos
+        ↓
+~5.000 pontos
+```
+
+Assim, o frontend deixa de receber centenas de milhares de pontos que
+não possuem utilidade prática para a resolução visual disponível,
+enquanto o backend continua mantendo a resolução necessária para os
+cálculos.
+
+### Consequência arquitetural
+
+Essa abordagem estabelece uma separação importante no GerOndApp:
+
+``` text
+BACKEND
+Dados completos
+NumPy
+Processamento matemático
+FFT
+Operações entre sinais
+        ↓
+Redução para visualização
+        ↓
+FRONTEND
+Apenas os dados necessários
+para representação gráfica
+```
+
+Essa separação será particularmente importante para a futura
+implementação da importação de sinais reais, como arquivos WAV.
+
+Um áudio poderá possuir centenas de milhares ou até milhões de amostras.
+Não é necessário enviar todas essas amostras ao navegador simplesmente
+para desenhar sua forma de onda.
+
+O backend poderá preservar o sinal original para processamento e
+análise, enquanto o frontend recebe uma representação reduzida adequada
+à visualização.
+
+### Conclusão
+
+Os testes em computadores diferentes foram importantes para demonstrar
+que os ganhos obtidos são predominantemente arquiteturais e permanecem
+válidos em ambientes com capacidades distintas.
+
+O hardware influencia fortemente o tempo das operações matemáticas,
+especialmente geração de sinais e FFT, mas os principais gargalos
+relacionados a transporte, serialização e visualização foram
+substancialmente reduzidos.
+
+Após as Etapas 3B e 3C, os principais custos deixaram de estar
+relacionados ao transporte e à renderização de quantidades excessivas de
+dados e passaram a estar concentrados principalmente nas operações
+matemáticas necessárias à aplicação.
+
+Isso representa uma mudança importante no perfil de desempenho do
+projeto.
+
+O computador mais potente permite observar o potencial da arquitetura,
+enquanto o computador pessoal funciona como um ambiente útil de teste de
+estresse e de validação da responsividade em hardware mais modesto.
+
+A arquitetura atual também estabelece uma base importante para as
+próximas funcionalidades do GerOndApp, especialmente a entrada e análise
+de sinais reais: **os dados completos permanecem no backend para
+processamento, enquanto apenas a quantidade necessária para visualização
+é enviada ao frontend.**
