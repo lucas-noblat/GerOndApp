@@ -7,7 +7,7 @@ from pathlib import Path
 caminho_avo = Path(__file__).resolve().parent.parent # Sobe 2 níveis (para pasta_avo)
 sys.path.append(str(caminho_avo))
 
-# Agora você pode importar o módulo
+# Agora dá para importar o módulo
 from home import functions  # Importa "modulo_pai.py" que está em "pasta_pai/"
 from numpy import zeros_like, ones_like, fft
 
@@ -104,7 +104,7 @@ def sendData(request):
          
          # Gera novo sinal com os parâmetros atualizados
          inicio = perf_counter()
-         vetorY = functions.gerar_sinal(s, vetorX)
+         vetorY = obter_dados_sinal(s, vetorX)
          tempo_geracao += perf_counter() - inicio
 
          inicio = perf_counter()
@@ -243,3 +243,17 @@ def aplicarOperacao(s1, s2, operacao, soma_sub, mult_div):
          print("Nao existe")
 
    return soma_sub * mult_div
+
+
+def obter_dados_sinal(sinal, vetorX):
+
+    if sinal["origem"] == "sintetico":
+        return functions.gerar_sinal(
+            sinal,
+            vetorX
+        )
+
+    if sinal["origem"] == "importado":
+        return sinais_memoria.SINAIS_DADOS[
+            sinal["id"]
+        ]

@@ -508,10 +508,13 @@ def gerar_sinal(parametros, vetor_tempo):
                                                   offset=parametros['offset'])
         return sinal
 
+# Função para destinguir dados sintéticos de dados importados
+
 
 # TRANSFORMADA DE FOURIER
 
 def transformada_fourier(sinal, retornar_magnitude=True):
+
     """
     Transforma um sinal do domínio do tempo para o domínio da frequência.
 
