@@ -306,6 +306,37 @@ function receberUnidades(){
     };
 }
 
+// Função para carregar sinais importados
+
+async function uploadSinal() {
+
+    //console.log("uploadSinal FOI CHAMADA");
+
+    const input = document.getElementById("entrada-arquivo")
+
+    const arquivo = input.files[0]
+
+    if(!arquivo){
+        console.warn("Nenhum arquivo selecionado");
+        return;
+    }
+
+    const formData = new FormData();
+
+    formData.append("arquivo", arquivo);
+
+    const response = await fetch(
+        `${BASE_URL}/api/uploadSinal/`,
+        {
+            method: "POST",
+            body: formData
+        }
+    );
+
+    const dados = await response.json();
+
+    console.log(dados);
+}
 
 // Funﾃｧﾃ｣o assﾃｭncrona que irﾃ｡ atualizar os dados
 
@@ -479,6 +510,7 @@ function startListeners() {
     const selects = document.querySelectorAll("select");
     const radios = document.querySelectorAll('input[type="radio"]');
     const sinais = document.querySelectorAll('input[type="checkbox"]');
+    const arquivo = document.getElementById("entrada-arquivo");
 
     // POPUP
     let popup = null;
@@ -499,6 +531,10 @@ function startListeners() {
             atualizarUnidades();
     });
 });
+
+    // Carregar sinais!
+
+    arquivo.addEventListener("change", uploadSinal);
     
 
     // TODOS OS INPUT DO TIPO SELECT

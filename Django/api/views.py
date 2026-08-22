@@ -10,7 +10,7 @@ sys.path.append(str(caminho_avo))
 # Agora dá para importar o módulo
 from home import functions  # Importa "modulo_pai.py" que está em "pasta_pai/"
 from numpy import zeros_like, ones_like, fft
-
+from scipy.io import wavfile
 from . import sinais_memoria
 
 # TESTANDO TEMPO DE EXECUÇÃO
@@ -34,7 +34,38 @@ def getData(request):
    else:
       return Response({'erro': 'Não foi possível acessar o sinal'}, status = 404)
    
+@api_view(['POST'])
 
+def uploadSinal(request):
+   arquivo = request.FILES.get("arquivo")
+
+   rate, dados_audio = wavfile.read(arquivo)
+
+   dimensoes = dados_audio.shape
+   n_amostras = dimensoes[0]
+   n_canais = dimensoes[1]
+
+   tamanho = n_amostras / rate
+   tipo_dos_dados = dados_audio.dtype
+
+   print("Rate:", rate)
+   print("Tipo:", type(dados_audio))
+   print(f"Tamanho: {(tamanho):.2f}s")
+   print("Shape:", dimensoes)
+   print("Canal(is): ", n_canais)
+   print("dtype:", tipo_dos_dados)
+
+   if not arquivo:
+      return Response(
+         {
+            "erro": "Nenhum arquivo foi enviado."
+         }, status=400
+      )
+   return Response({
+      "nome": arquivo.name,
+      "tamanho": arquivo.size,
+      "content_type": arquivo.content_type
+   })
 @api_view(['POST'])
 
 def sendData(request):

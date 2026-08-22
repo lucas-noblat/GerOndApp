@@ -3,6 +3,6 @@ from . import views
 
 urlpatterns = [
     path('getData/', views.getData, name ="apiSinaisGet"),
-    path('sendData/', views.sendData, name = "apiSinaisPost")
-    
+    path('sendData/', views.sendData, name = "apiSinaisPost"),
+    path('uploadSinal/', views.uploadSinal, name = "apiUploadSinais")
 ]
