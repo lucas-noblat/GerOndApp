@@ -17,6 +17,7 @@ SINAIS_PARAMETROS = [
         "nome_arquivo": None,
         "num_amostras": None,
         "canais": None,
+        "dtype": None,
 
         "operacao":"soma",
         "ativo": True
@@ -40,6 +41,8 @@ SINAIS_PARAMETROS = [
         "nome_arquivo": None,
         "num_amostras": None,
         "canais": None,
+        "dtype": None,
+
 
         "operacao":"nenhuma",
         "ativo": False
@@ -63,6 +66,8 @@ SINAIS_PARAMETROS = [
         "nome_arquivo": None,
         "num_amostras": None,
         "canais": None,
+        "dtype": None,
+
 
         "operacao":"nenhuma",
         "ativo": False
@@ -86,6 +91,7 @@ SINAIS_PARAMETROS = [
         "nome_arquivo": None,
         "num_amostras": None,
         "canais": None,
+        "dtype": None,
 
         "operacao":"nenhuma",
         "ativo": False
@@ -109,6 +115,7 @@ SINAIS_PARAMETROS = [
         "nome_arquivo": None,
         "num_amostras": None,
         "canais": None,
+        "dtype": None,
 
         "operacao":"nenhuma",
         "ativo": False},

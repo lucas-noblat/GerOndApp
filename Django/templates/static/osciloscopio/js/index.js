@@ -241,28 +241,41 @@ async function sendData(sinal){
 async function carregarParametrosSinal(sinal){
     try{
         const dados = await getData(sinal);
-        if(dados['forma_sinal'] == "senoidal" || dados['forma_sinal'] == "ruido-branco"){
-            document.getElementById("grupo-duty").style.display = "None";
-            document.getElementById("entrada-duty").disabled = true;
 
-        }
-        else{
-            document.getElementById("grupo-duty").style.display = "flex";
-            document.getElementById("entrada-duty").disabled = false;
 
-        }
-
-        document.getElementById("entrada-amplitude").value = dados['amplitude'];
-        document.getElementById("entrada-frequencia").value = dados['frequencia'];
-        document.getElementById("entrada-fase").value = dados['fase'];
-        document.getElementById("entrada-offset").value = dados['offset'];
-        document.getElementById("entrada-forma-sinal").value = dados['forma_sinal'];
-        document.getElementById("entrada-duty").value = dados['duty'];
-        document.getElementById("entrada-periodo").value = parseFloat(1/dados['frequencia']);
+        // Campos globais
         document.getElementById("entrada-duracao").value = dados['duracao'];
         document.getElementById("entrada-rate").value = dados['rate'];
+        if(dados["origem"] === "sintetico"){
+            document.getElementById("entrada-amplitude").value = dados['amplitude'];
+            document.getElementById("entrada-frequencia").value = dados['frequencia'];
+            document.getElementById("entrada-fase").value = dados['fase'];
+            document.getElementById("entrada-offset").value = dados['offset'];
+            document.getElementById("entrada-forma-sinal").value = dados['forma_sinal'];
+            document.getElementById("entrada-duty").value = dados['duty'];
+            document.getElementById("entrada-periodo").value = parseFloat(1/dados['frequencia']);
 
+                    
+            if(dados['forma_sinal'] == "senoidal" || dados['forma_sinal'] == "ruido-branco")
+            {
+                document.getElementById("grupo-duty").style.display = "None";
+                document.getElementById("entrada-duty").disabled = true;
+             }
+            else
+            {
+                document.getElementById("grupo-duty").style.display = "flex";
+                document.getElementById("entrada-duty").disabled = false;
+            }
+        }
+
+        else if(dados["origem"] === "importado")
+        {
+            console.log
+            (
+            `Sinal importado: ${dados["nome_arquivo"]}` );
+        }
     }
+
     catch(error){
         console.error(error);
     }
@@ -312,9 +325,10 @@ async function uploadSinal() {
 
     //console.log("uploadSinal FOI CHAMADA");
 
-    const input = document.getElementById("entrada-arquivo")
+    const input = document.getElementById("entrada-arquivo");
+    const num_sinal = document.getElementById("numero_sinal").value;
 
-    const arquivo = input.files[0]
+    const arquivo = input.files[0];
 
     if(!arquivo){
         console.warn("Nenhum arquivo selecionado");
@@ -324,6 +338,7 @@ async function uploadSinal() {
     const formData = new FormData();
 
     formData.append("arquivo", arquivo);
+    formData.append("numero-sinal", num_sinal)
 
     const response = await fetch(
         `${BASE_URL}/api/uploadSinal/`,
@@ -334,7 +349,15 @@ async function uploadSinal() {
     );
 
     const dados = await response.json();
+    
+    // Atualiza a interface com o estado real do backend
 
+    await carregarParametrosSinal(num_sinal);
+
+    // Agora atualiza API e gráficos
+
+    await atualizarAPI();
+    
     console.log(dados);
 }
 

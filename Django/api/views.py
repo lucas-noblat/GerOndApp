@@ -20,7 +20,7 @@ from time import perf_counter
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
-MAX_PONTOS_VISUALIZACAO = 10000
+MAX_PONTOS_VISUALIZACAO = 5000
 
 @api_view(['GET'])
 
@@ -37,35 +37,104 @@ def getData(request):
 @api_view(['POST'])
 
 def uploadSinal(request):
+
    arquivo = request.FILES.get("arquivo")
-
-   rate, dados_audio = wavfile.read(arquivo)
-
-   dimensoes = dados_audio.shape
-   n_amostras = dimensoes[0]
-   n_canais = dimensoes[1]
-
-   tamanho = n_amostras / rate
-   tipo_dos_dados = dados_audio.dtype
-
-   print("Rate:", rate)
-   print("Tipo:", type(dados_audio))
-   print(f"Tamanho: {(tamanho):.2f}s")
-   print("Shape:", dimensoes)
-   print("Canal(is): ", n_canais)
-   print("dtype:", tipo_dos_dados)
-
    if not arquivo:
       return Response(
          {
             "erro": "Nenhum arquivo foi enviado."
          }, status=400
       )
+
+   num_sinal = request.data.get("numero-sinal")
+
+   if num_sinal is None:
+    return Response(
+        {"erro": "Número do sinal não informado."},
+        status=400
+    )
+
+   num_sinal = int(num_sinal)
+
+   rate, dados_audio = wavfile.read(arquivo)
+
+   dimensoes = dados_audio.shape
+
+
+   n_amostras = dimensoes[0]
+   duracao = n_amostras / rate
+   tipo_dos_dados = dados_audio.dtype
+
+   if dados_audio.ndim == 1:
+      n_canais = 1
+      dados_sinais = dados_audio
+   else:
+      n_canais = dimensoes[1]
+      dados_sinais = dados_audio.mean(axis=1)
+
+   # NORMALIZAÇÃO
+   dados_sinais = functions.normalizar_audio(
+      dados_sinais,
+      tipo_dos_dados
+   )
+
+   print("Rate:", rate)
+   print("Tipo:", type(dados_audio))
+   print("SINAL: ", num_sinal)
+   print(f"Duração: {(duracao):.2f}s")
+   print("Shape:", dimensoes)
+   print("Canal(is): ", n_canais)
+   print("dtype:", tipo_dos_dados)
+
+
+   # Salvando o array da média dos canais na memória
+   sinais_memoria.SINAIS_DADOS[num_sinal] = dados_sinais
+
+   # Resgatando o sinal na memória para atualizar parâmetros
+
+   sinal = next((
+      s for s in sinais_memoria.SINAIS_PARAMETROS
+      if s["id"] == num_sinal
+   ) ,None)
+
+   if sinal is None:
+    return Response(
+        {"erro": "Sinal não encontrado."},
+        status=400
+    )
+   
+   sinal["origem"] = "importado"
+
+   # Redefinindo rates e durações de todos
+
+   for s in sinais_memoria.SINAIS_PARAMETROS:         
+      s["rate"] = float(rate)
+      s["duracao"] = float(duracao)
+
+   sinal["nome_arquivo"] = arquivo.name
+   sinal["num_amostras"] = int(n_amostras)
+   sinal["canais"] = int(n_canais)
+   sinal["tipo_arquivo"] = "wav"
+
+
+   # print
+
+   print(sinais_memoria.SINAIS_DADOS.keys())   
+   print(sinais_memoria.SINAIS_PARAMETROS[num_sinal - 1])
+
+
    return Response({
       "nome": arquivo.name,
       "tamanho": arquivo.size,
-      "content_type": arquivo.content_type
+      "content_type": arquivo.content_type,
+      "rate": rate,
+      "num_amostras": n_amostras,
+      "duracao": duracao,
+      "canais": n_canais,
+      "dtype": str(tipo_dos_dados)
    })
+
+
 @api_view(['POST'])
 
 def sendData(request):
@@ -138,6 +207,13 @@ def sendData(request):
          vetorY = obter_dados_sinal(s, vetorX)
          tempo_geracao += perf_counter() - inicio
 
+         print(
+            f"Sinal {s['id']} | "
+            f"origem={s['origem']} | "
+            f"len(vetorX)={len(vetorX)} | "
+          f"len(vetorY)={len(vetorY)}"
+       )
+
          inicio = perf_counter()
          magnitude = functions.transformada_fourier(vetorY)
          tempo_fft += perf_counter() - inicio
@@ -177,7 +253,6 @@ def sendData(request):
 
          tempo_tolist += perf_counter() - inicio
          sinais_response.append(sinalAtual)
-
 
       if resultante is not None:
          inicio = perf_counter()
@@ -278,13 +353,22 @@ def aplicarOperacao(s1, s2, operacao, soma_sub, mult_div):
 
 def obter_dados_sinal(sinal, vetorX):
 
-    if sinal["origem"] == "sintetico":
+   if sinal["origem"] == "sintetico":
         return functions.gerar_sinal(
             sinal,
             vetorX
         )
 
-    if sinal["origem"] == "importado":
-        return sinais_memoria.SINAIS_DADOS[
+   elif sinal["origem"] == "importado":  
+      dados = sinais_memoria.SINAIS_DADOS.get(
             sinal["id"]
-        ]
+        )
+      if dados is None:
+         raise ValueError(f"Dados do sinal importado{sinal['id']} não encontrados.")
+
+      return dados
+   
+   else:
+      raise ValueError(
+         f"Origem de sinal desconhecida: {sinal['origem']}"
+      )

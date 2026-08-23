@@ -2,7 +2,7 @@
 
 from scipy.signal import square, sawtooth
 from numpy import sin, pi, random, abs, fft, arange, insert, append, argmin, argmax, minimum, maximum, empty, concatenate
-
+import numpy as np
 
 # Bokeh
 
@@ -288,21 +288,6 @@ def reduzir_freq_max(xFreq, magnitude, max_pontos):
     if n_util < n:
         indices_max_sobra = n_util + argmax(magnitude_sem_dc[n_util:])
         indices_max_abs = append(indices_max_abs, indices_max_sobra)
-        print("\n\n"
-            f"Pontos FFT original: {n}\n"
-            f"Último ponto analisado: {n_util}\n"
- 
-        )
-
-        print(
-            f"Índice máximo local da sobra: "
-            f"{argmax(magnitude_sem_dc[n_util:])}\n"
-        )
-        print(
-            f"Índice máximo absoluto da sobra: "
-            f"{indices_max_sobra}"
-            "\n\n"
-        )
 
     # Ele pega e soma o indice de maior valor da janela de sbora
     # com o índice onde começa a sobra, dessa forma só o pico de maior intensidade da sobra será considerado
@@ -315,12 +300,30 @@ def reduzir_freq_max(xFreq, magnitude, max_pontos):
     xFreqReduzido = insert(xFreqReduzido, 0, x_freq_dc)
     magnitudeReduzida = insert(magnitudeReduzida, 0, magnitude_dc)
 
-    print(
-        f"x_freq_dc:         {xFreqReduzido[0]}\n"
-        f"magnitude_dc:         {magnitudeReduzida[0]}\n"
-                        
-    )
     return xFreqReduzido, magnitudeReduzida
+
+def normalizar_audio(dados,dtype_original):
+    # Convertendo para float
+
+    dados = dados.astype(np.float64)
+
+    # WAV PCM 8 BITS
+
+    if dtype_original == np.uint8:
+        dados = (dados - 128.0) / 128.0
+
+    elif np.issubdtype(dtype_original, np.signedinteger):
+        info = np.iinfo(dtype_original)
+        escala = max(abs(info.min), abs(info.max))
+        dados = dados / escala
+    elif np.issubdtype(dtype_original, np.floating):
+        pass
+    else:
+        raise ValueError(
+            f"Tipo de áudio não suportado: {dtype_original}"
+        )
+    return dados
+
 
 def reduzir_sinal_min_max(vetorX, vetorY, max_pontos):
     n = len(vetorY)
