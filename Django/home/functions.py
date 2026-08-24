@@ -323,89 +323,41 @@ def normalizar_audio(dados,dtype_original):
             f"Tipo de áudio não suportado: {dtype_original}"
         )
     return dados
-
-
-def reduzir_sinal_min_max(vetorX, vetorY, max_pontos):
-    n = len(vetorY)
-
-    if n<= max_pontos:
-        return vetorX, vetorY
-    numJanelas = max_pontos // 2
-    tamanhoJanela = n // numJanelas
-
-    n_util = tamanhoJanela * numJanelas
-
-    y_blocos = vetorY[:n_util].reshape(
-        numJanelas,
-        tamanhoJanela
-    )
-
-    indices_min = argmin(y_blocos, axis = 1)
-    indices_max = argmax(y_blocos, axis =1)
-
-    inicios = arange(numJanelas) * tamanhoJanela
-
-    indices_min_abs = inicios + indices_min
-    indices_max_abs = inicios + indices_max
-
-    primeiro = minimum(
-        indices_min_abs,
-        indices_max_abs
-    )
-
-    segundo = maximum(
-        indices_min_abs,
-        indices_max_abs
-    )
-
-    indices_saida = empty(numJanelas * 2, dtype=int)
-
-    indices_saida[0::2] = primeiro
-    indices_saida[1::2] = segundo
-
-    resto_inicio = n_util
-
-    print(f"A aberração ocorre em: {vetorX[resto_inicio]}")
-
-    if resto_inicio < n:
-        resto_y = vetorY[resto_inicio:]
-        resto_x = vetorX[resto_inicio:]
-
-        idx_min = argmin(resto_y)
-        idx_max = argmax(resto_y)
-
-        idx_min_abs = resto_inicio + idx_min
-        idx_max_abs = resto_inicio + idx_max
-
-        if idx_min_abs < idx_max_abs:
-            indices_saida = concatenate(
-                (
-                    indices_saida,
-                    [idx_min_abs, idx_max_abs]
-                )
-            )
-        else:
-            indices_saida = concatenate(
-                (
-                    indices_saida,
-                    [idx_max_abs, idx_min_abs]
-                )
-            )
-
-
-    x_reduzido = vetorX[indices_saida]
-    y_reduzido = vetorY[indices_saida]
-    return x_reduzido, y_reduzido  
-
         
 
 def reduzir_sinal_min_max(vetorX, vetorY, max_pontos):
+
+    # Defesa do código
+    if len(vetorX) != len(vetorY):
+        print(
+            "\n[AVISO DOWNSAMPLING]"
+            f"\nX possui {len(vetorX)} pontos"
+            f"\nY possui {len(vetorY)} pontos"
+            "\nOs vetores serão temporariamente alinhados."
+        )
+
+        n_comum = min(
+            len(vetorX),
+            len(vetorY)
+        )
+
+        vetorX = vetorX[:n_comum]
+        vetorY = vetorY[:n_comum]
+
     n = len(vetorY)
 
     if n<= max_pontos:
         return vetorX, vetorY
-    numJanelas = max_pontos // 2
-    tamanhoJanela = n // numJanelas
+    
+    numJanelasDesejado = max_pontos // 2
+
+    # DIVISÃO COM ARREDONDAMENTO PARA CIMA
+    tamanhoJanela = (
+        n + numJanelasDesejado - 1
+    ) // numJanelasDesejado
+
+    # Quantas janelas realmente cabem
+    numJanelas = n // tamanhoJanela    
 
     n_util = tamanhoJanela * numJanelas
 

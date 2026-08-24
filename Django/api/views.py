@@ -9,7 +9,7 @@ sys.path.append(str(caminho_avo))
 
 # Agora dá para importar o módulo
 from home import functions  # Importa "modulo_pai.py" que está em "pasta_pai/"
-from numpy import zeros_like, ones_like, fft
+from numpy import zeros_like, ones_like, fft, arange
 from scipy.io import wavfile
 from . import sinais_memoria
 
@@ -20,7 +20,7 @@ from time import perf_counter
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
-MAX_PONTOS_VISUALIZACAO = 5000
+MAX_PONTOS_VISUALIZACAO = 10000
 
 @api_view(['GET'])
 
@@ -166,9 +166,44 @@ def sendData(request):
             status=400
       )
       duracao_atual = float(dados["duracao"])
+      print(f"Duracao: {duracao_atual}s X Rate: {rate_atual}")
+
+      sinal_importado = next(
+      (
+         s for s in sinais_memoria.SINAIS_PARAMETROS
+         if s["origem"] == "importado"
+         and s["id"] in sinais_memoria.SINAIS_DADOS
+      ), None)
+
+      if sinal_importado is not None:
+         print(
+        "\n=== EIXO CONTROLADO POR IMPORTADO ==="
+        f"\nSinal: {sinal_importado['id']}"
+        f"\nRate: {sinal_importado['rate']}"
+        f"\nDuração: {sinal_importado['duracao']}"
+        f"\nN: {len(sinais_memoria.SINAIS_DADOS[sinal_importado['id']])}"
+        "\n=====================================\n"
+    )
+         rate_atual = float(
+            sinal_importado["rate"]
+         )
+
+         duracao_atual = float(
+            sinal_importado["duracao"]
+         )
+
+         n_amostras = len(
+            sinais_memoria.SINAIS_DADOS[
+                  sinal_importado["id"]
+            ]
+         )
+         vetorX = arange(n_amostras) / rate_atual
+      else:
+         vetorX = functions.gerar_vetor_tempo(rate_atual, duracao_atual)
+
+
 
    # Gerando um único vetor X no domínio do tempo e da frequência por request que será utilizado por todos os sinais ativos
-      vetorX = functions.gerar_vetor_tempo(rate_atual, duracao_atual)
       vetorX_freq = functions.gerar_vetor_frequencia(len(vetorX), rate_atual)
 
    # TENTATIVA DE DOWNSAMPLING

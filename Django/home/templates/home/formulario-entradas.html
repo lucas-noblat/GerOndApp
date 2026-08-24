@@ -12,6 +12,8 @@
                     <option value="quadrada"  >Quadrada</option>
                     <option value="triangular" >Triangular</option>
                     <option value="ruido-branco">Ruído Branco</option>
+                    <option value="importado">Importado</option>
+
                 </select>        
             </div>            
         </div>
@@ -36,7 +38,17 @@
             </div>
             -->
 
-    <div id = "container-entradas">
+    <div id = "painel-importado" class = "container-entradas" style="display: none;"> 
+            <p>Arquivo: <span id="info-arquivo"></span></p>
+            <p>Formato: <span id="info-formato"></span></p>
+            <p>Duração: <span id="info-duracao"></span></p>
+            <p>Rate: <span id="info-rate"></span></p>
+            <p>Amostras: <span id="info-amostras"></span></p>
+            <p>Canais: <span id="info-canais"></span></p>
+            <p>dtype: <span id="info-dtype"></span></p>
+    </div>
+
+    <div id = "painel-sintetico">
 
         <!-- Amplitude -->
         <div class="form-group" id="grupo-amplitude">
@@ -63,7 +75,7 @@
             <label for="entrada-periodo" class="form-label">Período</label>
                 <div class="form-number">
                     <button type="button" class="btn-dec" onclick="decrementaInput('periodo');">-</button>
-                    <input type="number" name="entrada-periodo" id="entrada-periodo" min= 0.000001 step = 0.1 inputmode="numeric" value = 1>
+                    <input type="number" name="entrada-periodo" id="entrada-periodo" min= 0  inputmode="numeric" value = 1>
                     <button type="button" class="btn-dec" onclick="incrementaInput('periodo')">+</button>
                 </div>            
         </div>

@@ -45,7 +45,7 @@ function ativarAba(sinal) {
     // Pega a div das entradas para destacar
 
     const formEntrada = document.getElementById("form-entrada");
-    const containerEntradas = document.getElementById("container-entradas");
+    const containerEntradas = document.getElementById("painel-sintetico");
 
     // Remove classe active de todas as abas
     document.querySelectorAll('.botao-sinal').forEach(aba => {
@@ -238,20 +238,49 @@ async function sendData(sinal){
  
 }
 
+
+/*
+"nome": arquivo.name,
+"tamanho": arquivo.size,
+"content_type": arquivo.content_type,
+"rate": rate,
+"num_amostras": n_amostras,
+"duracao": duracao,
+"canais": n_canais,
+"dtype": str(tipo_dos_dados)
+*/
+
+
 async function carregarParametrosSinal(sinal){
     try{
         const dados = await getData(sinal);
 
+        const painelSintetico = document.getElementById("painel-sintetico");
+        const painelImportado = document.getElementById("painel-importado");
+
+        const selectForma = document.getElementById("entrada-forma-sinal");
+
+        const rate = document.getElementById("entrada-rate");
+        const duracao = document.getElementById("entrada-duracao");
+            
+
+
+        //console.log(`${dados['nome_arquivo']}`);
 
         // Campos globais
         document.getElementById("entrada-duracao").value = dados['duracao'];
         document.getElementById("entrada-rate").value = dados['rate'];
         if(dados["origem"] === "sintetico"){
+            painelImportado.style.display = "none";
+            painelSintetico.style.display = "block";
+            rate.disabled = false;
+            duracao.disabled = false;
+
             document.getElementById("entrada-amplitude").value = dados['amplitude'];
             document.getElementById("entrada-frequencia").value = dados['frequencia'];
             document.getElementById("entrada-fase").value = dados['fase'];
             document.getElementById("entrada-offset").value = dados['offset'];
-            document.getElementById("entrada-forma-sinal").value = dados['forma_sinal'];
+            selectForma.value = dados['forma_sinal'];
             document.getElementById("entrada-duty").value = dados['duty'];
             document.getElementById("entrada-periodo").value = parseFloat(1/dados['frequencia']);
 
@@ -270,6 +299,27 @@ async function carregarParametrosSinal(sinal){
 
         else if(dados["origem"] === "importado")
         {
+            painelSintetico.style.display = "none";
+            painelImportado.style.display = "Block";
+            selectForma.value = "importado";
+
+
+
+            // Bloqueando rate e duracao enquanto sinal importado
+
+            rate.disabled = true;
+            duracao.disabled = true;
+            document.getElementById("entrada-duracao").disabled = true;
+            
+
+            document.getElementById("info-arquivo").textContent = dados['nome_arquivo'];
+            document.getElementById("info-formato").textContent = dados['tipo_arquivo'];
+            document.getElementById("info-duracao").textContent = dados['duracao'].toFixed(3);
+            document.getElementById("info-rate").textContent = dados['rate'];
+            document.getElementById("info-amostras").textContent = dados['num_amostras'];
+            document.getElementById("info-canais").textContent = dados['canais'];
+            document.getElementById("info-dtype").textContent = dados['dtype'];
+
             console.log
             (
             `Sinal importado: ${dados["nome_arquivo"]}` );
@@ -279,6 +329,10 @@ async function carregarParametrosSinal(sinal){
     catch(error){
         console.error(error);
     }
+}
+
+function carregarDadosArquivo(arquivo){
+
 }
 
 // RECEBE OS DADOS DO PARﾃ�ETRO
@@ -349,6 +403,8 @@ async function uploadSinal() {
     );
 
     const dados = await response.json();
+
+    document.getElementById("entrada-forma-sinal").value = "importado";
     
     // Atualiza a interface com o estado real do backend
 
@@ -384,7 +440,14 @@ async function atualizarAPI(){
             resultadoSendData.resultante
         ];
 
+
         for(let i = 0; i < 6; i++){
+            console.log(
+                `Sinal ${i + 1}:`,
+                "n =", series[i].x.length,
+                "x inicial =", series[i].x[0],
+                "x final =", series[i].x[series[i].x.length - 1]
+        );
             const source = Bokeh.documents[0].get_model_by_name(`databaseInternoBokeh${i}`);
             const sourceFreq = Bokeh.documents[1].get_model_by_name(`dbf${i}`);
                                     
@@ -564,10 +627,14 @@ function startListeners() {
     selects.forEach(select => {
         select.addEventListener("change", function(){
 
+            if(select.value === "importado"){
+                arquivo.click();
+            }
+
             if(this.id != "select-tamanho"){ //SELECIONA TODOS MENOS O DO TAMANHO DA JANELA DO POPUP
                 atualizarUnidades();
                 atualizarAPI();
-
+            
             } else { // SE FOR O SELECT DA MUDANﾃ② DE TELA MUDA O TAMANHO DA TELA
 
                 const janela = document.getElementById("janela-principal");
@@ -880,6 +947,12 @@ document.addEventListener('DOMContentLoaded', async function() {
     iniciarAbas();
     trocarAbas('tempo');
     startListeners();
+
+    // Carregando parâmetros antes de atualizar
+
+    const sinal = document.getElementById("numero_sinal").value || "1";
+
+    await carregarParametrosSinal(sinal);
 
     // ESPERA DADOS SEREM TRAZIDOS DO BACKEND PARA ESCONDER E ATUALIZAR GRﾃ：ICO
     await atualizarAPI();
