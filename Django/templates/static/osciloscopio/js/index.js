@@ -385,8 +385,11 @@ async function uploadSinal() {
     const arquivo = input.files[0];
 
     if(!arquivo){
+
         console.warn("Nenhum arquivo selecionado");
+        document.getElementById("entrada-forma-sinal").value = formaAnterior;
         return;
+        
     }
 
     const formData = new FormData();
@@ -415,6 +418,32 @@ async function uploadSinal() {
     await atualizarAPI();
     
     console.log(dados);
+}
+
+// Retornar o sinal ao estado de sintetico
+
+async function importado_to_sintetico(sinal, forma) {
+    const response = await fetch(
+        `${BASE_URL}/api/importado_to_sintetico/`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            } ,
+            body: JSON.stringify({
+                sinal_id : sinal,
+                forma_sinal: forma
+            })
+        }
+    )
+
+    if(!response.ok){
+        throw new Error(
+            "Não foi possível retornar o sinal para sintético."
+        );
+    }
+
+    return await response.json()
 }
 
 // Funﾃｧﾃ｣o assﾃｭncrona que irﾃ｡ atualizar os dados
@@ -587,7 +616,7 @@ function decrementaInput(input){
     solicitarAtualizacao();
 }
 
-
+let formaAnterior;
 
 // FUNﾃ�グ PARA ATIVAR OS LISTENERS
 
@@ -597,6 +626,8 @@ function startListeners() {
     const radios = document.querySelectorAll('input[type="radio"]');
     const sinais = document.querySelectorAll('input[type="checkbox"]');
     const arquivo = document.getElementById("entrada-arquivo");
+
+    const selectForma = document.getElementById("entrada-forma-sinal");
 
     // POPUP
     let popup = null;
@@ -621,19 +652,58 @@ function startListeners() {
     // Carregar sinais!
 
     arquivo.addEventListener("change", uploadSinal);
+
+    // Listener para detectar mudança no select da forma, para atualizar o importado/sintético
+
+    selectForma.addEventListener("change", async function () {
+        const num_sinal = document.getElementById("numero_sinal").value;
+
+        const novaForma = this.value;
+
+        const dadosAtuais = await getData(num_sinal);
+        
+        formaAnterior= dadosAtuais.forma_sinal;
+        
+        // IMPORTAR
+        if(novaForma == "importado"){
+            arquivo.click();
+            return;
+        }
+
+        // RECEBENDO DADOS PARA DESCOBRIR ORIGEM
+
+
+
+
+
+        if (dadosAtuais.origem === "importado"){
+
+            // TRANSFORMAR O SINAL
+
+            await importado_to_sintetico(num_sinal, novaForma);
+
+            await carregarParametrosSinal(num_sinal);
+
+            await atualizarAPI();
+
+            return;
+        }
+
+        await atualizarAPI();
+
+});
     
 
     // TODOS OS INPUT DO TIPO SELECT
     selects.forEach(select => {
         select.addEventListener("change", function(){
 
-            if(select.value === "importado"){
-                arquivo.click();
+            if(this.id === "entrada-forma-sinal"){
+                return;
             }
-
             if(this.id != "select-tamanho"){ //SELECIONA TODOS MENOS O DO TAMANHO DA JANELA DO POPUP
                 atualizarUnidades();
-                atualizarAPI();
+                //atualizarAPI();
             
             } else { // SE FOR O SELECT DA MUDANﾃ② DE TELA MUDA O TAMANHO DA TELA
 

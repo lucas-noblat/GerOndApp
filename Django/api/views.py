@@ -104,6 +104,7 @@ def uploadSinal(request):
     )
    
    sinal["origem"] = "importado"
+   sinal["forma_sinal"] = "importado"
 
    # Redefinindo rates e durações de todos
 
@@ -134,6 +135,48 @@ def uploadSinal(request):
       "dtype": str(tipo_dos_dados)
    })
 
+@api_view(['POST'])
+
+def importado_to_sintetico(request):
+   sinal_id = int(request.data.get("sinal_id"))
+   forma_sinal = request.data.get("forma_sinal")
+
+   sinal = next((
+      s for s in sinais_memoria.SINAIS_PARAMETROS if s["id"] == sinal_id
+   ), None)
+
+   if sinal is None:
+      return Response(
+         { "erro": "Sinal não encontrado."},
+         status = 400)
+   formas_validas = [ 
+      "senoidal",
+      "quadrada",
+      "triangular",
+      "ruido-branco"
+   ]
+
+   if forma_sinal not in formas_validas:
+      return Response(
+         {"erro": "Forma inválida"},
+         status = 400
+      )
+
+   sinal["origem"] = "sintetico"
+   sinal["forma_sinal"] = forma_sinal
+
+   # Removendo os dados do arquivo importado
+
+   sinais_memoria.SINAIS_DADOS.pop(
+      sinal_id - 1,
+      None
+   )
+
+   return Response({
+      "id": sinal_id,
+      "origem": sinal["origem"],
+      "forma_sinal": sinal["forma_sinal"]
+   })
 
 @api_view(['POST'])
 
