@@ -58,6 +58,262 @@ A metodologia utilizada pode ser resumida pelo ciclo:
 
 Profiling → identificação do gargalo → otimização → benchmark →
 comparação → novo profiling.
+## Etapa 1 - Otimização do fluxo de requisições e atualização do frontend
+
+Antes de iniciar a otimização numérica do backend, foi analisado o fluxo de comunicação entre o frontend e a API.
+
+O objetivo desta primeira etapa foi eliminar trabalho desnecessário que ocorria **antes mesmo dos cálculos NumPy**, principalmente requisições repetidas e atualizações manuais dos gráficos.
+
+A pergunta principal desta etapa foi:
+
+> O GerOndApp está executando apenas o trabalho necessário para cada alteração feita pelo usuário?
+
+---
+
+### Etapa 1A - Redução de requisições redundantes
+
+Durante a análise inicial do frontend foi identificado que determinados campos numéricos disparavam uma nova requisição a cada alteração do valor.
+
+Isso era especialmente problemático durante a digitação.
+
+Por exemplo, ao inserir uma taxa de amostragem como:
+
+```text
+44100
+```
+
+o navegador poderia interpretar a entrada progressivamente:
+
+```text
+4
+44
+441
+4410
+44100
+```
+
+e, dependendo dos listeners associados ao campo, diferentes estados intermediários podiam provocar sucessivas chamadas à API.
+
+Em alguns testes iniciais, uma única interação do usuário podia resultar em aproximadamente **10 requisições**, mesmo quando apenas o último valor realmente interessava ao processamento.
+
+Esse comportamento gerava processamento redundante no backend e aumentava desnecessariamente:
+
+- o número de requisições HTTP;
+- a geração dos sinais;
+- o cálculo das FFTs;
+- a serialização das respostas;
+- a atualização dos gráficos.
+
+---
+
+#### Solução adotada - debounce no frontend
+
+Foi implementada uma estratégia de **debounce** para os campos que enviam alterações ao backend.
+
+A ideia é aguardar um pequeno intervalo após a última alteração antes de executar `sendData()`.
+
+Conceitualmente:
+
+```text
+Usuário começa a digitar
+        ↓
+alteração
+        ↓
+temporizador iniciado
+        ↓
+nova alteração?
+   ↓          ↓
+  sim        não
+   ↓          ↓
+reinicia    aguarda
+timer       intervalo
+              ↓
+          sendData()
+```
+
+Assim, estados intermediários deixam de gerar processamento desnecessário.
+
+O backend recebe prioritariamente o valor final escolhido pelo usuário.
+
+---
+
+#### Resultado da Etapa 1A
+
+Nos testes realizados no navegador principal, uma alteração que anteriormente podia gerar várias chamadas passou a resultar em aproximadamente:
+
+```text
+Antes: ~10 requisições
+Depois: 1 requisição
+```
+
+Isso representa uma redução próxima de **90% no número de requisições** nesse tipo de interação.
+
+O ganho desta etapa não deve ser interpretado apenas como redução de alguns milissegundos de uma função específica.
+
+Cada requisição evitada também deixa de executar todo o pipeline associado:
+
+```text
+requisição HTTP
+      ↓
+Django / DRF
+      ↓
+geração dos sinais
+      ↓
+operações da resultante
+      ↓
+FFT
+      ↓
+serialização
+      ↓
+resposta HTTP
+      ↓
+parsing no navegador
+      ↓
+atualização do Bokeh
+```
+
+Portanto, eliminar uma requisição redundante significa eliminar uma execução completa desnecessária desse fluxo.
+
+---
+
+#### Observação sobre o navegador interno do VS Code
+
+Durante os testes foi observada uma diferença entre ambientes.
+
+No Opera, utilizado como navegador principal, o comportamento esperado foi confirmado com **uma única requisição POST** após a alteração.
+
+No navegador interno do VS Code foram observadas situações com **duas requisições**, mesmo após a correção do fluxo.
+
+Como o comportamento não se reproduziu no navegador convencional, essa duplicidade foi considerada relacionada ao ambiente de desenvolvimento e não à lógica principal do GerOndApp.
+
+---
+
+#### Critério de conclusão da Etapa 1A
+
+A etapa foi considerada concluída quando:
+
+- alterações de parâmetros deixaram de provocar várias requisições durante a digitação;
+- o valor final passou a ser enviado de maneira consolidada;
+- uma alteração normal no navegador principal passou a produzir uma única chamada relevante à API;
+- o comportamento foi validado através das ferramentas de desenvolvimento do navegador.
+
+A partir desse ponto, os benchmarks posteriores passaram a medir um fluxo muito mais próximo da interação real desejada.
+
+---
+
+### Etapa 1B - Remoção de atualizações manuais dos ranges do Bokeh
+
+Após reduzir as requisições redundantes, foi analisada a lógica utilizada para ajustar os limites dos gráficos.
+
+O frontend possuía uma função própria para recalcular e atualizar os ranges após mudanças nos sinais.
+
+Essa abordagem adicionava lógica JavaScript e atualizações extras sempre que novos dados eram carregados.
+
+A investigação mostrou que o próprio Bokeh já possuía mecanismos adequados para controlar esse comportamento.
+
+---
+
+#### Solução adotada
+
+A função manual de atualização dos ranges foi removida e o comportamento passou a utilizar recursos nativos do Bokeh, incluindo mecanismos como:
+
+```text
+follow
+range_padding
+ResetTool
+```
+
+Com isso, a responsabilidade de acompanhar os novos dados e reorganizar a visualização passou a ser delegada ao próprio sistema de ranges do Bokeh.
+
+A arquitetura ficou conceitualmente mais simples:
+
+```text
+ANTES
+
+novos dados
+    ↓
+atualiza ColumnDataSource
+    ↓
+função JavaScript adicional
+    ↓
+recalcula ranges
+    ↓
+atualiza gráfico
+
+
+DEPOIS
+
+novos dados
+    ↓
+atualiza ColumnDataSource
+    ↓
+Bokeh administra o range
+```
+
+---
+
+#### Resultado da Etapa 1B
+
+A remoção de `atualizarRanges()` produziu principalmente um ganho arquitetural:
+
+- menos código JavaScript executado após cada atualização;
+- eliminação de uma responsabilidade que já era atendida pelo Bokeh;
+- redução de manipulações manuais dos ranges;
+- comportamento de acompanhamento dos dados preservado;
+- ferramenta de reset mantida para recuperação da visualização.
+
+Não foi estabelecido um benchmark isolado em milissegundos para essa alteração.
+
+O principal resultado foi remover trabalho redundante do frontend antes de iniciar a investigação detalhada dos gargalos numéricos do backend.
+
+---
+
+#### Critério de conclusão da Etapa 1B
+
+A etapa foi considerada concluída quando:
+
+- `atualizarRanges()` deixou de ser necessária;
+- os ranges continuaram acompanhando corretamente os dados;
+- `follow` e `range_padding` passaram a controlar o comportamento esperado;
+- o reset do gráfico continuou funcional;
+- não houve regressão perceptível na navegação dos gráficos.
+
+---
+
+### Conclusão da Etapa 1 - Fluxo de atualização
+
+A primeira etapa mostrou que otimização não significa necessariamente tornar um cálculo matemático individual mais rápido.
+
+Antes de atacar NumPy, FFT ou serialização, foi possível eliminar trabalho que simplesmente **não precisava acontecer**.
+
+Os dois principais resultados foram:
+
+| Subetapa | Problema | Alteração | Resultado principal |
+|---|---|---|---|
+| 1A | Várias requisições para uma única alteração | Debounce e consolidação do envio | ~10 requisições → 1 nos testes principais |
+| 1B | Atualização manual dos ranges | Recursos nativos do Bokeh | Menos código e processamento redundante no frontend |
+
+Ao final da Etapa 1, o fluxo passou a se aproximar de:
+
+```text
+Usuário altera um parâmetro
+        ↓
+debounce
+        ↓
+uma requisição relevante
+        ↓
+backend processa
+        ↓
+frontend recebe os dados
+        ↓
+Bokeh atualiza os gráficos
+        ↓
+range administrado pelo próprio Bokeh
+```
+
+Com as redundâncias mais evidentes do fluxo removidas, tornou-se possível avançar para uma investigação quantitativa do backend.
+
+Essa investigação deu origem à **Etapa 2**, na qual `time.perf_counter()` passou a ser utilizado para separar e medir geração dos sinais, FFT, cálculo da resultante e conversões para listas.
 
 ## Benchmark do backend (ETAPA 2)
 
